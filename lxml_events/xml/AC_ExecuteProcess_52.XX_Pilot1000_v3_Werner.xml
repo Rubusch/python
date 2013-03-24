@@ -1,0 +1,5863 @@
+<?xml version="1.0"?>
+<CommandListSetting xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Name>AC_ExecuteProcess_52.XX_Pilot1000_v3_Werner.xml</Name>
+  <Category>PrePilot_1000_Werner</Category>
+  <Command>
+    <Id>337afd76-e02a-47df-8125-2e4cf55ffb34</Id>
+    <Name>Command List</Name>
+    <Type>RnDCommand</Type>
+    <Parameters>
+      <ParameterSetting>
+        <Name>Name</Name>
+        <Value>AC_ExecuteProcess_52.XX_Pilot1000_v3_Werner.xml</Value>
+        <ParameterSettings />
+      </ParameterSetting>
+      <ParameterSetting>
+        <Name>Category</Name>
+        <Value>PrePilot_1000_Werner</Value>
+        <ParameterSettings />
+      </ParameterSetting>
+    </Parameters>
+    <ExtendedProperties>
+      <ParameterSetting>
+        <Name>Comment</Name>
+        <Value />
+        <ParameterSettings />
+      </ParameterSetting>
+      <ParameterSetting>
+        <Name>IsActivated</Name>
+        <Value>True</Value>
+        <ParameterSettings />
+      </ParameterSetting>
+    </ExtendedProperties>
+    <ChildCommands>
+      <CommandSetting>
+        <Id>ddadca81-2c6f-4632-a3fb-7cdbd98025f8</Id>
+        <Name>DefineVariable</Name>
+        <Type>RnDCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Name</Name>
+            <Value>Kommentar</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Value</Name>
+            <Value>getestet mit IC-SW 0.55.01 auf PrePilot 601 und 602</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Type</Name>
+            <Value>String</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Location</Name>
+            <Value>Heap</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>Configure</Id>
+        <Name>MAM.Configure</Name>
+        <Context>MAM</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2970002</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>60</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>Format</Id>
+        <Name>MAM.Format</Name>
+        <Context>MAM</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2970004</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>60</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>MemoryId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Force</Name>
+            <Value>False</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>cad25dd6-98b9-405b-9f4e-77fabdff514b</Id>
+        <Name>Pause</Name>
+        <Type>RnDCommand</Type>
+        <Parameters />
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>Prepare</Id>
+        <Name>ADCell.Prepare</Name>
+        <Context>ADCell</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2270002</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>60</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>Init</Id>
+        <Name>ADCell.Init</Name>
+        <Context>ADCell</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2270003</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>900</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>InitializationMode</Name>
+            <Value>Normal</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>900</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>MoveToPosition</Id>
+        <Name>ADTransferPosition.MoveToPosition</Name>
+        <Context>ADTransferPosition</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2170004</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>60</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>HandlerPositionState</Name>
+            <Value>LoadPosition</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>cad25dd6-98b9-405b-9f4e-77fabdff514b</Id>
+        <Name>Pause</Name>
+        <Type>RnDCommand</Type>
+        <Parameters />
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>MoveToPosition</Id>
+        <Name>ADTransferPosition.MoveToPosition</Name>
+        <Context>ADTransferPosition</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2170004</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>60</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>HandlerPositionState</Name>
+            <Value>UnloadPosition</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>TransferADPlate</Id>
+        <Name>ADCell.TransferADPlate</Name>
+        <Context>ADCell</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2270004</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SrcModuleId</Name>
+            <Value>ADTransferUnloadPos</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DestModuleId</Name>
+            <Value>ADCyclerTrayA2</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>MoveToPosition</Id>
+        <Name>ADTransferPosition.MoveToPosition</Name>
+        <Context>ADTransferPosition</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2170004</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>60</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>HandlerPositionState</Name>
+            <Value>CenterPosition</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>LoadADProcess</Id>
+        <Name>ADCell.LoadADProcess</Name>
+        <Context>ADCell</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2270007</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>900</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnalyticalCyclerID</Name>
+            <Value>ADCyclerA2</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>FilePath</Name>
+            <Value>/home/roche/share//newgen/adcell/adcyclerA2/ADProcessDefinition.xml</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>MD5Hash</Name>
+            <ParameterSettings>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+            </ParameterSettings>
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>ExecuteADProcess</Id>
+        <Name>ADCell.ExecuteADProcess</Name>
+        <Context>ADCell</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2270008</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>86400</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnalyticalCyclerID</Name>
+            <Value>ADCyclerA2</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>86400</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>DeleteADCyclerResult</Id>
+        <Name>ADCell.DeleteADCyclerResult</Name>
+        <Context>ADCell</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2270010</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>60</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnalyticalCyclerID</Name>
+            <Value>ADCyclerA2</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ResultId</Name>
+            <Value>65535</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>TransferADPlate</Id>
+        <Name>ADCell.TransferADPlate</Name>
+        <Context>ADCell</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2270004</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SrcModuleId</Name>
+            <Value>ADCyclerTrayA2</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DestModuleId</Name>
+            <Value>ADOutputDrawer1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>cad25dd6-98b9-405b-9f4e-77fabdff514b</Id>
+        <Name>Pause</Name>
+        <Type>RnDCommand</Type>
+        <Parameters />
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>cad25dd6-98b9-405b-9f4e-77fabdff514b</Id>
+        <Name>Pause</Name>
+        <Type>RnDCommand</Type>
+        <Parameters />
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>cad25dd6-98b9-405b-9f4e-77fabdff514b</Id>
+        <Name>Pause</Name>
+        <Type>RnDCommand</Type>
+        <Parameters />
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>MoveToPosition</Id>
+        <Name>ADTransferPosition.MoveToPosition</Name>
+        <Context>ADTransferPosition</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2170004</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>60</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>HandlerPositionState</Name>
+            <Value>LoadPosition</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>cad25dd6-98b9-405b-9f4e-77fabdff514b</Id>
+        <Name>Pause</Name>
+        <Type>RnDCommand</Type>
+        <Parameters />
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>MoveToPosition</Id>
+        <Name>ADTransferPosition.MoveToPosition</Name>
+        <Context>ADTransferPosition</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2170004</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>60</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>HandlerPositionState</Name>
+            <Value>UnloadPosition</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>TransferADPlate</Id>
+        <Name>ADCell.TransferADPlate</Name>
+        <Context>ADCell</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2270004</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SrcModuleId</Name>
+            <Value>ADTransferUnloadPos</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DestModuleId</Name>
+            <Value>ADCyclerTrayB2</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>MoveToPosition</Id>
+        <Name>ADTransferPosition.MoveToPosition</Name>
+        <Context>ADTransferPosition</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2170004</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>60</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>HandlerPositionState</Name>
+            <Value>CenterPosition</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>LoadADProcess</Id>
+        <Name>ADCell.LoadADProcess</Name>
+        <Context>ADCell</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2270007</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>900</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnalyticalCyclerID</Name>
+            <Value>ADCyclerB2</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>FilePath</Name>
+            <Value>/home/roche/share//newgen/adcell/adcyclerB2/ADProcessDefinition.xml</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>MD5Hash</Name>
+            <ParameterSettings>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+            </ParameterSettings>
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>ExecuteADProcess</Id>
+        <Name>ADCell.ExecuteADProcess</Name>
+        <Context>ADCell</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2270008</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>86400</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnalyticalCyclerID</Name>
+            <Value>ADCyclerB2</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>86400</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>DeleteADCyclerResult</Id>
+        <Name>ADCell.DeleteADCyclerResult</Name>
+        <Context>ADCell</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2270010</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>60</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnalyticalCyclerID</Name>
+            <Value>ADCyclerB2</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ResultId</Name>
+            <Value>65535</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>TransferADPlate</Id>
+        <Name>ADCell.TransferADPlate</Name>
+        <Context>ADCell</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2270004</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SrcModuleId</Name>
+            <Value>ADCyclerTrayB2</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DestModuleId</Name>
+            <Value>ADOutputDrawer1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>cad25dd6-98b9-405b-9f4e-77fabdff514b</Id>
+        <Name>Pause</Name>
+        <Type>RnDCommand</Type>
+        <Parameters />
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>cad25dd6-98b9-405b-9f4e-77fabdff514b</Id>
+        <Name>Pause</Name>
+        <Type>RnDCommand</Type>
+        <Parameters />
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>cad25dd6-98b9-405b-9f4e-77fabdff514b</Id>
+        <Name>Pause</Name>
+        <Type>RnDCommand</Type>
+        <Parameters />
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>MoveToPosition</Id>
+        <Name>ADTransferPosition.MoveToPosition</Name>
+        <Context>ADTransferPosition</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2170004</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>60</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>HandlerPositionState</Name>
+            <Value>LoadPosition</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>cad25dd6-98b9-405b-9f4e-77fabdff514b</Id>
+        <Name>Pause</Name>
+        <Type>RnDCommand</Type>
+        <Parameters />
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>MoveToPosition</Id>
+        <Name>ADTransferPosition.MoveToPosition</Name>
+        <Context>ADTransferPosition</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2170004</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>60</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>HandlerPositionState</Name>
+            <Value>UnloadPosition</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>TransferADPlate</Id>
+        <Name>ADCell.TransferADPlate</Name>
+        <Context>ADCell</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2270004</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SrcModuleId</Name>
+            <Value>ADTransferUnloadPos</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DestModuleId</Name>
+            <Value>ADCyclerTrayA1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>MoveToPosition</Id>
+        <Name>ADTransferPosition.MoveToPosition</Name>
+        <Context>ADTransferPosition</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2170004</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>60</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>HandlerPositionState</Name>
+            <Value>CenterPosition</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>LoadADProcess</Id>
+        <Name>ADCell.LoadADProcess</Name>
+        <Context>ADCell</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2270007</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>900</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnalyticalCyclerID</Name>
+            <Value>ADCyclerA1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>FilePath</Name>
+            <Value>/home/roche/share//newgen/adcell/adcyclerA1/ADProcessDefinition.xml</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>MD5Hash</Name>
+            <ParameterSettings>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+            </ParameterSettings>
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>ExecuteADProcess</Id>
+        <Name>ADCell.ExecuteADProcess</Name>
+        <Context>ADCell</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2270008</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>86400</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnalyticalCyclerID</Name>
+            <Value>ADCyclerA1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>86400</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>DeleteADCyclerResult</Id>
+        <Name>ADCell.DeleteADCyclerResult</Name>
+        <Context>ADCell</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2270010</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>60</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnalyticalCyclerID</Name>
+            <Value>ADCyclerA1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ResultId</Name>
+            <Value>65535</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>TransferADPlate</Id>
+        <Name>ADCell.TransferADPlate</Name>
+        <Context>ADCell</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2270004</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SrcModuleId</Name>
+            <Value>ADCyclerTrayA1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DestModuleId</Name>
+            <Value>ADOutputDrawer1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>cad25dd6-98b9-405b-9f4e-77fabdff514b</Id>
+        <Name>Pause</Name>
+        <Type>RnDCommand</Type>
+        <Parameters />
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>cad25dd6-98b9-405b-9f4e-77fabdff514b</Id>
+        <Name>Pause</Name>
+        <Type>RnDCommand</Type>
+        <Parameters />
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>cad25dd6-98b9-405b-9f4e-77fabdff514b</Id>
+        <Name>Pause</Name>
+        <Type>RnDCommand</Type>
+        <Parameters />
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>MoveToPosition</Id>
+        <Name>ADTransferPosition.MoveToPosition</Name>
+        <Context>ADTransferPosition</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2170004</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>60</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>HandlerPositionState</Name>
+            <Value>LoadPosition</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>cad25dd6-98b9-405b-9f4e-77fabdff514b</Id>
+        <Name>Pause</Name>
+        <Type>RnDCommand</Type>
+        <Parameters />
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>MoveToPosition</Id>
+        <Name>ADTransferPosition.MoveToPosition</Name>
+        <Context>ADTransferPosition</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2170004</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>60</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>HandlerPositionState</Name>
+            <Value>UnloadPosition</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>TransferADPlate</Id>
+        <Name>ADCell.TransferADPlate</Name>
+        <Context>ADCell</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2270004</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SrcModuleId</Name>
+            <Value>ADTransferUnloadPos</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DestModuleId</Name>
+            <Value>ADCyclerTrayB1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>MoveToPosition</Id>
+        <Name>ADTransferPosition.MoveToPosition</Name>
+        <Context>ADTransferPosition</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2170004</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>60</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>HandlerPositionState</Name>
+            <Value>CenterPosition</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>LoadADProcess</Id>
+        <Name>ADCell.LoadADProcess</Name>
+        <Context>ADCell</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2270007</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>900</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnalyticalCyclerID</Name>
+            <Value>ADCyclerB1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>FilePath</Name>
+            <Value>/home/roche/share//newgen/adcell/adcyclerB1/ADProcessDefinition.xml</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>MD5Hash</Name>
+            <ParameterSettings>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+              <ArrayOfParameterSetting>
+                <ParameterSetting>
+                  <Name>MD5Hash</Name>
+                  <Value>0</Value>
+                  <ParameterSettings />
+                </ParameterSetting>
+              </ArrayOfParameterSetting>
+            </ParameterSettings>
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>ExecuteADProcess</Id>
+        <Name>ADCell.ExecuteADProcess</Name>
+        <Context>ADCell</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2270008</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>86400</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnalyticalCyclerID</Name>
+            <Value>ADCyclerB1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>86400</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>DeleteADCyclerResult</Id>
+        <Name>ADCell.DeleteADCyclerResult</Name>
+        <Context>ADCell</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2270010</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>60</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnalyticalCyclerID</Name>
+            <Value>ADCyclerB1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ResultId</Name>
+            <Value>65535</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>TransferADPlate</Id>
+        <Name>ADCell.TransferADPlate</Name>
+        <Context>ADCell</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2270004</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SrcModuleId</Name>
+            <Value>ADCyclerTrayB1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DestModuleId</Name>
+            <Value>ADOutputDrawer1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>cad25dd6-98b9-405b-9f4e-77fabdff514b</Id>
+        <Name>Pause</Name>
+        <Type>RnDCommand</Type>
+        <Parameters />
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>cad25dd6-98b9-405b-9f4e-77fabdff514b</Id>
+        <Name>Pause</Name>
+        <Type>RnDCommand</Type>
+        <Parameters />
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>cad25dd6-98b9-405b-9f4e-77fabdff514b</Id>
+        <Name>Pause</Name>
+        <Type>RnDCommand</Type>
+        <Parameters />
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>AbortADProcess</Id>
+        <Name>ADCell.AbortADProcess</Name>
+        <Context>ADCell</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2270009</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>900</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnalyticalCyclerID</Name>
+            <Value>ADCyclerA2</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>900</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>cad25dd6-98b9-405b-9f4e-77fabdff514b</Id>
+        <Name>Pause</Name>
+        <Type>RnDCommand</Type>
+        <Parameters />
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>DeleteADCyclerResult</Id>
+        <Name>ADCell.DeleteADCyclerResult</Name>
+        <Context>ADCell</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2270010</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>60</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnalyticalCyclerID</Name>
+            <Value>ADCyclerA2</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ResultId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>cad25dd6-98b9-405b-9f4e-77fabdff514b</Id>
+        <Name>Pause</Name>
+        <Type>RnDCommand</Type>
+        <Parameters />
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>GetADCyclerFilterParameters</Id>
+        <Name>ADCell.GetADCyclerFilterParameters</Name>
+        <Context>ADCell</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2270012</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>60</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnalyticalCyclerID</Name>
+            <Value>ADCyclerA2</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>cad25dd6-98b9-405b-9f4e-77fabdff514b</Id>
+        <Name>Pause</Name>
+        <Type>RnDCommand</Type>
+        <Parameters />
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>GetADCyclerDataPoolValues</Id>
+        <Name>ADCell.GetADCyclerDataPoolValues</Name>
+        <Context>ADCell</Context>
+        <Type>InstrumentCommand</Type>
+        <Parameters>
+          <ParameterSetting>
+            <Name>Discriminant</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ServiceId</Name>
+            <Value>12</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>CommandId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceId</Name>
+            <Value>31</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>SequenceInstanceId</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ModuleId</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ProcType</Name>
+            <Value>2270013</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>TimeoutICM</Name>
+            <Value>60</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfNormalEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NormalEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfWarningEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>WarningEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfAnomalyEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnomalyEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfErrorEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>ErrorEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>NrOfDataEvents</Name>
+            <Value>1</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>DataEvent_WildCardEvent</Name>
+            <Value>0</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>AnalyticalCyclerID</Name>
+            <Value>ADCyclerA2</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </Parameters>
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>Timeout</Name>
+            <Value>300</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+      <CommandSetting>
+        <Id>cad25dd6-98b9-405b-9f4e-77fabdff514b</Id>
+        <Name>Pause</Name>
+        <Type>RnDCommand</Type>
+        <Parameters />
+        <ExtendedProperties>
+          <ParameterSetting>
+            <Name>Comment</Name>
+            <Value />
+            <ParameterSettings />
+          </ParameterSetting>
+          <ParameterSetting>
+            <Name>IsActivated</Name>
+            <Value>True</Value>
+            <ParameterSettings />
+          </ParameterSetting>
+        </ExtendedProperties>
+        <ChildCommands />
+      </CommandSetting>
+    </ChildCommands>
+  </Command>
+</CommandListSetting>
