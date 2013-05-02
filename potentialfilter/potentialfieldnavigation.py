@@ -46,14 +46,29 @@ def solve( M ):
 ## fcn solver
 # TODO
 
-    
+
 ## START                                                                        
 if __name__ == '__main__':
-    XMAX=60
-    YMAX=40
-    M[YMAX][XMAX]
+    XMAX=3
+    YMAX=2
+
+    ## [ y x ]
     GOAL=[40, 60]
     START=[0, 0]
+
+    ## init 2D matrix
+    # TODO    
+    M = []
+    row = []
+    col = []
+    for y in range(YMAX):
+        row=[]
+        for x in range(XMAX):
+            row+=[y]
+        col += [row]
+    M = col
+
+
 
     ## repulsive potential field
 #    M = repulsive_potential_field( M )
