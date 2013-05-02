@@ -5,20 +5,41 @@
 # @license: GPLv3
 # @2013-May-01
 
+#import math
+from math import *
+import sys
+
+XMAX=6
+YMAX=4
 
 ## fcn distance
 def distance( pktsrc, pktdst ):
     dist = 0
 #    dists=[]
-#    for i in size(dst[]):
-#        dx= pktsrc[1] - pktsrc[i, 1]
-#        dx= pktsrc[2] - pktsrc[i, 2]
-    # TODO
+#    try:
+#        for elem in pktdst[:]:
+#            dy = pktsrc[0] - elem[0]
+#            dx = pktsrc[1] - elem[1]
+#            dists += [sqrt(dx^2 + dy^2)]
+#            dist = min(dists[:])
+#    except TypeError:
+    dy = pktsrc[0] - pktdst[0]
+    dx = pktsrc[1] - pktdst[1]
+    dist = sqrt(dx^2 + dy^2)
     return dist
 
-## fcn normalize
+## normalize
 def normalize( M ):
-    # TODO
+    maxvals = []
+    maxval = -1
+    ## find overall max
+    for y in range( len(M) ):
+        maxvals += [max([elem for elem in M[y]])]
+    maxval = max( maxvals[:] )
+    ## divide each value by overall max
+    for y in range( len(M) ):
+        for x in range( len(M[0]) ):
+            M[y][x] = M[y][x] / maxval
     return M
 
 ## fcn obstacle
@@ -30,7 +51,6 @@ def obstacle( M ):
 def repulsive_potential_field( M ):
     # TODO
     return M
-
 
 ## fcn attractive_potential_field
 def attractive_potential_field( M ):
@@ -47,27 +67,49 @@ def solve( M ):
 # TODO
 
 
+   
+## DEBUG
+def DB_print( M ):
+    # TODO compactize
+    for y in range( len(M) ):
+        for x in range( len(M[0]) ):
+            print "\t%.2f"%M[y][x],
+        print ""
+
+
+
 ## START                                                                        
 if __name__ == '__main__':
-    XMAX=3
-    YMAX=2
 
     ## [ y x ]
     GOAL=[40, 60]
     START=[0, 0]
 
     ## init 2D matrix
-    # TODO    
+    # TODO compactize    
     M = []
     row = []
     col = []
     for y in range(YMAX):
         row=[]
         for x in range(XMAX):
-            row+=[y]
+            row+=[0]
         col += [row]
     M = col
 
+
+    # TODO distance
+    for y in range(YMAX):
+        for x in range(XMAX):
+            M[y][x] = distance( [y, x], GOAL )
+
+    # TODO normalize
+    M = normalize( M )
+
+
+    DB_print( M )  
+
+    sys.exit(0)                   
 
 
     ## repulsive potential field
@@ -90,25 +132,36 @@ if __name__ == '__main__':
 
 
     
-    # from mpl_toolkits.mplot3d import Axes3D
-    # from matplotlib import cm
-    # from matplotlib.ticker import LinearLocator, FormatStrFormatter
-    # import matplotlib.pyplot as plt
-    # import numpy as np
+    from mpl_toolkits.mplot3d import Axes3D
+    from matplotlib import cm
+    from matplotlib.ticker import LinearLocator, FormatStrFormatter
+    import matplotlib.pyplot as plt
+    import numpy as np
 
-    # fig = plt.figure()
-    # ax = fig.gca(projection='3d')
+    fig = plt.figure()
+    ax = fig.gca(projection='3d')
     # X = np.arange(-5, 5, 0.25)
     # Y = np.arange(-5, 5, 0.25)
-    # X, Y = np.meshgrid(X, Y)
+
+#    Y = range(len(M))
+    Y = np.arange(0,YMAX,1)
+#    X = range(len(M[0]))
+    X = np.arange(0,XMAX,1)
+    X, Y = np.meshgrid(X, Y)
+
+# TODO rm    
     # R = np.sqrt(X**2 + Y**2)
     # Z = np.sin(R)
-    # surf = ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap=cm.coolwarm,
-    #                        linewidth=0, antialiased=False)
-    # ax.set_zlim(-1.01, 1.01)
+    
 
-    # ax.zaxis.set_major_locator(LinearLocator(10))
-    # ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
+    Z = M
 
-    # fig.colorbar(surf, shrink=0.5, aspect=5)
-    # plt.show()
+    surf = ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap=cm.coolwarm,
+                            linewidth=0, antialiased=False)
+    ax.set_zlim(-1.01, 1.01)
+
+    ax.zaxis.set_major_locator(LinearLocator(10))
+    ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
+
+    fig.colorbar(surf, shrink=0.5, aspect=5)
+    plt.show()
