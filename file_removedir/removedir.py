@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: iso-8859-1 -*-
+#
+# @author: Lothar Rubusch
+# @email: L.Rubusch@gmx.ch
+# @license: GPLv3
+# @2013-May-01
 
 import os
 import re
@@ -10,7 +15,7 @@ def rmpattern( path, pattern ):
     for each in os.listdir(path):
         if pattern.search(each):
             name = os.path.join(path,each)
-            try: os.remove(name)            
+            try: os.remove(name)
             except:
                 rmpattern(name, '')
                 os.rmdir(name)

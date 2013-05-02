@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: iso-8859-1 -*-
+#
+# @author: Lothar Rubusch
+# @email: L.Rubusch@gmx.ch
+# @license: GPLv3
+# @2013-May-01
 
 import os
 
@@ -7,7 +12,7 @@ if os.path.exists('./test.txt'):
     os.remove('./test.txt')
 
 text = """jack and jill went up the hill to fetch a pail of water
-jack fell down and broke his crown 
+jack fell down and broke his crown
 and jill came tumbling after
 """
 

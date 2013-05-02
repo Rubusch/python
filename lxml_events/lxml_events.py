@@ -1,4 +1,9 @@
 #!/usr/bin/python
+#
+# @author: Lothar Rubusch
+# @email: L.Rubusch@gmx.ch
+# @license: GPLv3
+# @2013-May-01
 
 import sys
 from os import path

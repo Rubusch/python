@@ -1,4 +1,9 @@
 # Fibonacci numbers module
+#
+# @author: Lothar Rubusch
+# @email: L.Rubusch@gmx.ch
+# @license: GPLv3
+# @2013-May-01
 
 def fib(n):    # write Fibonacci series up to n
     a, b = 0, 1
