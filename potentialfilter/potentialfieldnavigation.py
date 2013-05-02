@@ -1,4 +1,6 @@
-## python header - TODO
+#!/usr/bin/env python
+# -*- coding: iso-8859-1 -*-
+
 
 ## fcn distance
 def distance( pktsrc, pktdst ):
