@@ -1,5 +1,11 @@
 import random
 import unittest
+#
+# @author: Lothar Rubusch
+# @email: L.Rubusch@gmx.ch
+# @license: GPLv3
+# @2013-May-01
+
 
 """
 USAGE

@@ -1,4 +1,9 @@
-## 
+#
+# @author: Lothar Rubusch
+# @email: L.Rubusch@gmx.ch
+# @license: GPLv3
+# @2013-May-01
+
 
 ## set up exception, raise it and catch it
 try:
