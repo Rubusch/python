@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 ## globals
-# TODO         
+
 ## size of robot = 7
 #XSIZE=300 / 7
 XSIZE=43
@@ -33,7 +33,7 @@ START=[0, 0]
 ## init matrix
 def get_matrix():
     M = []
-    M += [[0 for x in range(XMAX)] for y in range(YMAX)]
+    M += [[0 for x in range(XSIZE)] for y in range(YSIZE)]
     return M
 
 ## distance
@@ -68,13 +68,16 @@ def normalize( M ):
         sys.exit( -1 )
 
 ## visualization of results
-def visualize( Z ):
-    Y = np.arange(0,YMAX,1)
-    X = np.arange(0,XMAX,1)
+def visualize( Z, solution=[]):
+    Y = np.arange(0,YSIZE,1)
+    X = np.arange(0,XSIZE,1)
     fig = plt.figure()
     ax = fig.gca(projection='3d')
     X, Y = np.meshgrid(X, Y)
     surf = ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap=cm.coolwarm, linewidth=0, antialiased=False)
+    if 0 < len( solution) :
+        # TODO plot line
+        Axes3D.plot(X, Y, solution) 
     ax.set_zlim(0.0, 1.01)
     ax.zaxis.set_major_locator(LinearLocator(10))
     ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
@@ -128,12 +131,39 @@ def merge_potential_fields( A, B):
 
 ## fcn solver - backtrack
 def solve( M ):
-    solution = [];
-    # TODO
+    ymax = len( M )
+    xmax = len( M[0] )
+    solution = [START];
+    movments = {}
+    while True:
+        movements = {}
+        y = solution[-1][0]
+        x = solution[-1][1]
+
+        ## up
+        if ymax-1 > y and [y+1,x] not in solution:
+            movements.update({M[y+1][x]:[y+1, x]})
+
+        ## down
+        if 0 < y and [y-1,x] not in solution:
+            movements.update({M[y-1][x]:[y-1, x]})
+
+        ## left
+        if 0 < x and [y,x-1] not in solution:
+            movements.update({M[y][x-1]:[y, x-1]})
+
+        ## right
+        if xmax-1 > x and [y,x+1] not in solution:
+            movements.update({M[y][x+1]:[y, x+1]})
+
+        U_next = min( movements.keys() )
+        solution += [ movements.get(U_next ) ]
+
+        if solution[-1] == GOAL:
+            break
+
     return solution
 
-## fcn solver
-# TODO
 
 
                                                                                 
@@ -152,22 +182,22 @@ if __name__ == '__main__':
     U_att = get_matrix()
     attractive_potential_field( U_att )
     normalize( U_att )
-#    visualize( U_att )
+    visualize( U_att )
 
     ## repulsing potential field
     U_rep = get_matrix()
     repulsive_potential_field( U_rep )
     normalize( U_rep )
-#    visualize( U_rep )
+    visualize( U_rep )
 
     U_merge = merge_potential_fields( U_att, U_rep)
     normalize( U_merge )
-#    visualize( U_merge )
+    visualize( U_merge )
 
     U_solution = solve( U_merge )
-#    visualize( U_merge )
+    visualize( U_merge, solution=U_solution )
 
-#    DB_print( U_solution )  
+#    DB_print( U_merge )  
 
     print "READY.",
     sys.exit(0)                   
