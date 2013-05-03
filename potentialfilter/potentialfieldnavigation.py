@@ -77,7 +77,7 @@ def visualize( Z, solution=[]):
     surf = ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap=cm.coolwarm, linewidth=0, antialiased=False)
     if 0 < len( solution) :
         # TODO plot line
-        Axes3D.plot(X, Y, solution) 
+        Axes3D.plot(X, Y, solution)    
     ax.set_zlim(0.0, 1.01)
     ax.zaxis.set_major_locator(LinearLocator(10))
     ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
@@ -174,8 +174,6 @@ def DB_print( M ):
             print "\t%.2f"%M[y][x],
         print ""
 
-
-
 ## START                                                                        
 if __name__ == '__main__':
     ## attractive potential field
@@ -201,8 +199,4 @@ if __name__ == '__main__':
 
     print "READY.",
     sys.exit(0)                   
-
-
-    
-
 
