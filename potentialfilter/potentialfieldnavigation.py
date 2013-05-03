@@ -9,8 +9,21 @@
 from math import *
 import sys
 
-XMAX=6
-YMAX=4
+## 3D plotting
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib import cm
+from matplotlib.ticker import LinearLocator, FormatStrFormatter
+import matplotlib.pyplot as plt
+import numpy as np
+
+## globals
+XMAX=300
+YMAX=200
+
+## [ y x ]
+GOAL=[YMAX-1, XMAX-1]
+START=[0, 0]
+
 
 ## fcn distance
 def distance( pktsrc, pktdst ):
@@ -23,9 +36,9 @@ def distance( pktsrc, pktdst ):
 #            dists += [sqrt(dx^2 + dy^2)]
 #            dist = min(dists[:])
 #    except TypeError:
-    dy = pktsrc[0] - pktdst[0]
-    dx = pktsrc[1] - pktdst[1]
-    dist = sqrt(dx^2 + dy^2)
+    dy = int(pktsrc[0]) - int(pktdst[0])
+    dx = int(pktsrc[1]) - int(pktdst[1])
+    dist = sqrt(dx**2 + dy**2)
     return dist
 
 ## normalize
@@ -37,10 +50,30 @@ def normalize( M ):
         maxvals += [max([elem for elem in M[y]])]
     maxval = max( maxvals[:] )
     ## divide each value by overall max
-    for y in range( len(M) ):
-        for x in range( len(M[0]) ):
-            M[y][x] = M[y][x] / maxval
-    return M
+    try:
+        for y in range( len(M) ):
+            for x in range( len(M[0]) ):
+                M[y][x] = M[y][x] / maxval
+        return M
+    except ZeroDivisionError:
+        print "ERROR: maxval was zero: ", maxval
+        sys.exit( -1 )
+
+
+def visualize( Z ):
+    Y = np.arange(0,YMAX,1)
+    X = np.arange(0,XMAX,1)
+    fig = plt.figure()
+    ax = fig.gca(projection='3d')
+    X, Y = np.meshgrid(X, Y)
+    surf = ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap=cm.coolwarm, linewidth=0, antialiased=False)
+    ax.set_zlim(0.0, 1.01)
+    ax.zaxis.set_major_locator(LinearLocator(10))
+    ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
+    fig.colorbar(surf, shrink=0.5, aspect=5)
+    plt.show()
+
+
 
 ## fcn obstacle
 def obstacle( M ):
@@ -52,10 +85,18 @@ def repulsive_potential_field( M ):
     # TODO
     return M
 
-## fcn attractive_potential_field
+
+## attractive_potential_field
 def attractive_potential_field( M ):
-    # TODO
+    ## distance matrix for attraction potential
+    k_att = 2
+    dist = 0
+    for y in range(YMAX):
+        for x in range(XMAX):
+            dist = distance( [y, x], GOAL )
+            M[y][x] = 0.5 * float(k_att) * float(dist)**2
     return M
+
 
 ## fcn solver - backtrack
 def solve( M ):
@@ -67,7 +108,7 @@ def solve( M ):
 # TODO
 
 
-   
+                                                                                
 ## DEBUG
 def DB_print( M ):
     # TODO compactize
@@ -80,11 +121,6 @@ def DB_print( M ):
 
 ## START                                                                        
 if __name__ == '__main__':
-
-    ## [ y x ]
-    GOAL=[40, 60]
-    START=[0, 0]
-
     ## init 2D matrix
     # TODO compactize    
     M = []
@@ -98,18 +134,25 @@ if __name__ == '__main__':
     M = col
 
 
-    # TODO distance
-    for y in range(YMAX):
-        for x in range(XMAX):
-            M[y][x] = distance( [y, x], GOAL )
+    ## attractive potential field
+#    M = attractive_potential_field( M )
+#    M = normalize( M )
 
-    # TODO normalize
-    M = normalize( M )
+    ## visualize
+#    visualize( M )
 
-
-    DB_print( M )  
+    ## repulsing potential field
+    repulsive_potential_field( M )
+#    M = normalize( M )
 
     sys.exit(0)                   
+
+    ## visualize
+    visualize( M )
+
+
+#    DB_print( M )  
+
 
 
     ## repulsive potential field
@@ -129,39 +172,9 @@ if __name__ == '__main__':
     # TODO
 
     print "READY.",
+    sys.exit(0)                   
 
 
     
-    from mpl_toolkits.mplot3d import Axes3D
-    from matplotlib import cm
-    from matplotlib.ticker import LinearLocator, FormatStrFormatter
-    import matplotlib.pyplot as plt
-    import numpy as np
 
-    fig = plt.figure()
-    ax = fig.gca(projection='3d')
-    # X = np.arange(-5, 5, 0.25)
-    # Y = np.arange(-5, 5, 0.25)
 
-#    Y = range(len(M))
-    Y = np.arange(0,YMAX,1)
-#    X = range(len(M[0]))
-    X = np.arange(0,XMAX,1)
-    X, Y = np.meshgrid(X, Y)
-
-# TODO rm    
-    # R = np.sqrt(X**2 + Y**2)
-    # Z = np.sin(R)
-    
-
-    Z = M
-
-    surf = ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap=cm.coolwarm,
-                            linewidth=0, antialiased=False)
-    ax.set_zlim(-1.01, 1.01)
-
-    ax.zaxis.set_major_locator(LinearLocator(10))
-    ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
-
-    fig.colorbar(surf, shrink=0.5, aspect=5)
-    plt.show()
