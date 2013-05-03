@@ -17,28 +17,33 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 ## globals
-XMAX=300
-YMAX=200
+# TODO         
+## size of robot = 7
+#XSIZE=300 / 7
+XSIZE=43
+#YSIZE=200 / 7
+YSIZE=29
+XMAX=XSIZE-1
+YMAX=YSIZE-1
 
 ## [ y x ]
-GOAL=[YMAX-1, XMAX-1]
+GOAL=[YMAX, XMAX]
 START=[0, 0]
 
-
-## fcn distance
+## distance
 def distance( pktsrc, pktdst ):
     dist = 0
-#    dists=[]
-#    try:
-#        for elem in pktdst[:]:
-#            dy = pktsrc[0] - elem[0]
-#            dx = pktsrc[1] - elem[1]
-#            dists += [sqrt(dx^2 + dy^2)]
-#            dist = min(dists[:])
-#    except TypeError:
-    dy = int(pktsrc[0]) - int(pktdst[0])
-    dx = int(pktsrc[1]) - int(pktdst[1])
-    dist = sqrt(dx**2 + dy**2)
+    dists=[]
+    try:
+        for elem in pktdst:
+            dy = pktsrc[0] - elem[0]
+            dx = pktsrc[1] - elem[1]
+            dists += [sqrt(dx**2 + dy**2)]
+        dist = min(dists[:])
+    except TypeError:
+        dy = int(pktsrc[0]) - int(pktdst[0])
+        dx = int(pktsrc[1]) - int(pktdst[1])
+        dist = sqrt(dx**2 + dy**2)
     return dist
 
 ## normalize
@@ -97,8 +102,8 @@ def obstacle( M, obs ):
 ## fcn repulsive_potential_field
 def repulsive_potential_field( M ):
     
-    M = obstacle( M, [5, 8]
-#    return M
+    M = obstacle( M, [5, 8] )
+    return M
 
 
 ## attractive_potential_field
@@ -137,27 +142,19 @@ def DB_print( M ):
 ## START                                                                        
 if __name__ == '__main__':
     ## init 2D matrix
-    # TODO compactize    
     M = []
-    row = []
-    col = []
-    for y in range(YMAX):
-        row=[]
-        for x in range(XMAX):
-            row+=[0]
-        col += [row]
-    M = col
+    M += [[0 for x in range(XMAX)] for y in range(YMAX)]
 
 
     ## attractive potential field
-#    M = attractive_potential_field( M )
-#    M = normalize( M )
+    M = attractive_potential_field( M )
+    M = normalize( M )
 
     ## visualize
-#    visualize( M )
-
+    visualize( M )
+    sys.exit(0)                   
     ## repulsing potential field
-    repulsive_potential_field( M )
+#    repulsive_potential_field( M )
 #    M = normalize( M )
 
     sys.exit(0)                   
