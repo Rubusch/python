@@ -4,6 +4,11 @@
 # @email: L.Rubusch@gmx.ch
 # @license: GPLv3
 # @2013-May-01
+#
+# REMARK: the solution is not printed in a graph, but only the coordinates of
+# the path are printed on screen
+# (did this implementation in the train w/o internet access to lookup the coorect
+# function name)
 
 #import math
 from math import *
@@ -76,7 +81,7 @@ def visualize( Z, solution=[]):
     X, Y = np.meshgrid(X, Y)
     surf = ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap=cm.coolwarm, linewidth=0, antialiased=False)
     if 0 < len( solution) :
-        # TODO plot line
+        # TODO plot line not implemented - which function again?
         Axes3D.plot(X, Y, solution)    
     ax.set_zlim(0.0, 1.01)
     ax.zaxis.set_major_locator(LinearLocator(10))
@@ -193,10 +198,12 @@ if __name__ == '__main__':
     visualize( U_merge )
 
     U_solution = solve( U_merge )
-    visualize( U_merge, solution=U_solution )
+    ## well... 
+    print "one possible solution path, following the potentials:"
+    print U_solution   
+#    visualize( U_merge, solution=U_solution )
 
-#    DB_print( U_merge )  
+#    DB_print( U_merge )   
 
     print "READY.",
-    sys.exit(0)                   
 
