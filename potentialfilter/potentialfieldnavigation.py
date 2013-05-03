@@ -30,6 +30,12 @@ YMAX=YSIZE-1
 GOAL=[YMAX, XMAX]
 START=[0, 0]
 
+## init matrix
+def get_matrix():
+    M = []
+    M += [[0 for x in range(XMAX)] for y in range(YMAX)]
+    return M
+
 ## distance
 def distance( pktsrc, pktdst ):
     dist = 0
@@ -81,8 +87,8 @@ def obstacle( M, obs ):
     rho_zero = 20
     U_rep = 0
     U_obs = 0
-    for y in range(YMAX):
-        for x in range(XMAX):
+    for y in range( len(M) ):
+        for x in range( len(M[0]) ):
             dobs = distance( [y, x], obs )
             if 0 == dobs:
                 U_rep = float(k_rep)
@@ -94,22 +100,29 @@ def obstacle( M, obs ):
 ## repulsive_potential_field
 def repulsive_potential_field( M ):
     obstcs = [[10,10],[10,20],[10,30],[10,40],  [20,10],[20,20],[20,30],[20,40], [15,35]]
-
     for obs in obstcs:
         obsy = obs[0]
         obsx = obs[1]
         obstacle( M, [ [obsy,obsx-1], [obsy-1,obsx], [obsy,obsx], [obsy+1,obsx], [obsy,obsx+1] ] )
 
-
 ## attractive_potential_field
 def attractive_potential_field( M ):
-    ## distance matrix for attraction potential
     k_att = 2
     dist = 0
-    for y in range(YMAX):
-        for x in range(XMAX):
+    for y in range( len(M) ):
+        for x in range( len(M[0]) ):
             dist = distance( [y, x], GOAL )
             M[y][x] = 0.5 * float(k_att) * float(dist)**2
+    return M
+
+## merge both potential fields
+def merge_potential_fields( A, B):
+    ymax = min(len(A), len(B))
+    xmax = min(len(A[0]), len(B[0]))
+    M = get_matrix()
+    for y in range( ymax ):
+        for x in range( xmax ):
+            M[y][x] = A[y][x] + B[y][x]
     return M
 
 
@@ -126,7 +139,6 @@ def solve( M ):
                                                                                 
 ## DEBUG
 def DB_print( M ):
-    # TODO compactize
     for y in range( len(M) ):
         for x in range( len(M[0]) ):
             print "\t%.2f"%M[y][x],
@@ -136,47 +148,26 @@ def DB_print( M ):
 
 ## START                                                                        
 if __name__ == '__main__':
-    ## init 2D matrix
-    M = []
-    M += [[0 for x in range(XMAX)] for y in range(YMAX)]
-
-
     ## attractive potential field
-#    M = attractive_potential_field( M )
-#    M = normalize( M )
-#    visualize( M )
-
-
+    U_att = get_matrix()
+    attractive_potential_field( U_att )
+    normalize( U_att )
+#    visualize( U_att )
 
     ## repulsing potential field
-#    M = repulsive_potential_field( M )
-    repulsive_potential_field( M )
-#    M = normalize( M )
-    normalize( M )
+    U_rep = get_matrix()
+    repulsive_potential_field( U_rep )
+    normalize( U_rep )
+#    visualize( U_rep )
 
-    ## visualize
-    visualize( M )
+    U_merge = merge_potential_fields( U_att, U_rep)
+    normalize( U_merge )
+#    visualize( U_merge )
 
-    sys.exit(0)                   
-#    DB_print( M )  
+    U_solution = solve( U_merge )
+#    visualize( U_merge )
 
-
-
-    ## repulsive potential field
-#    M = repulsive_potential_field( M )
-#    M = normalize( M )
-    # TODO display
-
-    ## attractive potential field
-#    M = attractive_potential_field( M )
-#    M = normalize( M )
-    # TODO display
-
-    ## path solving
-    # TODO
-
-    ## visualization
-    # TODO
+#    DB_print( U_solution )  
 
     print "READY.",
     sys.exit(0)                   
