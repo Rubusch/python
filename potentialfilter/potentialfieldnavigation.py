@@ -76,14 +76,29 @@ def visualize( Z ):
 
 
 ## fcn obstacle
-def obstacle( M ):
-    # TODO
+def obstacle( M, obs ):
+    k_rep = 5
+    rho_zero = 20
+    U_rep = 0
+    U_obs = 0
+    for y in range(YMAX):
+        for x in range(XMAX):
+            dobs = distance( [y, x], obs )
+            if 0 == dobs:
+                U_rep = float(k_rep)
+            else:
+                U_rep = float(M[y][x]) + 0.5 * float(k_rep) * (1.0 / float(dobs) - 1.0 / float(rho_zero) )**2
+                if k_rep < U_rep: U_rep = k_rep
+            M[y][x] = U_rep
+# FIXME
+# XXX
     return M
 
 ## fcn repulsive_potential_field
 def repulsive_potential_field( M ):
-    # TODO
-    return M
+    
+    M = obstacle( M, [5, 8]
+#    return M
 
 
 ## attractive_potential_field
