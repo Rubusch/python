@@ -308,21 +308,22 @@ class System( object ):
         path = path.strip( "\n" )
         if path.endswith('/'): path = path[:-1]
         import datetime
+## TODO better remove directly, for safety here - just moving to a TRASH folder
         cmd = [ "mv", path, MY__TRASH + str( datetime.datetime.now() ).replace(' ', '-').replace(':','-').split('.')[0] ]
-## TODO interactively for debugging, in case make "interactive" mode...
-        # while True:
-        #     try:
-        #         aw = raw_input( "apply commend:\n\t'%s'\n(y|n)? "%"' '".join(map( str, cmd )) )
-        #         aw = aw[0].lower()
-        #         if aw == "y":
-        #             run_cmd( cmd )
-        #             break
-        #         if aw == "n": die("remove the folder manually then...")
-        #     except IndexError:
-        #         ## input was ''
-        #         pass
-## turned on command
-        self.run_cmd( cmd )
+## TODO interactive mode for debugging, in case implement separate "interactive" mode...
+        while True:
+            try:
+                aw = raw_input( "apply commend:\n\t'%s'\n(y|n)? "%"' '".join(map( str, cmd )) )
+                aw = aw[0].lower()
+                if aw == "y":
+                    run_cmd( cmd )
+                    break
+                if aw == "n": die("remove the folder manually then...")
+            except IndexError:
+                ## input was ''
+                pass
+## ...or, simply turn it off and procede right away w/ the command
+        #self.run_cmd( cmd )
 ##
 
     def do_emptydir( self, path ):
