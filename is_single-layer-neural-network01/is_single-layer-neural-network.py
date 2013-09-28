@@ -10,71 +10,141 @@
 # @2013-Sep-27
 
 
-def die( self, msg = "" ):
+import sys # sys.exit()
+
+import random # random number, random() and randrange()
+
+
+def die( msg = "" ):
     if 0 == len(msg): msg = "..."
     print "FATAL: " + msg
     sys.exit( -1 )
 
+def dotty( nodes ):
+    print "digraph G{"
+    print "node [style=filled];"
+    print "edge [arrowhead=none,arrowtype=normal,arrowtail=dot];"
+    for node in nodes:
+        node.downDescend();
+    print "}"
 
 
 class Node(object):
 ## attributes (for overview)
     _name = "abc"
-#    _value = "0"
     _up = []
     _down = []
     _edgeWeight = {}
 
-    def __init__( self, name ):
+    _xval = "0"
+    _bias = None
+    _net = None
+
+    _dotColor = ""
+
+    def __init__( self, name, color="" ):
         self._name = name
-#        self._value = value
+        self._xval = random.randrange( 0, 100 ) / 100
         self._up = []
         self._down = []
         self._edgeWeight = {}
+        self._dotColor = color
 
     def __str__( self ):
         return self._name
 
-    def __run__( self ):
+#    def __run__( self ):
 # TODO calculate propagation?
-        pass  
+#        pass  
 
 ## private
     def _addNeighbor( self, dct, node, weight ):
-        dct.append( node )
+        if "bias" == str(node):
+            self._bias = node
+#        elif "net" == str(node):
+#            self._net = node
+        else:
+            dct.append( node )
         self._edgeWeight.update({node:weight})
 
 ## public
     def upAdd( self, node, weight ):
         self._addNeighbor( self._up, node, weight )
 
-    def up( self, idx ):
-        return self._up[idx];
+    def up( self ):
+        return self._up;
 
     def downAdd( self, node, weight ):
         self._addNeighbor( self._down, node, weight )
 
-    def down( self, idx ):
-        return self._down[idx];
+    def down( self ):
+        return self._down;
 
-    def downRun( self ):
-        print self,
+    def xval( self ):
+        return self._xval
+
+    def setXval( self, x ):
+# TODO in case here apply node function?
+        self._xval = x
+
+    def downCompute( self ):
+# TODO         
+        f = 0
+        w0 = 0
+        if self._bias:
+            w0 = self._edgeWeight.get( self._bias )
         for item in self._down:
-            print " -> " +  str(item) + " [ label=" + str(self._edgeWeight.get(item)) + " ]"
-            item.downRun()
+            wi = self._edgeWeight.get(item)
+            xi = self._xval
+            f += wi * xi
+        f += w0
+
+    def downDescend( self ):
+        if self._dotColor: print str(self) + "[ fillcolor=" + self._dotColor + " ]"
+        for item in self._down:
+## in case we need different upward settings
+#            try:
+#                item.up().index( self ) # contains an upward reference?
+#            except ValueError:
+#                TODO: implement here upward connections
+            print str(self) + " -> " + str(item) + " [ label=" + str(self._edgeWeight.get(item)) + " ];"
+            item.downDescend()
 
 
-    def upRun( self ):
+
+    def upSubir( self ):
 # TODO
         pass    
+
+    def upCompute( self ):
+# TODO
+        pass   
+
+
+
+
 
 
 ###
 if __name__ == '__main__':
     bias = Node( "bias" )
     net = Node( "net" )
-    x1 = Node( "X1" )
-    x2 = Node( "X2" )
+    x1 = Node( "X1", "red" )
+    x2 = Node( "X2", "blue" )
+
+# TODO
+
+## training set
+# Class1 (t=1): (1,8), (6,2), (3,6), (4,4), (3,1), (1,6)
+# Class2 (t=-1): (6,10), (7,7), (6,11), (10,5), (4,11)
+
+## tasks
+# a) plot the training set with the initial separation line where the two classes are displayed in different colors   [3 pts]
+# b) implement the delta rule and apply it for all points from the test set, with a learning rate of ny = 1/50   [20 pts]
+# c) plot the new separation line   [3 pts]
+# d) train the perceptron until all the points are correctly classified and plot the final decision boundary line   [10 pts]
+# e) is it a good solution? Discuss potential problems that may arise.   [4 pts]
+
 
     # x1 -> net
     x1.downAdd( net, 0.8 )
@@ -88,12 +158,7 @@ if __name__ == '__main__':
     bias.downAdd( net, 2 )
     net.upAdd( bias, 2 )
     
-
-    print "digraph G{"
-    x1.downRun()
-    x2.downRun()
-    bias.downRun()
-    print "}"
-
+    dotty( [x1, x2, bias] )
+    
     print "# READY."
 
