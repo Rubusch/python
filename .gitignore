@@ -6,3 +6,8 @@
 ## intermediates
 *.#*
 
+## ignore also pictures, and dot files
+*.dot
+*.png
+*.jpg
+
