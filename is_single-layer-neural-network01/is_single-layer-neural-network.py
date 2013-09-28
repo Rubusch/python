@@ -4,16 +4,30 @@
 # Code to train a single-layer neural network
 # Assignment01 for Intelligent Systems
 #
+## training set
+# Class1 (t=1): (1,8), (6,2), (3,6), (4,4), (3,1), (1,6)
+# Class2 (t=-1): (6,10), (7,7), (6,11), (10,5), (4,11)
+#
+## tasks
+# a) plot the training set with the initial separation line where the two classes are displayed in different colors   [3 pts]
+# b) implement the delta rule and apply it for all points from the test set, with a learning rate of ny = 1/50   [20 pts]
+# c) plot the new separation line   [3 pts]
+# d) train the perceptron until all the points are correctly classified and plot the final decision boundary line   [10 pts]
+# e) is it a good solution? Discuss potential problems that may arise.   [4 pts]
+#
 # @author: Lothar Rubusch
 # @email: L.Rubusch@gmx.ch
 # @license: GPLv3
 # @2013-Sep-27
 
+## sys.exit()
+import sys
 
-import sys # sys.exit()
+## random number, random() and randrange()
+import random
 
-import random # random number, random() and randrange()
-
+## plotting library
+import matplotlib.pyplot as plt
 
 def die( msg = "" ):
     if 0 == len(msg): msg = "..."
@@ -87,7 +101,7 @@ class Node(object):
 # TODO in case here apply node function?
         self._xval = x
 
-    def downCompute( self ):
+    def forwardPropagation( self ):
 # TODO         
         f = 0
         w0 = 0
@@ -99,7 +113,7 @@ class Node(object):
             f += wi * xi
         f += w0
 
-    def downDescend( self ):
+    def forwardDotty( self ):
         if self._dotColor: print str(self) + "[ fillcolor=" + self._dotColor + " ]"
         for item in self._down:
 ## in case we need different upward settings
@@ -108,17 +122,17 @@ class Node(object):
 #            except ValueError:
 #                TODO: implement here upward connections
             print str(self) + " -> " + str(item) + " [ label=" + str(self._edgeWeight.get(item)) + " ];"
-            item.downDescend()
+            item.forwardDotty()
 
 
 
-    def upSubir( self ):
+#    def backwardDotty( self ):
+# TODO
+#        pass    
+
+    def backwardPropagation( self ):
 # TODO
         pass    
-
-    def upCompute( self ):
-# TODO
-        pass   
 
 
 
@@ -127,25 +141,38 @@ class Node(object):
 
 ###
 if __name__ == '__main__':
+
+    ## set up nodes
     bias = Node( "bias" )
     net = Node( "net" )
     x1 = Node( "X1", "red" )
     x2 = Node( "X2", "blue" )
 
-# TODO
+    ## set up data set
+    t1=1  
+    class1x = [ 1, 6, 3, 4, 3, 1 ]
+    class1y = [ 8, 2, 6, 4, 1, 6 ]
+    plt.plot( class1x, class1y, 'ro' )
 
-## training set
-# Class1 (t=1): (1,8), (6,2), (3,6), (4,4), (3,1), (1,6)
-# Class2 (t=-1): (6,10), (7,7), (6,11), (10,5), (4,11)
+    t2=-1  
+    class2x = [6, 7, 6, 10, 4]
+    class2y = [10, 7, 11, 5, 11]
+    plt.plot( class2x, class2y, 'bo' )
 
-## tasks
-# a) plot the training set with the initial separation line where the two classes are displayed in different colors   [3 pts]
-# b) implement the delta rule and apply it for all points from the test set, with a learning rate of ny = 1/50   [20 pts]
-# c) plot the new separation line   [3 pts]
-# d) train the perceptron until all the points are correctly classified and plot the final decision boundary line   [10 pts]
-# e) is it a good solution? Discuss potential problems that may arise.   [4 pts]
+    xAxisMax = max(class1x + class2x)+1;
+    xAxisMin = min(class1x + class2x)-1;
+    yAxisMax = max(class1y + class2y)+1;
+    yAxisMin = min(class1y + class2y)-1;
 
+    # separator
+    plt.plot( [xAxisMin, xAxisMax], [yAxisMax, yAxisMin] )
 
+    # scope
+    plt.axis( [xAxisMin, xAxisMax, yAxisMin, yAxisMax] )
+
+    plt.ylabel('some numbers')
+    plt.show()
+    
     # x1 -> net
     x1.downAdd( net, 0.8 )
     net.upAdd( x1, 0.8 )
