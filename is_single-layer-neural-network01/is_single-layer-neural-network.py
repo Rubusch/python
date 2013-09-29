@@ -101,6 +101,24 @@ class Node(object):
 # TODO in case here apply node function?
         self._xval = x
 
+
+
+
+#    def _getNewWeights( self, weight ):
+## algorithm
+#
+#    1) Perform the forwardpropagation phase for an input pattern and calculate
+#       the output error
+#    2) Change all weight values of each weight matrix using the formula
+#       weight(old) + learning rate * output error * output(neurons i) * output(neurons i+1) * ( 1 - output(neurons i+1) )
+#    3) Go to step 1
+#    4) The algorithm ends, if all output patterns match their target patterns
+#        return weight + learning_rate * output_error * output[idx] * output[idx+1] * (1 - output[i+1])
+
+    def _computeInput( self ):
+        for item in self.up():
+            w += self._edgeWeight( item ) * self._input( item ) # TODO input( item ), a dict for second input value  
+
     def forwardPropagation( self ):
 # TODO         
         f = 0
@@ -126,6 +144,9 @@ class Node(object):
 
 
 
+
+
+
 #    def backwardDotty( self ):
 # TODO
 #        pass    
@@ -140,6 +161,7 @@ class Node(object):
 
 
 ###
+learning_rate = 0.02
 if __name__ == '__main__':
 
     ## set up nodes
@@ -148,7 +170,7 @@ if __name__ == '__main__':
     x1 = Node( "X1", "red" )
     x2 = Node( "X2", "blue" )
 
-    ## set up data set
+## training set
     t1=1  
     class1x = [ 1, 6, 3, 4, 3, 1 ]
     class1y = [ 8, 2, 6, 4, 1, 6 ]
@@ -172,7 +194,11 @@ if __name__ == '__main__':
 
     plt.ylabel('some numbers')
     plt.show()
-    
+
+
+
+
+## dotty
     # x1 -> net
     x1.downAdd( net, 0.8 )
     net.upAdd( x1, 0.8 )
@@ -184,8 +210,8 @@ if __name__ == '__main__':
     # bias -> net
     bias.downAdd( net, 2 )
     net.upAdd( bias, 2 )
-    
+
     dotty( [x1, x2, bias] )
-    
+
     print "# READY."
 
