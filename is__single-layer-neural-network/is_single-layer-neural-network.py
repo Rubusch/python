@@ -149,7 +149,6 @@ class Monitor( object ):
                         nd = self._pop()
                         nextnd = nd.go()
                         if None == nextnd:
-                            print "XXX heartbeat done"
                             break
                         self._push( nextnd )
                         nd = None
