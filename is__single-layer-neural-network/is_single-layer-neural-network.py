@@ -32,18 +32,21 @@ import random
 import matplotlib.pyplot as plt
 
 def die( msg = "" ):
-    if 0 == len(msg): msg = "..."
-    print "FATAL: " + msg
+    print "FATAL",
+    if 0 < len(str(msg)):
+        print ": " + str(msg)
     sys.exit( -1 )
 
 
 class Node(object):
     _name = ""
+    _yval = 0
     _nextlist = []
     _selftest = -1
 
-    def __init__( self, name ):
+    def __init__( self, name, yval = 0):
         self._name = name
+        self._yval = yval
         self._nextlist = [];
         self._selftest = 0
 
@@ -64,12 +67,29 @@ class Node(object):
             for nd in self._nextlist:
                 nd[0].selftest( self._selftest )
 
-    def forward( self, inval ):
-        print "TODO " + str(inval)
-        pass
+    def getNet( self ):
+        if self._name != "net":
+            die( "this node is not the net node" )
+        return self._yval
 
-    def backward( self, inval ):
-        pass
+    ## pump cycle
+    def ready( self ):
+        self._yval = 0
+
+#    def fireInputNode( self, xval ):
+    def steady( self, xval ):
+        self._yval += xval
+
+#    def _forward( self, xval ):
+    def go( self ):
+        for nd in self._nextlist:
+            weight = nd[1]
+            yval = self._yval
+            yval *= weight
+            nd[0].ready()
+            nd[0].steady( yval )
+            return nd[0]
+        return None
 
 
 
@@ -98,35 +118,58 @@ class Monitor( object ):
 
         ## run selftest
         cnt = 0
+        res = 0
         for nd in self._inputnodes:
             cnt += 1
             nd.selftest( 1 )
-        print [str(cnt)]
+        print "selftest: " + str([cnt])
+        print "---"
 
-## TODO
-#        t2=-1  
-#        class2x = [6, 7, 6, 10, 4]
-#        class2y = [10, 7, 11, 5, 11]
-
-        self._trainingset = []
-
-        self._trainingset.append( [[1, 1, 1, 1, 1, 1], [1, 6, 3, 4, 3, 1], [8, 2, 6, 4, 1, 6]])
+        ## group 1
+        self._trainingset.append( [[1, 1, 1, 1, 1, 1], [1, 6, 3, 4, 3, 1], [8, 2, 6, 4, 1, 6]] )
         self._trainingtargets.append(1)
 
-        self._trainingsset.append( [[1, 1, 1, 1, 1], [6, 7, 6, 10, 4], [10, 7, 11, 5, 11]])
+        ## group 2
+        self._trainingset.append( [[1, 1, 1, 1, 1], [6, 7, 6, 10, 4], [10, 7, 11, 5, 11]] )
         self._trainingtargets.append(-1)
 
     def train( self ):
-        for targetset in self._trainingset:
-            for idxVal in 0:len( targetset[0] ):
-                for idxNode in 0:len( self._inputnodes ):
-                    inputvals = targetset[idxNode]
-                    self._inputset[idxNode].forward( inputvals[idxVal])
+        for idxTarget in range(0, len(self._trainingset)): # per target set (x1, x2,..., bias in set 1 or set 2 or...)
+            target = self._trainingset[idxTarget]
+            for idxVal in range(0, len( target[0] )): # per value
+                    for idxNode in range(0, len( self._inputnodes )): # per Node (x1 or x2 or..)
+                        inputvals = target[idxNode]
+                        nd = self._inputnodes[idxNode]
+                        nd.ready()
+                        nd.steady( inputvals[idxVal] )
+                        self._push(nd)
 
+                    while True: # run epochs
+                        print "XXX heartbeat"
+                        nd = self._pop()
+                        nextnd = nd.go()
+                        if None == nextnd:
+                            print "XXX heartbeat done"
+                            break
+                        self._push( nextnd )
+                        nd = None
+                        
+                    die( self._netnode.getNet() )
+                        
+
+            net = self._netnode.getNet()
+
+            print str( net ) 
+            print "" 
 
 
     def _push( self, nd ):
-        self._stack.append( nd )
+        try:
+            self._stack.index( nd )
+            print "XXX stack contains"
+        except ValueError:
+            print "XXX stack does not contain"
+            self._stack.append( nd )
 
     def _pop( self ):
         return self._stack.pop()
@@ -142,9 +185,16 @@ class Monitor( object ):
 
         
 # TODO
-        plt.plot( class1x, class1y, 'ro' )
+#        plt.plot( class1x, class1y, 'ro' )
+        x = self._trainingsset[0][1]
+        y = self._trainingsset[0][2]
+        plt.plot( x, y, 'ro' )
+
 # TODO
-        plt.plot( class2x, class2y, 'bo' )
+#        plt.plot( class2x, class2y, 'bo' )
+        x = self._trainingsset[1][1]
+        y = self._trainingsset[1][2]
+        plt.plot( x, y, 'bo' )
 
         xAxisMax = max(class1x + class2x)+1
         xAxisMin = min(class1x + class2x)-1
