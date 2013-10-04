@@ -74,19 +74,27 @@ class Node(object):
 
     ## pump cycle
     def ready( self ):
+#        print "[" + str(self) + "] RESET"  
         self._yval = 0
+        for nd in self._nextlist:
+            nd[0].ready()
 
 #    def fireInputNode( self, xval ):
     def steady( self, xval ):
+#        print "[" + str(self) + "] self._yval - before: " + str( self._yval )  
+#        print "[" + str(self) + "] xval received " + str(xval)  
         self._yval += xval
+#        print "[" + str(self) + "] self._yval - after: " + str( self._yval )  
 
-#    def _forward( self, xval ):
     def go( self ):
+#        print self  
         for nd in self._nextlist:
             weight = nd[1]
+#            print "[" + str(self) + "] prepare to send  weight " + str( nd[1] )  
             yval = self._yval
+#            print "[" + str(self) + "] prepare to send  yval " + str( yval )  
             yval *= weight
-            nd[0].ready()
+#            print yval  
             nd[0].steady( yval )
             return nd[0]
         return None
@@ -99,6 +107,7 @@ class Monitor( object ):
     _trainingset = []
     _trainingtargets = []
     _stack = []
+    _avgerror = 0
 
     def __init__( self ):
         self._netnode = Node( "net" )
@@ -106,6 +115,7 @@ class Monitor( object ):
         self._trainingset = []
         self._trainingtargets = []
         self._stack = []
+        self._avgerror = 0
 
     def createNet( self ):
         self._inputnodes.append( Node("bias") )
@@ -134,27 +144,43 @@ class Monitor( object ):
         self._trainingtargets.append(-1)
 
     def train( self ):
-        for idxTarget in range(0, len(self._trainingset)): # per target set (x1, x2,..., bias in set 1 or set 2 or...)
-            target = self._trainingset[idxTarget]
-            for idxVal in range(0, len( target[0] )): # per value
-                    for idxNode in range(0, len( self._inputnodes )): # per Node (x1 or x2 or..)
-                        inputvals = target[idxNode]
-                        nd = self._inputnodes[idxNode]
-                        nd.ready()
-                        nd.steady( inputvals[idxVal] )
-                        self._push(nd)
+        for idxTrainingset in range(0, len(self._trainingset)): # per trainingset set (x1, x2,..., bias in set 1 or set 2 or...)
+            trainingset = self._trainingset[idxTrainingset]
+            for idxVal in range(0, len( trainingset[0] )): # per value
 
-                    while True: # run epochs
-                        print "XXX heartbeat"
-                        nd = self._pop()
-                        nextnd = nd.go()
-                        if None == nextnd:
-                            break
-                        self._push( nextnd )
-                        nd = None
-                        
-                    die( self._netnode.getNet() )
-                        
+                ## 0. reset nodes
+                for nd in self._inputnodes:
+                    nd.ready()
+
+                ## 1. phase 1
+                for idxNode in range(0, len( self._inputnodes )): # per Node (x1 or x2 or..)
+                    inputvals = trainingset[idxNode]
+                    nd = self._inputnodes[idxNode]
+                    nd.steady( inputvals[idxVal] )
+                    self._push(nd)
+
+                ## 2. phase 2
+                while True: # run epochs
+#                    print "XXX heartbeat"
+                    nd = self._pop()
+                    nextnd = nd.go()
+                    if None == nextnd:
+                        break
+                    self._push( nextnd )
+                    nd = None
+
+                ## eval getNet()
+                Err = 0.5 * (self._trainingtargets[idxTrainingset] - self._netnode.getNet()) * (self._trainingtargets[idxTrainingset] - self._netnode.getNet())
+                print Err
+# TODO   
+                ## adapt weights
+# TODO   
+
+#                print ""   
+#                print self._trainingtargets[idxTrainingset]
+#                print self._netnode.getNet()
+                die( "finished " + str(self._netnode.getNet()) )
+
 
             net = self._netnode.getNet()
 
@@ -165,13 +191,15 @@ class Monitor( object ):
     def _push( self, nd ):
         try:
             self._stack.index( nd )
-            print "XXX stack contains"
         except ValueError:
-            print "XXX stack does not contain"
             self._stack.append( nd )
 
+# TODO rename
     def _pop( self ):
-        return self._stack.pop()
+        # FIFO semantics
+# FIXME still does not get added
+# XXX
+        return self._stack.pop( 0 )
 
     
     def snapshot( self ):
