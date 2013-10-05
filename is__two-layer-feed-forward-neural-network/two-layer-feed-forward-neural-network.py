@@ -104,16 +104,17 @@ class Perceptron( object ):
         yAxisMin = min(class1y + class2y)-1
         plt.axis( [xAxisMin, xAxisMax, yAxisMin, yAxisMax] )
 
-        ## separation line
-        w0 = self._weightlist[0]
-        w1 = self._weightlist[1]
-        w2 = self._weightlist[2]
+# TODO no separation line
+        # ## separation line
+        # w0 = self._weightlist[0]
+        # w1 = self._weightlist[1]
+        # w2 = self._weightlist[2]
 
-        x1 = -20.0
-        y1 = (-w0 -x1*w1) / w2
-        x2 = 20.0
-        y2 = (-w0 -x2*w1) / w2
-        plt.plot( [x1, x2], [y1, y2] )
+        # x1 = -20.0
+        # y1 = (-w0 -x1*w1) / w2
+        # x2 = 20.0
+        # y2 = (-w0 -x2*w1) / w2
+        # plt.plot( [x1, x2], [y1, y2] )
 
         plt.xlabel('X1')
         plt.ylabel('X2')
@@ -164,8 +165,8 @@ class Perceptron( object ):
             self._epochtime.append( epoch )
 
 ## plotting
-            if 0 == epoch: self.snapshot()
-            if 1 == epoch: self.snapshot()
+#            if 0 == epoch: self.snapshot()
+#            if 1 == epoch: self.snapshot()
 
 ## apply dw and learning rate
             for idxWeight in range(0, len(self._weightlist)):
@@ -175,7 +176,7 @@ class Perceptron( object ):
 if __name__ == '__main__':
     nn = Perceptron()
     nn.training()
-    nn.snapshot()
-    nn.snapshot_learning()
+#    nn.snapshot()
+#    nn.snapshot_learning()
 
 print "READY."
