@@ -26,3 +26,6 @@ the learning rate?
 each network with 10 diﬀerent random initializations. Plot the average train
 and test errors. Explain the eﬀect of varying the number of hidden units.
 
+## random number, random() and randrange()
+#import random
+## e.g. use as random.randrange( -1000, 1000 ) / 1000 

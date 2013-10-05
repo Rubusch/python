@@ -23,10 +23,6 @@
 ## sys.exit()
 import sys
 
-## random number, random() and randrange()
-#import random
-## e.g. use as random.randrange( -1000, 1000 ) / 1000 
-
 ## plotting library
 import matplotlib.pyplot as plt
 
@@ -39,7 +35,6 @@ def die( msg = "" ):
 class Perceptron( object ):
     ## overview
     _weightlist = []   # weights (size of class 1 + 2)
-#    _ylist = []        # intermediate y
     _trainingset2 = [] # training data (class 1 and 2)
     _targetlist2 = []  # targets (size of class 1 + 2)
     _learningrate = [] # provided
@@ -48,7 +43,6 @@ class Perceptron( object ):
 
     def __init__( self ):
         self._weightlist = [ 2.0, 0.8, -0.5 ] # per idxInpt
-#        self._ylist = [] # per value set
 
         ## training set
         ##
