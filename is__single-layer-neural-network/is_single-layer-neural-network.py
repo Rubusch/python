@@ -27,7 +27,6 @@ import sys
 import random
 ## e.g. use as random.randrange( -1000, 1000 ) / 1000 
 
-
 ## plotting library
 import matplotlib.pyplot as plt
 
@@ -38,237 +37,148 @@ def die( msg = "" ):
     sys.exit( -1 )
 
 
-class Node(object):
-    _name = ""
-    _yval = 0
-    _nextlist = []
-    _selftest = -1
 
-    def __init__( self, name, yval = 0):
-        self._name = name
-        self._yval = yval
-        self._nextlist = [];
-        self._selftest = 0
-
-    def __str__( self ):
-        return self._name
-
-    def addNext( self, nextnode, weight ):
-        self._nextlist.append( [ nextnode, weight ] )
-
-    def sizeNextList( self ):
-        return len( self._nextlist )
-
-    def selftest( self, val ):
-        self._selftest += 1
-        if 0 == self.sizeNextList():
-            print self._selftest
-        else:
-            for nd in self._nextlist:
-                nd[0].selftest( self._selftest )
-
-    def getNet( self ):
-        if self._name != "net":
-            die( "this node is not the net node" )
-        return self._yval
-
-    ## pump cycle
-    def ready( self ):
-#        print "[" + str(self) + "] RESET"  
-        self._yval = 0
-        for nd in self._nextlist:
-            nd[0].ready()
-
-#    def fireInputNode( self, xval ):
-    def steady( self, xval ):
-#        print "[" + str(self) + "] self._yval - before: " + str( self._yval )  
-#        print "[" + str(self) + "] xval received " + str(xval)  
-        self._yval += xval
-#        print "[" + str(self) + "] self._yval - after: " + str( self._yval )  
-
-    def go( self ):
-#        print self  
-        for nd in self._nextlist:
-            weight = nd[1]
-#            print "[" + str(self) + "] prepare to send  weight " + str( nd[1] )  
-            yval = self._yval
-#            print "[" + str(self) + "] prepare to send  yval " + str( yval )  
-            yval *= weight
-#            print yval  
-            nd[0].steady( yval )
-            return nd[0]
-        return None
+weightlist = [ 2.0, 0.8, -0.5 ] # per idxInpt
 
 
 
-class Monitor( object ):
-    _inputnodes = []
-    _netnode = None
-    _trainingset = []
-    _trainingtargets = []
-    _stack = []
-    _avgerror = 0
+ylist = [] # per value set
 
-    def __init__( self ):
-        self._netnode = Node( "net" )
-        self._inputnodes = []
-        self._trainingset = []
-        self._trainingtargets = []
-        self._stack = []
-        self._avgerror = 0
+ 
+# targetlist = [ 1.0, -1.0 ] # per idxClss
 
-    def createNet( self ):
-        self._inputnodes.append( Node("bias") )
-        self._inputnodes.append( Node("x1") )
-        self._inputnodes.append( Node("x2") )
+# trainingsset = []
 
-        self._inputnodes[0].addNext( self._netnode, 2 )
-        self._inputnodes[1].addNext( self._netnode, 0.8 )
-        self._inputnodes[2].addNext( self._netnode, -0.5 )
-
-        ## run selftest
-        cnt = 0
-        res = 0
-        for nd in self._inputnodes:
-            cnt += 1
-            nd.selftest( 1 )
-        print "selftest: " + str([cnt])
-        print "---"
-
-        ## group 1
-        self._trainingset.append( [[1, 1, 1, 1, 1, 1], [1, 6, 3, 4, 3, 1], [8, 2, 6, 4, 1, 6]] )
-        self._trainingtargets.append(1)
-
-        ## group 2
-        self._trainingset.append( [[1, 1, 1, 1, 1], [6, 7, 6, 10, 4], [10, 7, 11, 5, 11]] )
-        self._trainingtargets.append(-1)
-
-    def train( self ):
-        for idxTrainingset in range(0, len(self._trainingset)): # per trainingset set (x1, x2,..., bias in set 1 or set 2 or...)
-            trainingset = self._trainingset[idxTrainingset]
-            for idxVal in range(0, len( trainingset[0] )): # per value
-
-                ## 0. reset nodes
-                for nd in self._inputnodes:
-                    nd.ready()
-
-                ## 1. phase 1
-                for idxNode in range(0, len( self._inputnodes )): # per Node (x1 or x2 or..)
-                    inputvals = trainingset[idxNode]
-                    nd = self._inputnodes[idxNode]
-                    nd.steady( inputvals[idxVal] )
-                    self._push(nd)
-
-                ## 2. phase 2
-                while True: # run epochs
-#                    print "XXX heartbeat"
-                    nd = self._pop()
-                    nextnd = nd.go()
-                    if None == nextnd:
-                        break
-                    self._push( nextnd )
-                    nd = None
-
-                ## eval getNet()
-                Err = 0.5 * (self._trainingtargets[idxTrainingset] - self._netnode.getNet()) * (self._trainingtargets[idxTrainingset] - self._netnode.getNet())
-                print Err
-# TODO   
-                ## adapt weights
-# TODO   
-
-#                print ""   
-#                print self._trainingtargets[idxTrainingset]
-#                print self._netnode.getNet()
-                die( "finished " + str(self._netnode.getNet()) )
+# bias = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+# x1   = [1.0, 6.0, 3.0, 4.0, 3.0, 1.0]
+# x2   = [8.0, 2.0, 6.0, 4.0, 1.0, 6.0]
+# trainingsset.append([bias, x1, x2])
+# bias = [ 1.0, 1.0,  1.0,  1.0,  1.0]
+# x1   = [ 6.0, 7.0,  6.0, 10.0,  4.0]
+# x2   = [10.0, 7.0, 11.0,  5.0, 11.0]
+# trainingsset.append([bias, x1, x2])
+ 
 
 
-            net = self._netnode.getNet()
+## training set
+##
+## target
+## bias
+## x1
+## x2
+trainingset2 = [ [1.0, 1.0, 1.0, 1.0, 1.0, 1.0,  1.0,  1.0,  1.0,  1.0,  1.0]
+                ,[1.0, 6.0, 3.0, 4.0, 3.0, 1.0,  6.0,  7.0,  6.0, 10.0,  4.0]
+                ,[8.0, 2.0, 6.0, 4.0, 1.0, 6.0, 10.0,  7.0, 11.0,  5.0, 11.0] ]
 
-            print str( net ) 
-            print "" 
+targetlist2 = [ 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0, -1.0, -1.0, -1.0, -1.0]
+ 
+
+learningrate = 1.0/50.0
+
+epochdwlist = [ [weightlist[0]], [weightlist[1]], [weightlist[2]] ]
+epochtime = [0]
+
+def snapshot():
+    print weightlist  
+
+    ## class data: dots
+
+    # class1x = trainingsset[0][1]
+    # class1y = trainingsset[0][2]
+    # plt.plot( class1x, class1y, 'ro' )
+    # class2x = trainingsset[1][1]
+    # class2y = trainingsset[1][2]
+    # plt.plot( class2x, class2y, 'bo' )
+
+    class1x = trainingset2[1][:6]
+    class1y = trainingset2[2][:6]
+    plt.plot( class1x, class1y, 'ro' )
+    class2x = trainingset2[1][6:]
+    class2y = trainingset2[2][6:]
+    plt.plot( class2x, class2y, 'bo' )
 
 
-    def _push( self, nd ):
-        try:
-            self._stack.index( nd )
-        except ValueError:
-            self._stack.append( nd )
+    xAxisMax = max(class1x + class2x)+1
+    xAxisMin = min(class1x + class2x)-1
+    yAxisMax = max(class1y + class2y)+1
+    yAxisMin = min(class1y + class2y)-1
+    plt.axis( [xAxisMin, xAxisMax, yAxisMin, yAxisMax] )
 
-# TODO rename
-    def _pop( self ):
-        # FIFO semantics
-# FIXME still does not get added
-# XXX
-        return self._stack.pop( 0 )
+    ## separation line
+    w0 = weightlist[0]
+    w1 = weightlist[1]
+    w2 = weightlist[2]
 
-    
-    def snapshot( self ):
-        ## set up nodes
-# TODO refac
-        bias = Node( "bias" )
-        net = Node( "net" )
-        x1 = Node( "X1", "red" )
-        x2 = Node( "X2", "blue" )
+    x1 = -20.0
+    y1 = (-w0 -x1*w1) / w2
+    x2 = 20.0
+    y2 = (-w0 -x2*w1) / w2
+    plt.plot( [x1, x2], [y1, y2] )
 
-        
-# TODO
-#        plt.plot( class1x, class1y, 'ro' )
-        x = self._trainingsset[0][1]
-        y = self._trainingsset[0][2]
-        plt.plot( x, y, 'ro' )
-
-# TODO
-#        plt.plot( class2x, class2y, 'bo' )
-        x = self._trainingsset[1][1]
-        y = self._trainingsset[1][2]
-        plt.plot( x, y, 'bo' )
-
-        xAxisMax = max(class1x + class2x)+1
-        xAxisMin = min(class1x + class2x)-1
-        yAxisMax = max(class1y + class2y)+1
-        yAxisMin = min(class1y + class2y)-1
-
-        # separator
-#        plt.plot( [xAxisMin, xAxisMax], [yAxisMax, yAxisMin] )
-
-        # scope
-        plt.axis( [xAxisMin, xAxisMax, yAxisMin, yAxisMax] )
-
-        plt.xlabel('x1')
-        plt.ylabel('x2')
-        plt.show()
-        
+    plt.xlabel('X1')
+    plt.ylabel('X2')
+    plt.show()
 
 
 
+## calculating net epochs
+for epoch in range(0, 2500):
+    dwlist = [0,0,0] # per value, since then averaged
 
-###
-learning_rate = 0.02
-if __name__ == '__main__':
+## forward pass (linear)
+    intermediate = []
+    total = 0
+#    for idxClss in range(0, len(trainingsset)): # per class
+#        clss = trainingsset[idxClss]
+#        target = targetlist[idxClss]
+#        inpt = clss[0]
+#        for idxVal in range(0, len(inpt)): # per value in input data
+    for idxVal in range(0, len(trainingset2[0])):
+        y = 0
+        total += 1
+        for idxInpt in range(0, len(trainingset2)):
+#        for idxInpt in range(0, len(clss)): #  per input data
+#            inpt = clss[idxInpt]
+            inpt = trainingset2[idxInpt]
+            weight = weightlist[idxInpt]
+            xval = inpt[idxVal]
+            ## sum of values
+            y += xval * weight
 
-    monitor = Monitor()
-    monitor.createNet()
-    monitor.train()
+## accumulate dw
+        for idxInpt in range(0, len(trainingset2)): #  per input data
+            inpt = trainingset2[idxInpt]
+            xval = inpt[idxVal]
+            target = targetlist2[idxVal]
+            ## sum of dw
+            dwlist[idxInpt] += (target - y) * xval
 
-    die( "STOP" )         
 
+## average dw per input
+    for idxDw in range(0, len(dwlist)):
+        dwlist[idxDw] = dwlist[idxDw] / total
 
+        ## collect data over epochs
+        epochdwlist[idxDw].append(dwlist[idxDw])
+    epochtime.append( epoch )
 
-# TODO rm
-## dotty
-    # # x1 -> net
-    # x1.downAdd( net, 0.8 )
-    # net.upAdd( x1, 0.8 )
+## plot data
+    if 0 == epoch: snapshot()
 
-    # # x2 -> net
-    # x2.downAdd( net, -0.5 )
-    # net.upAdd( x2, -0.5 )
+## apply dw and learning rate
+    for idxWeight in range(0, len(weightlist)):
+        weightlist[idxWeight] += learningrate * dwlist[idxWeight]
 
-    # # bias -> net
-    # bias.downAdd( net, 2 )
-    # net.upAdd( bias, 2 )
+## print weightlist
+# plt.plot( epochtime, epochdwlist[0] )
+# plt.plot( epochtime, epochdwlist[1] )
+# plt.plot( epochtime, epochdwlist[2] )
+# plt.xlabel('time')
+# plt.ylabel('error')
+# plt.show()
 
-    # dotty( [x1, x2, bias] )
+snapshot()
+                                                                                        
+# FIXME: separation line misses 2 points
 
-    print "# READY."
-
+print "READY."
