@@ -35,8 +35,8 @@ def die( msg = "" ):
 class Perceptron( object ):
     ## overview
     _weightlist = []   # weights (size of class 1 + 2)
-    _trainingset2 = [] # training data (class 1 and 2)
-    _targetlist2 = []  # targets (size of class 1 + 2)
+    _trainingset = [] # training data (class 1 and 2)
+    _targetlist = []  # targets (size of class 1 + 2)
     _learningrate = [] # provided
     _epochdwlist = []  # for plotting
     _epochtime = []    # for plotting
@@ -50,22 +50,22 @@ class Perceptron( object ):
         ## bias
         ## x1
         ## x2
-        self._trainingset2 = [ [1.0, 1.0, 1.0, 1.0, 1.0, 1.0,  1.0,  1.0,  1.0,  1.0,  1.0]
+        self._trainingset = [ [1.0, 1.0, 1.0, 1.0, 1.0, 1.0,  1.0,  1.0,  1.0,  1.0,  1.0]
                               ,[1.0, 6.0, 3.0, 4.0, 3.0, 1.0,  6.0,  7.0,  6.0, 10.0,  4.0]
                               ,[8.0, 2.0, 6.0, 4.0, 1.0, 6.0, 10.0,  7.0, 11.0,  5.0, 11.0] ]
 
-        self._targetlist2 = [ 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0, -1.0, -1.0, -1.0, -1.0]
+        self._targetlist = [ 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0, -1.0, -1.0, -1.0, -1.0]
         self._learningrate = 1.0/50.0
         self._epochdwlist = [ [self._weightlist[0]], [self._weightlist[1]], [self._weightlist[2]] ]
         self._epochtime = [0]
 
     def snapshot( self ):
         ## class data: dots
-        class1x = self._trainingset2[1][:6]
-        class1y = self._trainingset2[2][:6]
+        class1x = self._trainingset[1][:6]
+        class1y = self._trainingset[2][:6]
         plt.plot( class1x, class1y, 'ro' )
-        class2x = self._trainingset2[1][6:]
-        class2y = self._trainingset2[2][6:]
+        class2x = self._trainingset[1][6:]
+        class2y = self._trainingset[2][6:]
         plt.plot( class2x, class2y, 'bo' )
 
         xAxisMax = max(class1x + class2x)+1
@@ -106,21 +106,21 @@ class Perceptron( object ):
 ## forward pass (linear)
             intermediate = []
             total = 0
-            for idxVal in range(0, len(self._trainingset2[0])):
+            for idxVal in range(0, len(self._trainingset[0])):
                 y = 0
                 total += 1
-                for idxInpt in range(0, len(self._trainingset2)):
-                    inpt = self._trainingset2[idxInpt]
+                for idxInpt in range(0, len(self._trainingset)):
+                    inpt = self._trainingset[idxInpt]
                     weight = self._weightlist[idxInpt]
                     xval = inpt[idxVal]
                     ## sum of values
                     y += xval * weight
 
 ## accumulate dw
-                for idxInpt in range(0, len(self._trainingset2)): #  per input data
-                    inpt = self._trainingset2[idxInpt]
+                for idxInpt in range(0, len(self._trainingset)): #  per input data
+                    inpt = self._trainingset[idxInpt]
                     xval = inpt[idxVal]
-                    target = self._targetlist2[idxVal]
+                    target = self._targetlist[idxVal]
                     ## sum of dw
                     dwlist[idxInpt] += (target - y) * xval
 
