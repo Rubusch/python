@@ -165,19 +165,17 @@ class Perceptron( object ):
 
                 for idxInpt in range(0, len(self._trainingset)): # per input node + bias, here 3x
                     inpt = self._trainingset[idxInpt]
-                    xval = inpt[idxVal]  
+                    xval = inpt[idxVal]
                     for idxHidden in range(1, len(self._hiddenlist)):
                         idxWeight = 3* idxInpt + (idxHidden-1)
                         weight = self._weight1list[idxWeight]
-
                         ## sum of values
                         self._hiddenlist[idxHidden][idxVal] += xval * weight
-#                        print "y = " + str(self._hiddenlist[idxHidden][idxVal])  
 
-                print self._hiddenlist[0]
-                print self._hiddenlist[1]
-                print self._hiddenlist[2]
-                print self._hiddenlist[3]
+                print self._hiddenlist[0]  
+                print self._hiddenlist[1]  
+                print self._hiddenlist[2]  
+                print self._hiddenlist[3]  
                 die( "STOP" )
 
 #            print yinput 
