@@ -58,26 +58,31 @@ def die( msg = "" ):
 
 class Perceptron( object ):
     ## overview
-    _weightlist = []   # weights (size of class 1 + 2)
+    _weight1list = []  # weights, 1st layer
+    _weight2list = []  # weights, second layer
     _trainingset = []  # training data (class 1 and 2)
     _testset = []      # test set
     _trainingtargetlist = []   # targets (size of class 1 + 2)
+    _hiddenlist = []   # hidden nodes
     _learningrate = [] # provided
     _epochdwlist = []  # for plotting
     _epochtime = []    # for plotting
 
     def __init__( self ):
-        self._weightlist = [ 2.0, 0.8, -0.5 ] # per idxInpt
-
         ## training set
         ##
         ## target
         ## bias
         ## x1
         ## x2
-        self._trainingset      = [ [1.0, 1.0, 1.0, 1.0, 1.0,    1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+        self._trainingset      =  [[1.0, 1.0, 1.0, 1.0, 1.0,    1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
                                   ,[4.0, 4.0, 5.0, 5.0, 7.0,    1.0, 2.0, 3.0, 6.0, 3.0, 6.0, 4.0, 7.0]
                                   ,[2.0, 4.0, 3.0, 1.0, 2.0,    2.0, 1.0, 1.0, 5.0, 6.0, 7.0, 6.0, 6.0]]
+
+        self._hiddenlist       =  [[1.0, 1.0, 1.0, 1.0, 1.0,    1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+                                  ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+                                  ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+                                  ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
         self._trainingtargetlist = [1.0, 1.0, 1.0, 1.0, 1.0,   -1.0,-1.0,-1.0,-1.0,-1.0,-1.0,-1.0,-1.0]
 
         self._testset          = [ [1.0, 1.0, 1.0, 1.0, 1.0, 1.0,    1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
@@ -85,9 +90,20 @@ class Perceptron( object ):
                                   ,[1.0, 2.0, 4.0, 4.0, 1.0, 1.0,    2.0, 7.0, 7.0, 5.0, 3.0, 5.0]]
         self._testtargetlist     = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0,   -1.0,-1.0,-1.0,-1.0,-1.0,-1.0]
 
-        self._learningrate = 1.0/50.0
-        self._epochdwlist = [ [self._weightlist[0]], [self._weightlist[1]], [self._weightlist[2]] ]
-        self._epochtime = [0]
+        ## 1-layer weights
+        nnset = self._trainingset  
+#        for idxWeight in range( 0, 3 * len( nnset )):
+#            self._weight1list.append( random.randrange(-100, 100) / 1000.0 )
+        self._weight1list = [1,1,1,1,1,1,1,1,1]
+
+        ## 2-layer weights
+        for idxWeight in range( 0, 1 + len( nnset )):
+            self._weight2list.append( random.randrange(-100, 100) / 1000.0 )
+
+        ## learningrate nu
+        self._learningrate = 1.0/30.0
+#        self._epochdwlist = [ [self._weightlist[0]], [self._weightlist[1]], [self._weightlist[2]] ] 
+#        self._epochtime = [0]
 
     def snapshot( self ):
         ## class data: dots
@@ -121,7 +137,6 @@ class Perceptron( object ):
         plt.show()
 
     def snapshot_learning( self ):
-        ## print weightlist
         plt.plot( self._epochtime, self._epochdwlist[0] )
         plt.plot( self._epochtime, self._epochdwlist[1] )
         plt.plot( self._epochtime, self._epochdwlist[2] )
@@ -135,46 +150,77 @@ class Perceptron( object ):
             dwlist = [0,0,0] # per value, since then averaged
 
 ## forward pass (linear)
-            intermediate = []
+#            intermediate = []
             total = 0
-            for idxVal in range(0, len(self._trainingset[0])):
+#            yinput = []
+
+            for idxVal in range(0, len(self._trainingset[0])): # per value, 13x
                 y = 0
                 total += 1
-                for idxInpt in range(0, len(self._trainingset)):
+
+#                weighttriplet_start = idxVal*3
+#                weighttriplet_end = idxVal*3+3
+
+#                weighttriplet = self._weight1list[weighttriplet_start:weighttriplet_end]
+
+                for idxInpt in range(0, len(self._trainingset)): # per input node + bias, here 3x
                     inpt = self._trainingset[idxInpt]
-                    weight = self._weightlist[idxInpt]
-                    xval = inpt[idxVal]
-                    ## sum of values
-                    y += xval * weight
+                    xval = inpt[idxVal]  
+                    for idxHidden in range(1, len(self._hiddenlist)):
+                        idxWeight = 3* idxInpt + (idxHidden-1)
+                        weight = self._weight1list[idxWeight]
 
-## accumulate dw
-                for idxInpt in range(0, len(self._trainingset)): #  per input data
-                    inpt = self._trainingset[idxInpt]
-                    xval = inpt[idxVal]
-                    target = self._trainingtargetlist[idxVal]
-                    ## sum of dw
-                    dwlist[idxInpt] += (target - y) * xval
+                        ## sum of values
+                        self._hiddenlist[idxHidden][idxVal] += xval * weight
+#                        print "y = " + str(self._hiddenlist[idxHidden][idxVal])  
 
-## average dw per input
-            for idxDw in range(0, len(dwlist)):
-                dwlist[idxDw] = dwlist[idxDw] / total
+                print self._hiddenlist[0]
+                print self._hiddenlist[1]
+                print self._hiddenlist[2]
+                print self._hiddenlist[3]
+                die( "STOP" )
 
-                ## collect data over epochs for plotting
-                self._epochdwlist[idxDw].append(dwlist[idxDw])
-            ## time for plotting
-            self._epochtime.append( epoch )
+#            print yinput 
+        die( "STOP" )
+                    
+
+
+
+
+
+
+# ## accumulate dw
+#                 for idxInpt in range(0, len(self._trainingset)): #  per input data
+#                     inpt = self._trainingset[idxInpt]
+#                     xval = inpt[idxVal]
+#                     target = self._trainingtargetlist[idxVal]
+#                     ## sum of dw
+#                     dwlist[idxInpt] += (target - y) * xval
+
+# ## average dw per input
+#             for idxDw in range(0, len(dwlist)):
+#                 dwlist[idxDw] = dwlist[idxDw] / total
+
+#                 ## collect data over epochs for plotting
+#                 self._epochdwlist[idxDw].append(dwlist[idxDw])
+#             ## time for plotting
+#             self._epochtime.append( epoch )
 
 ## plotting
 #            if 0 == epoch: self.snapshot()
 #            if 1 == epoch: self.snapshot()
 
 ## apply dw and learning rate
-            for idxWeight in range(0, len(self._weightlist)):
-                self._weightlist[idxWeight] += self._learningrate * dwlist[idxWeight]
+#            for idxWeight in range(0, len(self._weightlist)): 
+#                self._weightlist[idxWeight] += self._learningrate * dwlist[idxWeight] 
+
+        die("END OF LOOOP")         
+                      
 
 
 if __name__ == '__main__':
     nn = Perceptron()
+#    nn.snapshot()
     nn.training()
 #    nn.snapshot()
 #    nn.snapshot_learning()
