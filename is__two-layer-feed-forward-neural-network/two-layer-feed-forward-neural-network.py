@@ -94,11 +94,12 @@ class Perceptron( object ):
         nnset = self._trainingset  
 #        for idxWeight in range( 0, 3 * len( nnset )):
 #            self._weight1list.append( random.randrange(-100, 100) / 1000.0 )
-        self._weight1list = [1,1,1,1,1,1,1,1,1]
+        self._weight1list = [1,1,1,1,1,1,1,1,1]         
 
         ## 2-layer weights
-        for idxWeight in range( 0, 1 + len( nnset )):
-            self._weight2list.append( random.randrange(-100, 100) / 1000.0 )
+#        for idxWeight in range( 0, 1 + len( nnset )):
+#            self._weight2list.append( random.randrange(-100, 100) / 1000.0 )
+        self._weight2list = [1,1,1,1]         
 
         ## learningrate nu
         self._learningrate = 1.0/30.0
@@ -148,38 +149,48 @@ class Perceptron( object ):
 ## calculating net epochs
         for epoch in range(0, 200):
             dwlist = [0,0,0] # per value, since then averaged
+            total = 0
 
 ## forward pass (linear)
-#            intermediate = []
-            total = 0
-#            yinput = []
-
-
-
-
+            y = 0 
             for idxVal in range(0, len(self._trainingset[0])): # per value, 13x
                 total += 1
                 for idxInpt in range(0, len(self._trainingset)): # per input node + bias, here 3x
                     inpt = self._trainingset[idxInpt]
                     xval = inpt[idxVal]
-                    for idxHidden in range(1, len(self._hiddenlist)):
+                    for idxHidden in range(1, len(self._hiddenlist)): # per hidden node, 1 = no bias
                         idxWeight = 3* idxInpt + (idxHidden-1)
                         weight = self._weight1list[idxWeight]
                         ## sum of values
                         self._hiddenlist[idxHidden][idxVal] += xval * weight
 
+                    ## / idxHidden
+                ## / idxInpt
 
-                # if 12 == idxVal:
-                #     print self._hiddenlist[0]  
-                #     print self._hiddenlist[1]  
-                #     print self._hiddenlist[2]  
-                #     print self._hiddenlist[3]  
-                #     die( "STOP" )  
+                        
+                # print self._hiddenlist[0]  
+                # print self._hiddenlist[1]  
+                # print self._hiddenlist[2]  
+                # print self._hiddenlist[3]  
+                        
 
-            # print self._hiddenlist[0]  
-            # print self._hiddenlist[1]  
-            # print self._hiddenlist[2]  
-            # print self._hiddenlist[3]  
+                for idxHidden in range(0, len(self._hiddenlist)):
+                    hidden = self._hiddenlist[idxHidden][idxVal]
+                    weight = self._weight2list[idxHidden]
+                    y += hidden * weight
+                ## / idxHidden
+            ## / idxVal
+
+            ## average y
+            y = y / total
+
+
+
+
+            die( y )  
+            die( "STOP" )  
+
+
 
             die( "STOP" )
                     
