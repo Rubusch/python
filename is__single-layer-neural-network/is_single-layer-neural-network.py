@@ -38,27 +38,13 @@ def die( msg = "" ):
 
 
 
+
+
 weightlist = [ 2.0, 0.8, -0.5 ] # per idxInpt
 
 
 
 ylist = [] # per value set
-
- 
-# targetlist = [ 1.0, -1.0 ] # per idxClss
-
-# trainingsset = []
-
-# bias = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
-# x1   = [1.0, 6.0, 3.0, 4.0, 3.0, 1.0]
-# x2   = [8.0, 2.0, 6.0, 4.0, 1.0, 6.0]
-# trainingsset.append([bias, x1, x2])
-# bias = [ 1.0, 1.0,  1.0,  1.0,  1.0]
-# x1   = [ 6.0, 7.0,  6.0, 10.0,  4.0]
-# x2   = [10.0, 7.0, 11.0,  5.0, 11.0]
-# trainingsset.append([bias, x1, x2])
- 
-
 
 ## training set
 ##
@@ -71,32 +57,18 @@ trainingset2 = [ [1.0, 1.0, 1.0, 1.0, 1.0, 1.0,  1.0,  1.0,  1.0,  1.0,  1.0]
                 ,[8.0, 2.0, 6.0, 4.0, 1.0, 6.0, 10.0,  7.0, 11.0,  5.0, 11.0] ]
 
 targetlist2 = [ 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, -1.0, -1.0, -1.0, -1.0, -1.0]
- 
-
 learningrate = 1.0/50.0
-
 epochdwlist = [ [weightlist[0]], [weightlist[1]], [weightlist[2]] ]
 epochtime = [0]
 
 def snapshot():
-    print weightlist  
-
     ## class data: dots
-
-    # class1x = trainingsset[0][1]
-    # class1y = trainingsset[0][2]
-    # plt.plot( class1x, class1y, 'ro' )
-    # class2x = trainingsset[1][1]
-    # class2y = trainingsset[1][2]
-    # plt.plot( class2x, class2y, 'bo' )
-
     class1x = trainingset2[1][:6]
     class1y = trainingset2[2][:6]
     plt.plot( class1x, class1y, 'ro' )
     class2x = trainingset2[1][6:]
     class2y = trainingset2[2][6:]
     plt.plot( class2x, class2y, 'bo' )
-
 
     xAxisMax = max(class1x + class2x)+1
     xAxisMin = min(class1x + class2x)-1
