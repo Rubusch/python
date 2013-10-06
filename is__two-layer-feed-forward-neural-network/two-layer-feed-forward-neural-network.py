@@ -84,16 +84,18 @@ class Perceptron( object ):
                                   ,[4.0, 4.0, 5.0, 5.0, 7.0,    1.0, 2.0, 3.0, 6.0, 3.0, 6.0, 4.0, 7.0]
                                   ,[2.0, 4.0, 3.0, 1.0, 2.0,    2.0, 1.0, 1.0, 5.0, 6.0, 7.0, 6.0, 6.0]]
 
-        self._hiddenlist       =  [[1.0, 1.0, 1.0, 1.0, 1.0,    1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
-                                  ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-                                  ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-                                  ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
         self._trainingtargetlist = [1.0, 1.0, 1.0, 1.0, 1.0,   -1.0,-1.0,-1.0,-1.0,-1.0,-1.0,-1.0,-1.0]
 
         self._testset          = [ [1.0, 1.0, 1.0, 1.0, 1.0, 1.0,    1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
                                   ,[4.0, 5.0, 3.0, 5.0, 6.0, 7.0,    3.0, 8.0, 4.0, 7.0, 2.0, 2.0]
                                   ,[1.0, 2.0, 4.0, 4.0, 1.0, 1.0,    2.0, 7.0, 7.0, 5.0, 3.0, 5.0]]
+
         self._testtargetlist     = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0,   -1.0,-1.0,-1.0,-1.0,-1.0,-1.0]
+
+        self._hiddenlist       =  [[1.0, 1.0, 1.0, 1.0, 1.0,    1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+                                  ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+                                  ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+                                  ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
 
         ## 1-layer weights
         nnset = self._trainingset  
@@ -170,7 +172,11 @@ class Perceptron( object ):
 ## init, no bias in dwlist1 connections
         dwlist1 = []
         dwlist2 = []
-        for idxHidden in range(0, len(self._trainingset) * (len(self._hiddenlist)-1)):
+        
+        currentset = self._trainingset
+        currenttargetlist = self._trainingtargetlist
+        
+        for idxHidden in range(0, len(currentset) * (len(self._hiddenlist)-1)):
             dwlist1.append(0.0)
         for idxHidden in range(0, len(self._hiddenlist)):
             dwlist2.append(0.0)
@@ -181,12 +187,12 @@ class Perceptron( object ):
             total = 0
 ## forward pass (linear)
             y = 0
-            for idxVal in range(0, len(self._trainingset[0])): # per value, 13x
+            for idxVal in range(0, len(currentset[0])): # per value, 13x
                 total += 1
 
 ## forward - layer 1
-                for idxInpt in range(0, len(self._trainingset)): # per input node + bias, here 3x
-                    inpt = self._trainingset[idxInpt]
+                for idxInpt in range(0, len(currentset)): # per input node + bias, here 3x
+                    inpt = currentset[idxInpt]
                     xval = inpt[idxVal]
                     for idxHidden in range(1, len(self._hiddenlist)): # per hidden node, 1 = no bias
                         idxWeight = 3* idxInpt + (idxHidden-1)
@@ -224,8 +230,8 @@ class Perceptron( object ):
 
                 ## dwlist1 = nu * x * delta = nu * x * dwlist2, per x neuron
                 dwtmp1 = []
-                for idxInpt in range(0, len(self._trainingset)): # per input node + bias, here 3x
-                    inpt = self._trainingset[idxInpt]
+                for idxInpt in range(0, len(currentset)): # per input node + bias, here 3x
+                    inpt = currentset[idxInpt]
                     xval = inpt[idxVal]
                     for idxHidden in range(1, len( self._hiddenlist) ): # per hidden node, 3 + 1 (bias)
                         idxWeight = 3* idxInpt + (idxHidden-1)
