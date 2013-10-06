@@ -169,7 +169,7 @@ class Perceptron( object ):
             for idxVal in range(0, len(self._trainingset[0])): # per value, 13x
                 total += 1
 
-## layer 1
+## forward - layer 1
                 for idxInpt in range(0, len(self._trainingset)): # per input node + bias, here 3x
                     inpt = self._trainingset[idxInpt]
                     xval = inpt[idxVal]
@@ -188,7 +188,7 @@ class Perceptron( object ):
                 # print self._hiddenlist[3]  
                         
 
-## layer 2
+## forward - layer 2
                 y = 0
                 for idxHidden in range(0, len(self._hiddenlist)): # per hidden node, 3 + 1 (bias)
                     hidden = self._hiddenlist[idxHidden][idxVal]
@@ -200,12 +200,11 @@ class Perceptron( object ):
                 target = self._trainingtargetlist[idxVal]
                 dw = y - target
 
-## backward pass
+## backward pass - layer 2
                 ## dwlist2 = nu * y[j] * delta = nu * y[j] * (y[k] - t) * dy/dnet
                 dwtmp2 = [] # just to transfer to next block (as backup)
                 for idxHidden in range(0, len( self._hiddenlist) ): # per hidden node, 3 + 1 (bias)
                     hidden =  self._hiddenlist[idxHidden]
-#                    dwlist2.append(self._learningrate * dw * hidden[idxVal])
                     dwtmp2.append(self._learningrate * dw * hidden[idxVal])
                     dwlist2[idxHidden] += self._learningrate * dw * hidden[idxVal]
                 ## / idxHidden
@@ -216,7 +215,6 @@ class Perceptron( object ):
                     inpt = self._trainingset[idxInpt]
                     xval = inpt[idxVal]
                     for idxHidden in range(1, len( self._hiddenlist) ): # per hidden node, 3 + 1 (bias)
-#                        dwlist1[idxInpt] += self._learningrate * xval * dwlist2[idxHidden]  
                         dwlist1[idxInpt] += self._learningrate * xval * dwtmp2[idxHidden]
                     ## / idxHidden
                 ## / idxInpt
@@ -231,8 +229,17 @@ class Perceptron( object ):
                 dwlist2[idxHidden] = dwlist2[idxHidden] / total
             ## / idxHidden
 
-## apply de-averaged dw's to the corresponding weights
 
+## apply de-averaged dw's to the corresponding weights
+        die(dwList2)  
+
+        for idxWeight in range(0, len(self._weight1list)):
+            self._weight1List[idxWeight] = dwlist1[idxWeight]
+
+        for idxWeight in range(0, len(self._weight2list)):
+            self._weight2List[idxWeight] = dwlist2[idxWeight]
+
+        ## / epoch
 
             print dwlist1  
             die( "STOP" )  
