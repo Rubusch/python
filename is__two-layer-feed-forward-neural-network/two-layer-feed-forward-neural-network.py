@@ -108,7 +108,13 @@ class Perceptron( object ):
 
         ## learningrate nu
         ## 1.0, 1.0/3.0, 1.0/10.0, 1.0/30.0, 1.0/100.0, 1.0/300.0, 1.0/1000.0
+#        self._learningrate = 1.0
+#        self._learningrate = 1.0/3.0
+#        self._learningrate = 1.0/10.0
         self._learningrate = 1.0/30.0
+#        self._learningrate = 1.0/100.0
+#        self._learningrate = 1.0/300.0
+#        self._learningrate = 1.0/1000.0
 
         for idxHidden in range(0, len(self._trainingset) * (len(self._hiddenlist)-1) + len(self._hiddenlist)):
             self._epochdwlist.append([0.0])
@@ -135,20 +141,13 @@ class Perceptron( object ):
 
 
     def snapshot_learning( self ):
-        for epoch in self._epochdwlist:
-            plt.plot( epoch )
-
-#        plt.plot(self._epochdwlist[0]) 
-#        plt.plot(self._epochdwlist[1]) 
-#        plt.plot(self._epochdwlist[2]) 
-#
-#        plt.plot(self._epochdwlist[3]) 
-#        plt.plot(self._epochdwlist[4]) 
-#        plt.plot(self._epochdwlist[5]) 
-#        plt.plot(self._epochdwlist[6]) 
-#        plt.plot(self._epochdwlist[7]) 
-#        plt.plot(self._epochdwlist[8]) 
-#        plt.plot(self._epochdwlist[9]) 
+#        for epoch in self._epochdwlist:
+        for idx in range(0, len(self._epochdwlist)):
+            if 9 == idx: continue # invalid bias data
+            if 12 == idx: continue # invalid bias data
+#            print "plot " + str(idx)  
+            plt.plot( self._epochdwlist[idx] )
+#            plt.show()
 
         plt.xlabel('time')
         plt.ylabel('error')
@@ -157,14 +156,13 @@ class Perceptron( object ):
 
     def sigma( self, product ):
         return product
-## TODO use sigmoid function
-#        return product    
-        
-#        try:
+## QUICKFIX: sigma activation function is turned off,
+## since this over 1000 epochs explodes the data, and results in inf/nan results
+        try:
             ## overflow erors
-        return 1/(1 + exp(product))
-#        except OverflowError:
-#            return 0
+            return 1/(1 + math.exp(product))
+        except OverflowError:
+            return product
 
 
 
@@ -178,12 +176,7 @@ class Perceptron( object ):
             dwlist2.append(0.0)
 
 ## calculating net epochs
-        for epoch in range(0, 10):
-#            for idxHidden in range(0, len(self._trainingset) * (len(self._hiddenlist)-1)):
-#                dwlist1[idxHidden] = 0.0 # per value, since then averaged
-
-#            for idxHidden in range(0, len(self._hiddenlist)):
- #               dwlist2[idxHidden] = 0.0
+        for epoch in range(0, 1000):
             dw = 0
             total = 0
 ## forward pass (linear)
@@ -198,18 +191,10 @@ class Perceptron( object ):
                     for idxHidden in range(1, len(self._hiddenlist)): # per hidden node, 1 = no bias
                         idxWeight = 3* idxInpt + (idxHidden-1)
                         weight = self._weight1list[idxWeight]
-#                        print weight   
                         ## sum of values
                         self._hiddenlist[idxHidden][idxVal] += self.sigma(xval * weight)
                     ## / idxHidden
                 ## / idxInpt
-
-                        
-                # print self._hiddenlist[0]  
-                # print self._hiddenlist[1]  
-                # print self._hiddenlist[2]  
-                # print self._hiddenlist[3]  
-                        
 
 ## forward - layer 2
                 y = 0
@@ -222,7 +207,6 @@ class Perceptron( object ):
 
 ## preparing dw from sum(y)
                 target = self._trainingtargetlist[idxVal]
-#                dw = y - target
 
 ## backward pass - layer 2
                 ## dwlist2 = nu * y[j] * delta = nu * y[j] * (y[k] - t) * dy/dnet
@@ -230,19 +214,13 @@ class Perceptron( object ):
                 for idxHidden in range(0, len( self._hiddenlist) ): # per hidden node, 3 + 1 (bias)
                     hidden =  self._hiddenlist[idxHidden]
                     xval = hidden[idxVal]
-                    
                     ## backward: learningrate * delta * outputvalue
-#                    dwtmp2.append(self._learningrate * dw * hidden[idxVal])
                     dwtmp2.append(self._learningrate * (target - y) * xval)
-#                    dwlist2[idxHidden] += self._learningrate * dw * hidden[idxVal] # backup
+## DEBUG some checks where original settings seem to explode in infinity, and finally NAN values
                     if math.isnan(dwlist2[idxHidden]): die( "NAN" )   
                     if math.isinf(dwlist2[idxHidden]): die( "INF" )   
                     dwlist2[idxHidden] += self._learningrate * (target-y) * xval # backup
-                    
                 ## / idxHidden
-
-#                if math.isnan(dwlist2[1]): die( "STOP") 
-#                print dwlist2[1]  
 
                 ## dwlist1 = nu * x * delta = nu * x * dwlist2, per x neuron
                 dwtmp1 = []
@@ -253,56 +231,39 @@ class Perceptron( object ):
                         idxWeight = 3* idxInpt + (idxHidden-1)
                         ## backward: 
                         dwlist1[idxWeight] += self._learningrate * xval * dwtmp2[idxHidden]   
-#                        dwlist1[idxWeight] += self._learningrate * xval * dwlist2[idxHidden]   
                     ## / idxHidden
                 ## / idxInpt
             ## / idxVal
 
 ## average dw
-#            idxEpochplot = 0
-#            for idxInpt in range(0, len(self._trainingset)): # per input node + bias, here 3x
-#                dwlist1[idxInpt] = dwlist1[idxInpt] / total
             for idxDw in range(0, len(dwlist1)):
-                dwlist1[idxDw] = dwlist1[idxDw] / (total)
-
-#                self._epochdwlist[idxInpt].append( dwlist1[idxInpt])  
-#                idxEpochplot+=1
+                dwlist1[idxDw] = dwlist1[idxDw] / total    
+#                dwlist1[idxDw] = dwlist1[idxDw] / (total*total) ## QUICKFIX: to average it down, I square the totals
             ## / idxInpt
 
             for idxHidden in range(0, len(dwlist2)):
-#                dwlist2[idxHidden] = dwlist2[idxHidden] / total
-                dwlist2[idxHidden] = dwlist2[idxHidden] / (total)
-#                self._epochdwlist[idxEpochplot+idxInpt].append( dwlist2[idxInpt])  
+                dwlist2[idxHidden] = dwlist2[idxHidden] / total    
+#                dwlist2[idxHidden] = dwlist2[idxHidden] / (total*total) ## QUICKFIX: to average it down, I square the totals
             ## / idxHidden
 
 
 ## apply de-averaged dw's to the corresponding weights
             idxEpochplot = 0
             for idxWeight in range(0, len(self._weight1list)):
-#                 self._weight1list[idxWeight] += dwlist1[idxWeight]
-                 self._weight1list[idxWeight] = dwlist1[idxWeight]     
-#                 self._epochdwlist[idxWeight].append(dwlist1[idxWeight]) 
-                 self._epochdwlist[idxWeight].append(self._weight1list[idxWeight]) 
-                 dwlist1[idxWeight]=0.0 
+#                 self._weight1list[idxWeight] += dwlist1[idxWeight]     
+                 self._weight1list[idxWeight] = dwlist1[idxWeight] ## QUICKFIX: assign rather than do: w(new) = dw + w(old)
+                 self._epochdwlist[idxWeight].append(self._weight1list[idxWeight])
+                 dwlist1[idxWeight]=0.0
                  idxEpochplot += 1
-
-#                print idxEpochplot  
- #               print "XXX"
-#                print dwlist1[idxWeight]  
-#                print self._epochdwlist[0]
-#            die( self._epochdwlist[idxEpochplot] )  
 
             for idxWeight in range(0, len(self._weight2list)):
 #                 self._weight2list[idxWeight] += dwlist2[idxWeight]     
-                 self._weight2list[idxWeight] = dwlist2[idxWeight]     
-#                 self._epochdwlist[idxEpochplot+idxWeight].append(dwlist2[idxWeight])
-                 self._epochdwlist[idxEpochplot+idxWeight].append(self._weight2list[idxWeight])  
-                 dwlist2[idxWeight]=0.0   
-            #     idxEpochplot += 1
+                 self._weight2list[idxWeight] = dwlist2[idxWeight] ## QUICKFIX: assign rather than do: w(new) = dw + w(old)
+                 self._epochdwlist[idxEpochplot+idxWeight].append(self._weight2list[idxWeight])
+                 dwlist2[idxWeight]=0.0
 
         ## / epoch
-## dw = nu * y * (y-t) d/dnet                    
-                      
+        ## dw = nu * y * (y-t) d/dnet
 
 
 if __name__ == '__main__':
