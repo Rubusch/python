@@ -106,9 +106,12 @@ class Perceptron( object ):
         self._weight2list = [1,1,1,1]         
 
         ## learningrate nu
+        ## 1.0, 1.0/3.0, 1.0/10.0, 1.0/30.0, 1.0/100.0, 1.0/300.0, 1.0/1000.0
         self._learningrate = 1.0/30.0
-#        self._epochdwlist = [ [self._weightlist[0]], [self._weightlist[1]], [self._weightlist[2]] ] 
-#        self._epochtime = [0]
+
+        for idxHidden in range(0, len(self._trainingset) * (len(self._hiddenlist)-1) + len(self._hiddenlist)):
+            self._epochdwlist.append([0.0])
+        self._epochtime = [0]
 
     def snapshot( self ):
         ## class data: dots
@@ -142,9 +145,12 @@ class Perceptron( object ):
         plt.show()
 
     def snapshot_learning( self ):
-        plt.plot( self._epochtime, self._epochdwlist[0] )
-        plt.plot( self._epochtime, self._epochdwlist[1] )
-        plt.plot( self._epochtime, self._epochdwlist[2] )
+
+        for epoch in self._epochdwlist:
+            plt.plot( epoch )
+#        plt.plot( self._epochtime, self._epochdwlist[0] )
+#        plt.plot( self._epochtime, self._epochdwlist[1] )
+#        plt.plot( self._epochtime, self._epochdwlist[2] )
         plt.xlabel('time')
         plt.ylabel('error')
         plt.show()
@@ -162,7 +168,7 @@ class Perceptron( object ):
             dwlist2.append(0.0)
 
 ## calculating net epochs
-        for epoch in range(0, 200):
+        for epoch in range(0, 3000):
             for idxHidden in range(0, len(self._trainingset) * (len(self._hiddenlist)-1)):
                 dwlist1[idxHidden] = 0.0 # per value, since then averaged
 
@@ -222,8 +228,6 @@ class Perceptron( object ):
                     xval = inpt[idxVal]
                     for idxHidden in range(1, len( self._hiddenlist) ): # per hidden node, 3 + 1 (bias)
                         idxWeight = 3* idxInpt + (idxHidden-1)
-#                        weight = self._weight1list[idxWeight]
-#                        dwlist1[idxInpt] += self._learningrate * xval * dwtmp2[idxHidden]
                         dwlist1[idxWeight] += self._learningrate * xval * dwtmp2[idxHidden]
                     ## / idxHidden
                 ## / idxInpt
@@ -240,52 +244,20 @@ class Perceptron( object ):
 
 
 ## apply de-averaged dw's to the corresponding weights
+        idxEpochplot = 0
         for idxWeight in range(0, len(self._weight1list)):
             self._weight1list[idxWeight] = dwlist1[idxWeight]
+            self._epochdwlist[idxEpochplot].append(dwlist1[idxWeight])
+            idxEpochplot += 1
 
         for idxWeight in range(0, len(self._weight2list)):
             self._weight2list[idxWeight] = dwlist2[idxWeight]
+            self._epochdwlist[idxEpochplot].append(dwlist2[idxWeight])
+            idxEpochplot += 1
+
 
         ## / epoch
 ## dw = nu * y * (y-t) d/dnet                    
-
-
-#            print dwlist1  
-#            die( "STOP" )  
-
-
-
-
-
-
-
-
-# ## accumulate dw
-#                 for idxInpt in range(0, len(self._trainingset)): #  per input data
-#                     inpt = self._trainingset[idxInpt]
-#                     xval = inpt[idxVal]
-#                     target = self._trainingtargetlist[idxVal]
-#                     ## sum of dw
-#                     dwlist[idxInpt] += (target - y) * xval
-
-# ## average dw per input
-#             for idxDw in range(0, len(dwlist)):
-#                 dwlist[idxDw] = dwlist[idxDw] / total
-
-#                 ## collect data over epochs for plotting
-#                 self._epochdwlist[idxDw].append(dwlist[idxDw])
-#             ## time for plotting
-#             self._epochtime.append( epoch )
-
-## plotting
-#            if 0 == epoch: self.snapshot()
-#            if 1 == epoch: self.snapshot()
-
-## apply dw and learning rate
-#            for idxWeight in range(0, len(self._weightlist)): 
-#                self._weightlist[idxWeight] += self._learningrate * dwlist[idxWeight] 
-
-        die("END OF LOOOP")         
                       
 
 
@@ -294,6 +266,6 @@ if __name__ == '__main__':
 #    nn.snapshot()
     nn.training()
 #    nn.snapshot()
-#    nn.snapshot_learning()
+    nn.snapshot_learning()
 
 print "READY."
