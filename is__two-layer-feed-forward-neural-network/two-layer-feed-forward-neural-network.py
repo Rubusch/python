@@ -153,13 +153,19 @@ class Perceptron( object ):
         return 1/(1 + exp(product))
 
     def training( self ):
+## init, no bias in dwlist1 connections
+        dwlist1 = []
         dwlist2 = []
+        for idxHidden in range(0, len(self._trainingset) * (len(self._hiddenlist)-1)):
+            dwlist1.append(0.0)
         for idxHidden in range(0, len(self._hiddenlist)):
             dwlist2.append(0.0)
 
 ## calculating net epochs
         for epoch in range(0, 200):
-            dwlist1 = [0,0,0] # per value, since then averaged
+            for idxHidden in range(0, len(self._trainingset) * (len(self._hiddenlist)-1)):
+                dwlist1[idxHidden] = 0.0 # per value, since then averaged
+
             for idxHidden in range(0, len(self._hiddenlist)):
                 dwlist2[idxHidden] = 0.0
             dw = 0
@@ -215,7 +221,10 @@ class Perceptron( object ):
                     inpt = self._trainingset[idxInpt]
                     xval = inpt[idxVal]
                     for idxHidden in range(1, len( self._hiddenlist) ): # per hidden node, 3 + 1 (bias)
-                        dwlist1[idxInpt] += self._learningrate * xval * dwtmp2[idxHidden]
+                        idxWeight = 3* idxInpt + (idxHidden-1)
+#                        weight = self._weight1list[idxWeight]
+#                        dwlist1[idxInpt] += self._learningrate * xval * dwtmp2[idxHidden]
+                        dwlist1[idxWeight] += self._learningrate * xval * dwtmp2[idxHidden]
                     ## / idxHidden
                 ## / idxInpt
             ## / idxVal
@@ -231,20 +240,20 @@ class Perceptron( object ):
 
 
 ## apply de-averaged dw's to the corresponding weights
-        die(dwList2)  
-
         for idxWeight in range(0, len(self._weight1list)):
-            self._weight1List[idxWeight] = dwlist1[idxWeight]
+            self._weight1list[idxWeight] = dwlist1[idxWeight]
 
         for idxWeight in range(0, len(self._weight2list)):
-            self._weight2List[idxWeight] = dwlist2[idxWeight]
+            self._weight2list[idxWeight] = dwlist2[idxWeight]
 
         ## / epoch
-
-            print dwlist1  
-            die( "STOP" )  
-
 ## dw = nu * y * (y-t) d/dnet                    
+
+
+#            print dwlist1  
+#            die( "STOP" )  
+
+
 
 
 
