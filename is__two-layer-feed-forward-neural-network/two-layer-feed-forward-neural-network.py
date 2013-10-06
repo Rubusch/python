@@ -95,16 +95,25 @@ class Perceptron( object ):
         self._hiddenlist       =  [[1.0, 1.0, 1.0, 1.0, 1.0,    1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
                                   ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
                                   ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+                                  ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] 
+                                  ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] 
+                                  ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] 
+                                  ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] 
+                                  ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] 
+                                  ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] 
+                                  ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] 
                                   ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
 
         ## 1-layer weights
         nnset = self._trainingset  
-        for idxWeight in range( 0, 3 * len( nnset )):
+#        for idxWeight in range( 0, 3 * len( nnset )): 
+        for idxWeight in range( 0, (len(self._hiddenlist) -1) * len( nnset )): 
             self._weight1list.append( random.randrange(-100, 100) / 1000.0 )
 #        self._weight1list = [1,1,1,1,1,1,1,1,1] ## debugging        
 
         ## 2-layer weights
-        for idxWeight in range( 0, 1 + len( nnset )):
+        nnset = self._hiddenlist  
+        for idxWeight in range( 0, len( nnset )):
             self._weight2list.append( random.randrange(-100, 100) / 1000.0 )
 #        self._weight2list = [1,1,1,1] ## debugging        
 
@@ -143,13 +152,13 @@ class Perceptron( object ):
 
 
     def snapshot_learning( self ):
-#        for epoch in self._epochdwlist:
         for idx in range(0, len(self._epochdwlist)):
-            if 9 == idx: continue # invalid bias data
-            if 12 == idx: continue # invalid bias data
-#            print "plot " + str(idx)  
+            if ((len(self._hiddenlist)-1)*len(self._trainingset)) == idx: continue
+            if ((len(self._hiddenlist)-1)*(len(self._hiddenlist)-1)) == idx: continue
+
+#            print "plot " + str(idx) ## debugging 
             plt.plot( self._epochdwlist[idx] )
-#            plt.show()
+#            plt.show() ## debugging 
 
         plt.xlabel('time')
         plt.ylabel('error')
@@ -183,6 +192,11 @@ class Perceptron( object ):
 
 ## calculating net epochs
         for epoch in range(0, 1000):
+
+            if 999 == epoch:
+                currentset = self._testset
+                currenttargetlist = self._testtargetlist
+
             dw = 0
             total = 0
 ## forward pass (linear)
@@ -195,7 +209,8 @@ class Perceptron( object ):
                     inpt = currentset[idxInpt]
                     xval = inpt[idxVal]
                     for idxHidden in range(1, len(self._hiddenlist)): # per hidden node, 1 = no bias
-                        idxWeight = 3* idxInpt + (idxHidden-1)
+#                        idxWeight = 3* idxInpt + (idxHidden-1)
+                        idxWeight = (len(self._hiddenlist) -1) * idxInpt + (idxHidden-1)
                         weight = self._weight1list[idxWeight]
                         ## sum of values
                         self._hiddenlist[idxHidden][idxVal] += self.sigma(xval * weight)
@@ -212,7 +227,7 @@ class Perceptron( object ):
                 ## / idxHidden
 
 ## preparing dw from sum(y)
-                target = self._trainingtargetlist[idxVal]
+                target = currenttargetlist[idxVal]
 
 ## backward pass - layer 2
                 ## dwlist2 = nu * y[j] * delta = nu * y[j] * (y[k] - t) * dy/dnet
@@ -234,9 +249,10 @@ class Perceptron( object ):
                     inpt = currentset[idxInpt]
                     xval = inpt[idxVal]
                     for idxHidden in range(1, len( self._hiddenlist) ): # per hidden node, 3 + 1 (bias)
-                        idxWeight = 3* idxInpt + (idxHidden-1)
+#                        idxWeight = 3* idxInpt + (idxHidden-1)
+                        idxWeight = (len(self._hiddenlist) -1) * idxInpt + (idxHidden-1)   
                         ## backward: 
-                        dwlist1[idxWeight] += self._learningrate * xval * dwtmp2[idxHidden]   
+                        dwlist1[idxWeight] += self._learningrate * xval * dwtmp2[idxHidden]
                     ## / idxHidden
                 ## / idxInpt
             ## / idxVal
@@ -257,16 +273,16 @@ class Perceptron( object ):
             idxEpochplot = 0
             for idxWeight in range(0, len(self._weight1list)):
 #                 self._weight1list[idxWeight] += dwlist1[idxWeight]     
-                 self._weight1list[idxWeight] = dwlist1[idxWeight] ## QUICKFIX: assign rather than do: w(new) = dw + w(old)
-                 self._epochdwlist[idxWeight].append(self._weight1list[idxWeight])
-                 dwlist1[idxWeight]=0.0
-                 idxEpochplot += 1
+                self._weight1list[idxWeight] = dwlist1[idxWeight] ## QUICKFIX: assign rather than do: w(new) = dw + w(old)
+                self._epochdwlist[idxWeight].append(self._weight1list[idxWeight])
+                dwlist1[idxWeight]=0.0
+                idxEpochplot += 1
 
             for idxWeight in range(0, len(self._weight2list)):
 #                 self._weight2list[idxWeight] += dwlist2[idxWeight]     
-                 self._weight2list[idxWeight] = dwlist2[idxWeight] ## QUICKFIX: assign rather than do: w(new) = dw + w(old)
-                 self._epochdwlist[idxEpochplot+idxWeight].append(self._weight2list[idxWeight])
-                 dwlist2[idxWeight]=0.0
+                self._weight2list[idxWeight] = dwlist2[idxWeight] ## QUICKFIX: assign rather than do: w(new) = dw + w(old)
+                self._epochdwlist[idxEpochplot+idxWeight].append(self._weight2list[idxWeight])
+                dwlist2[idxWeight]=0.0
 
         ## / epoch
         ## dw = nu * y * (y-t) d/dnet
