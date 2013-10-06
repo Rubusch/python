@@ -46,9 +46,13 @@ import sys
 import random
 ## e.g. use as random.randrange( -1000, 1000 ) / 1000 
 
-
 ## plotting library
 import matplotlib.pyplot as plt
+
+## exponent, e.g. e**val
+from math import exp
+
+
 
 def die( msg = "" ):
     print "FATAL",
@@ -145,16 +149,27 @@ class Perceptron( object ):
         plt.ylabel('error')
         plt.show()
 
+    def sigma( self, product ):
+        return 1/(1 + exp(product))
+
     def training( self ):
+        dwlist2 = []
+        for idxHidden in range(0, len(self._hiddenlist)):
+            dwlist2.append(0.0)
+
 ## calculating net epochs
         for epoch in range(0, 200):
-            dwlist = [0,0,0] # per value, since then averaged
+            dwlist1 = [0,0,0] # per value, since then averaged
+            for idxHidden in range(0, len(self._hiddenlist)):
+                dwlist2[idxHidden] = 0.0
+            dw = 0
             total = 0
-
 ## forward pass (linear)
-            y = 0 
+            y = 0
             for idxVal in range(0, len(self._trainingset[0])): # per value, 13x
                 total += 1
+
+## layer 1
                 for idxInpt in range(0, len(self._trainingset)): # per input node + bias, here 3x
                     inpt = self._trainingset[idxInpt]
                     xval = inpt[idxVal]
@@ -162,8 +177,7 @@ class Perceptron( object ):
                         idxWeight = 3* idxInpt + (idxHidden-1)
                         weight = self._weight1list[idxWeight]
                         ## sum of values
-                        self._hiddenlist[idxHidden][idxVal] += xval * weight
-
+                        self._hiddenlist[idxHidden][idxVal] += self.sigma(xval * weight)
                     ## / idxHidden
                 ## / idxInpt
 
@@ -174,26 +188,56 @@ class Perceptron( object ):
                 # print self._hiddenlist[3]  
                         
 
-                for idxHidden in range(0, len(self._hiddenlist)):
+## layer 2
+                y = 0
+                for idxHidden in range(0, len(self._hiddenlist)): # per hidden node, 3 + 1 (bias)
                     hidden = self._hiddenlist[idxHidden][idxVal]
                     weight = self._weight2list[idxHidden]
                     y += hidden * weight
                 ## / idxHidden
+
+## preparing dw from sum(y)
+                target = self._trainingtargetlist[idxVal]
+                dw = y - target
+
+## backward pass
+                ## dwlist2 = nu * y[j] * delta = nu * y[j] * (y[k] - t) * dy/dnet
+                dwtmp2 = [] # just to transfer to next block (as backup)
+                for idxHidden in range(0, len( self._hiddenlist) ): # per hidden node, 3 + 1 (bias)
+                    hidden =  self._hiddenlist[idxHidden]
+#                    dwlist2.append(self._learningrate * dw * hidden[idxVal])
+                    dwtmp2.append(self._learningrate * dw * hidden[idxVal])
+                    dwlist2[idxHidden] += self._learningrate * dw * hidden[idxVal]
+                ## / idxHidden
+
+                ## dwlist1 = nu * x * delta = nu * x * dwlist2, per x neuron
+                dwtmp1 = []
+                for idxInpt in range(0, len(self._trainingset)): # per input node + bias, here 3x
+                    inpt = self._trainingset[idxInpt]
+                    xval = inpt[idxVal]
+                    for idxHidden in range(1, len( self._hiddenlist) ): # per hidden node, 3 + 1 (bias)
+#                        dwlist1[idxInpt] += self._learningrate * xval * dwlist2[idxHidden]  
+                        dwlist1[idxInpt] += self._learningrate * xval * dwtmp2[idxHidden]
+                    ## / idxHidden
+                ## / idxInpt
             ## / idxVal
 
-            ## average y
-            y = y / total
+## average dw
+            for idxInpt in range(0, len(self._trainingset)): # per input node + bias, here 3x
+                dwlist1[idxInpt] = dwlist1[idxInpt] / total
+            ## / idxInpt
+
+            for idxHidden in range(0, len(dwlist2)):
+                dwlist2[idxHidden] = dwlist2[idxHidden] / total
+            ## / idxHidden
+
+## apply de-averaged dw's to the corresponding weights
 
 
-
-
-            die( y )  
+            print dwlist1  
             die( "STOP" )  
 
-
-
-            die( "STOP" )
-                    
+## dw = nu * y * (y-t) d/dnet                    
 
 
 

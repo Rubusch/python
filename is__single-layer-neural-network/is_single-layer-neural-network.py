@@ -104,7 +104,6 @@ class Perceptron( object ):
             dwlist = [0,0,0] # per value, since then averaged
 
 ## forward pass (linear)
-            intermediate = []
             total = 0
             for idxVal in range(0, len(self._trainingset[0])):
                 y = 0
