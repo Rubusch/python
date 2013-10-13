@@ -147,35 +147,36 @@ class Perceptron( object ):
                           , [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
                           , [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
 
+        
         ## 1-layer weights
         nnset = self._trainingset  
 #        for idxWeight in range( 0, 3 * len( nnset )): 
         for idxWeight in range( 0, (len(self._hiddenlist) -1) * len( nnset )): 
             self._weight1list.append( random.randrange(-100, 100) / 1000.0 )
 #        self._weight1list = [1,1,1,1,1,1,1,1,1] ## debugging        
-
         
         ## 1. layer weights
-        nndata = self._trainingdata
-        nhidden = len(self._hiddendata[0]-1) # w/o bias
+        nhidden = len(self._hiddendata[0])-1 # w/o bias
         ninput = len(self._trainingdata[0])
-
-        weight1matrix = []
-        for x in range(0, nhidden):
-            tmp = []
-            for y in range(0, ninput):
-                tmp += [random.randomrange(-100, 100) / 1000.0]
-            weigth1matrix.append(tmp)
-
-        self._printmatrix( weight1matrix )   
-        die("STOP")
+        weight1matrix = self._initweights( ninput, nhidden)
 
 
+
+            
         ## 2-layer weights
         nnset = self._hiddenlist  
         for idxWeight in range( 0, len( nnset )):
             self._weight2list.append( random.randrange(-100, 100) / 1000.0 )
 #        self._weight2list = [1,1,1,1] ## debugging        
+            
+        ## 2. layer weights
+        nhidden = len(self._hiddendata[0]) # with bias
+        ny = 1
+        weight2matrix = self._initweights( nhidden, ny)
+
+
+
+        die( "STOP" )
 
         ## learningrate nu
         ## 1.0, 1.0/3.0, 1.0/10.0, 1.0/30.0, 1.0/100.0, 1.0/300.0, 1.0/1000.0
@@ -223,6 +224,16 @@ class Perceptron( object ):
         plt.xlabel('time')
         plt.ylabel('error')
         plt.show()
+
+
+    def _initweights( self, nsource, ntarget):
+        weightmatrix = []
+        for h in range(0, ntarget):
+            tmp = []
+            for x in range(0, nsource):
+                tmp += [random.randrange(-100, 100) / 1000.0]
+            weightmatrix.append(tmp)
+        return weightmatrix
 
 
     def sigma( self, product ):
