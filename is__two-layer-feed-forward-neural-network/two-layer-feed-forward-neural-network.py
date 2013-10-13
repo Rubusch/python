@@ -640,14 +640,14 @@ class Perceptron( object ):
 #                 self._epochdwlist[idxEpochplot+idxWeight].append(self._weight2list[idxWeight])
 #                 dwlist2[idxWeight]=0.0
                 
-            self.mat_addition( self._weight1matrix, dw1data_history )
-            self.mat_addition( self._weight2matrix, self.mat_transpose(  dw2data_history) )
+            self._weight1matrix = self.mat_addition( self._weight1matrix, dw1data_history )
+            self._weight2matrix = self.mat_addition( self._weight2matrix, self.mat_transpose(  dw2data_history) )
 
             self.update_history()
             
             print "---"
             self.mat_show( self._dwhistory )   
-            if 3 == epoch: die("XXX")
+#            if 3 == epoch: die("XXX")
         ## / epoch
         ## dw = nu * y * (y-t) d/dnet
 
