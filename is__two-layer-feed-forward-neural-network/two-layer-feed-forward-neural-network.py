@@ -174,10 +174,6 @@ class Perceptron( object ):
         ny = 1
         weight2matrix = self._initweights( nhidden, ny)
 
-
-
-        die( "STOP" )
-
         ## learningrate nu
         ## 1.0, 1.0/3.0, 1.0/10.0, 1.0/30.0, 1.0/100.0, 1.0/300.0, 1.0/1000.0
 #        self._learningrate = 1.0
@@ -188,9 +184,13 @@ class Perceptron( object ):
 #        self._learningrate = 1.0/300.0
 #        self._learningrate = 1.0/1000.0
 
+        
         for idxHidden in range(0, len(self._trainingset) * (len(self._hiddenlist)-1) + len(self._hiddenlist)):
             self._epochdwlist.append([0.0])
         self._epochtime = [0]
+        
+        self._printmatrix( self._epochdwlist )
+        die( "STOP" )
 
     def snapshot( self ):
         ## class data: dots
