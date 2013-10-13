@@ -246,29 +246,37 @@ class Perceptron( object ):
 
     def _initweights( self, nsource, ntarget):
         weightmatrix = []
-        for h in range(0, ntarget):
+        for h in range(0, nsource):
             tmp = []
-            for x in range(0, nsource):
+            for x in range(0, ntarget):
                 tmp += [random.randrange(-100, 100) / 1000.0]
             weightmatrix.append(tmp)
         return weightmatrix
 
 
-    def sigma( self, product ):
-        return product                               
-## QUICKFIX: sigma activation function is turned off,
-## since this over 1000 epochs explodes the data, and results in inf/nan results
-#        try:
-        ## overflow erors
-        return 1/(1 + math.exp(product))
-#        except OverflowError:
-#            return product
+    def sigma( self, mat ):
+        print ""
+        self.mat_show( mat )
+        print "sigma"
+        res = []
+        for y in range(0, len(mat)):
+            tmp = []
+            for x in range(0, len(mat[0])):
+                tmp += [1/(1 + math.exp(mat[y][x]))]
+            res.append(tmp)
+
+        self.mat_show( res )
+        return res
+
+#        ## overflow erors
+#        return 1/(1 + math.exp(product))
 
 # TODO use
     def revsigma( self, product ):
         return -math.exp(product)/((math.exp(product) + 1) * (math.exp(product) + 1))
 
-    def _matrixmultiplication( self, a, b ):
+    def mat_multiplication( self, a, b ):
+        print ""
         self.mat_show( a )
         print "x"
         self.mat_show( b )
@@ -308,17 +316,18 @@ class Perceptron( object ):
         return c
 
 # TODO use?
-    def dot( self, a, b ):
-        res = 0
-        for idx in range(0, len(a)):
-            res += a[idx]*b[idx]
-        return res
+    # def vec_dot( self, a, b ):
+    #     res = 0
+    #     for idx in range(0, len(a)):
+    #         res += a[idx]*b[idx]
+    #     return res
 
 
     def mat_transpose( self, mat ):
-        trans = []
+        print ""
         self.mat_show( mat ) 
         print "transpose"
+        trans = []
         for y in range(0, len(mat)):
             tmp = []
             for x in range(0, len(mat[0])):
@@ -328,10 +337,11 @@ class Perceptron( object ):
         return trans
 
     def mat_addx( self, a, b ):
-        if len(a) != len(b): die("mat_addx failed, different sizes")
+        print ""
         self.mat_show( a ) 
         print "addx"
         self.mat_show( b ) 
+        if len(a) != len(b): die("mat_addx failed, different sizes")
         c = []
         for y in range(0,len(a)):
             c.append( a[y] + b[y] )
@@ -340,10 +350,11 @@ class Perceptron( object ):
         return c
 
     def mat_addy( self, a, b ):
-        if len(a[0]) != len(b[0]): die("mat_addy failed: different sizes")
+        print ""
         self.mat_show( a ) 
         print "addy"
         self.mat_show( b ) 
+        if len(a[0]) != len(b[0]): die("mat_addy failed: different sizes")
         c = a
         c += b
         print "="
@@ -351,10 +362,11 @@ class Perceptron( object ):
         return c
 
     def mat_addition( self, a, b ):
-        if len(a) != len(b): die("mat_addition failed: not implemented for different sizes")
+        print ""
         self.mat_show( a ) 
         print "addition"
         self.mat_show( b ) 
+        if len(a) != len(b): die("mat_addition failed: not implemented for different sizes")
         c = []
         for y in range(0, len(a)):
             tmp = []
@@ -366,6 +378,7 @@ class Perceptron( object ):
         return c
 
     def mat_factorize( self, fact, mat ):
+        print ""
         print fact
         print "*"
         self.mat_show( mat )
@@ -442,20 +455,30 @@ class Perceptron( object ):
 #                     ## / idxHidden
 #                 ## / idxInpt
                 
-                self._hiddendata = self.mat_addx( [[1.0]], self._matrixmultiplication( current_input, self._weight1matrix))  
-                print ""
-                self.mat_show(self._hiddendata)
+                # input * weights
+                self._hiddendata = self.mat_multiplication( current_input, self._weight1matrix)
+                # prepend 1, for bias2
+                self._hiddendata = self.mat_addx( [[1.0]], self._hiddendata)  
+                # sigma
+                self._hiddendata = self.sigma( self._hiddendata )
+
+## forward - layer 2
+                
+                # y = 0
+                # for idxHidden in range(0, len(self._hiddenlist)): # per hidden node, 3 + 1 (bias)
+                #     hidden = self._hiddenlist[idxHidden][idxVal]
+                #     weight = self._weight2list[idxHidden]
+                #     ## propagation
+                #     y += hidden * weight
+                # ## / idxHidden
+                    
+                y = self.mat_multiplication( self._hiddendata, self._weight2matrix ) 
+
+
+                print "---"
                 die( "STOP" )
                 
 
-## forward - layer 2
-                y = 0
-                for idxHidden in range(0, len(self._hiddenlist)): # per hidden node, 3 + 1 (bias)
-                    hidden = self._hiddenlist[idxHidden][idxVal]
-                    weight = self._weight2list[idxHidden]
-                    ## propagation
-                    y += hidden * weight
-                ## / idxHidden
 
 ## preparing dw from sum(y)
                 target = currenttargetlist[idxVal]
@@ -538,7 +561,7 @@ if __name__ == '__main__':
 #     print ""
 
      ## matrix matrix multiplication
-#     c = nn._matrixmultiplication( a, b )
+#     c = nn.mat_multiplication( a, b )
 #     nn.mat_show( c )
 
      ## dot product
