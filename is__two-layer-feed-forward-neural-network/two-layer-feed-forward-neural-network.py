@@ -534,13 +534,15 @@ class Perceptron( object ):
                         
 
 
-#                dw1data[y][x] += 
+
+                print self._hiddenlist
+#                dw1data[y][x] += self._learningrate * self.revsigma(self._hiddenlist - bias)
 #                idxWeight = (len(self._hiddenlist) -1) * self.revsigma( idxInpt + (idxHidden-1))   
 
 
 
                 print "---"
-                self.mat_show( self._hiddendata ) 
+                self.mat_show( self._hiddendata )
                 die( "STOP" )
 
 
