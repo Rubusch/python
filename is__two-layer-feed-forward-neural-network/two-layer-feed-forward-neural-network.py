@@ -120,6 +120,8 @@ class Perceptron( object ):
                                    ,[-1.0]
                                    ,[-1.0]
                                    ,[-1.0]
+                                   ,[-1.0]
+                                   ,[-1.0]
                                    ,[-1.0]]
 
 # TODO
@@ -268,9 +270,6 @@ class Perceptron( object ):
         self.mat_show( res )
         return res
 
-#        ## overflow erors
-#        return 1/(1 + math.exp(product))
-
     def revsigma( self, mat ):
         ## revsigma = sigma(x) * (1 - sigma(x))
         sigmat = self.sigma(mat)
@@ -288,11 +287,6 @@ class Perceptron( object ):
 
         ## sigma - (sigma*sigma) == sigma * (1 - sigma)
         return self.mat_addition( sigmat, res )
-
-
-
-
-#        return -math.exp(product)/((math.exp(product) + 1) * (math.exp(product) + 1))
 
     def mat_multiplication( self, a, b ):
         print ""
@@ -334,14 +328,6 @@ class Perceptron( object ):
 
         return c
 
-# TODO use?
-    # def vec_dot( self, a, b ):
-    #     res = 0
-    #     for idx in range(0, len(a)):
-    #         res += a[idx]*b[idx]
-    #     return res
-
-
     def mat_transpose( self, mat ):
         print ""
         self.mat_show( mat ) 
@@ -374,8 +360,8 @@ class Perceptron( object ):
         print "addy"
         self.mat_show( b ) 
         if len(a[0]) != len(b[0]): die("mat_addy failed: different sizes")
-        c = a
-        c += b
+        c = [i for i in a]
+        c += [i for i in b]
         print "="
         self.mat_show( c ) 
         return c
@@ -410,8 +396,22 @@ class Perceptron( object ):
         print "="
         self.mat_show( res ) 
         return res
-        
 
+    def mat_avg( self, old, new):
+        print ""
+        self.mat_show( old ) 
+        print "avg"
+        self.mat_show( new ) 
+        if 0 == len(old): return [i for i in new]
+        res = []
+        for y in range(0,len(new)):
+            tmp = []
+            for x in range(0,len(new[0])):
+                tmp += [ (old[y][x] + new[y][x]) / 2 ]
+            res.append(tmp)
+        print "="
+        self.mat_show( res ) 
+        return res
 
     def mat_show( self, mat ):
         for y in range(0,len(mat)):
@@ -440,11 +440,12 @@ class Perceptron( object ):
         #     dwlist2.append(0.0)
             
         dw1data = []
-        for y in self._weight1matrix[0]:
+        for y in self._weight1matrix:
             tmp=[]
-            for x in self._weight1matrix:
+            for x in self._weight1matrix[0]:
                 tmp += [0.0]
             dw1data.append(tmp)
+        dw1data_history = []
 
         dw2data = []
         for y in self._weight2matrix[0]: # TODO check this
@@ -452,7 +453,7 @@ class Perceptron( object ):
             for x in self._weight2matrix:
                 tmp += [0.0]
             dw2data.append( tmp )
-
+        dw2data_history = []
 
 
 ## calculating net epochs
@@ -503,7 +504,7 @@ class Perceptron( object ):
                 #     y += hidden * weight
                 # ## / idxHidden
                     
-                y = self.mat_multiplication( self._hiddendata, self._weight2matrix ) 
+                net = self.mat_multiplication( self._hiddendata, self._weight2matrix ) 
 
 ## preparing dw from sum(y)
                 
@@ -528,7 +529,7 @@ class Perceptron( object ):
 
 
                 ## backward: learningrate * delta * outputvalue
-                dw = current_targetdata[idxVal][0] - y[0][0]
+                dw = current_targetdata[idxVal][0] - net[0][0]
                 dw *= self._learningrate 
                 dw2data = self.mat_factorize( dw, self._hiddendata )#* outputvalue
 
@@ -547,15 +548,19 @@ class Perceptron( object ):
 #                     ## / idxHidden
 #                 ## / idxInpt
                         
-                dw1tmp = self.mat_factorize( self._learningrate, dw2data )
-#                dw1tmp = self.mat_revsigma( dw1tmp )
+                dw1tmp = self.revsigma( dw2data )
+                dw1tmp = self.mat_factorize( self._learningrate, dw1tmp ) 
+
+#                dw1tmp = self.mat_multiplication( dw1tmp, self._weight1matrix) # TODO is this a matrix multiplication?
+                tr_weight1matrix = self.mat_transpose( self._weight1matrix ) # TODO check
+                dw1tmp = self.mat_multiplication( dw1tmp, tr_weight1matrix) # TODO is this a matrix multiplication?
                 
-                print "---"
-                self.mat_show( current_input ) # input, x
-                self.mat_show( dw1tmp )
+#                self.mat_show( current_input ) # input, x
 
-#                dw1tmp = self.mat_multiplication( dw
-
+#                dw1tmp = self.mat_addy( self.mat_addy( dw1tmp, dw1tmp), dw1tmp)
+                dw1next = self.mat_addy( dw1tmp, dw1tmp)
+                dw1next = self.mat_addy( dw1next, dw1tmp )
+                dw1data = self.mat_addition( dw1data, dw1next )
 
 
 
@@ -565,42 +570,60 @@ class Perceptron( object ):
 #                dw1data[y][x] += self._learningrate * self.revsigma(self._hiddenlist - bias)
 #                idxWeight = (len(self._hiddenlist) -1) * self.revsigma( idxInpt + (idxHidden-1))   
 
+                
+#                print "---"
+#                self.mat_show( dw1data ) 
+#                self.mat_show( dw2data ) 
+
+                dw1data_history = self.mat_avg( dw1data_history, dw1data)
+                dw2data_history = self.mat_avg( dw2data_history, dw2data)
 
 
-                print "---"
-                self.mat_show( dw1tmp )
-                die( "STOP" )
-
-
+#                print "---"
+#                self.mat_show( dw1tmp )
+#
             ## / idxVal
 
 ## average dw
-            for idxDw in range(0, len(dwlist1)):
-                dwlist1[idxDw] = dwlist1[idxDw] / total    
-#                dwlist1[idxDw] = dwlist1[idxDw] / (total*total) ## QUICKFIX: to average it down, I square the totals
-            ## / idxInpt
+#             for idxDw in range(0, len(dwlist1)):
+#                 dwlist1[idxDw] = dwlist1[idxDw] / total    
+# #                dwlist1[idxDw] = dwlist1[idxDw] / (total*total) ## QUICKFIX: to average it down, I square the totals
+#             ## / idxInpt
 
-            for idxHidden in range(0, len(dwlist2)):
-                dwlist2[idxHidden] = dwlist2[idxHidden] / total    
-#                dwlist2[idxHidden] = dwlist2[idxHidden] / (total*total) ## QUICKFIX: to average it down, I square the totals
-            ## / idxHidden
+#             for idxHidden in range(0, len(dwlist2)):
+#                 dwlist2[idxHidden] = dwlist2[idxHidden] / total    
+# #                dwlist2[idxHidden] = dwlist2[idxHidden] / (total*total) ## QUICKFIX: to average it down, I square the totals
+#             ## / idxHidden
+
+                
+# ## apply de-averaged dw's to the corresponding weights
+#             idxEpochplot = 0
+#             for idxWeight in range(0, len(self._weight1list)):
+# #                 self._weight1list[idxWeight] += dwlist1[idxWeight]     
+#                 self._weight1list[idxWeight] = dwlist1[idxWeight] ## QUICKFIX: assign rather than do: w(new) = dw + w(old)
+#                 self._epochdwlist[idxWeight].append(self._weight1list[idxWeight])
+#                 dwlist1[idxWeight]=0.0
+#                 idxEpochplot += 1
+
+#             for idxWeight in range(0, len(self._weight2list)):
+# #                 self._weight2list[idxWeight] += dwlist2[idxWeight]     
+#                 self._weight2list[idxWeight] = dwlist2[idxWeight] ## QUICKFIX: assign rather than do: w(new) = dw + w(old)
+#                 self._epochdwlist[idxEpochplot+idxWeight].append(self._weight2list[idxWeight])
+#                 dwlist2[idxWeight]=0.0
+                
+
+            self.mat_addition( self._weight1matrix, dw1data_history )
 
 
-## apply de-averaged dw's to the corresponding weights
-            idxEpochplot = 0
-            for idxWeight in range(0, len(self._weight1list)):
-#                 self._weight1list[idxWeight] += dwlist1[idxWeight]     
-                self._weight1list[idxWeight] = dwlist1[idxWeight] ## QUICKFIX: assign rather than do: w(new) = dw + w(old)
-                self._epochdwlist[idxWeight].append(self._weight1list[idxWeight])
-                dwlist1[idxWeight]=0.0
-                idxEpochplot += 1
+            print "---"
+            print "AAA"
+            self.mat_show( self._weight2matrix )
+            print "BBB"
+            self.mat_show( dw2data_history )
 
-            for idxWeight in range(0, len(self._weight2list)):
-#                 self._weight2list[idxWeight] += dwlist2[idxWeight]     
-                self._weight2list[idxWeight] = dwlist2[idxWeight] ## QUICKFIX: assign rather than do: w(new) = dw + w(old)
-                self._epochdwlist[idxEpochplot+idxWeight].append(self._weight2list[idxWeight])
-                dwlist2[idxWeight]=0.0
+            die( "XXX" )   
 
+            self.mat_addition( self._weight2matrix, self.mat_transpose(  dw2data_history) )
         ## / epoch
         ## dw = nu * y * (y-t) d/dnet
 
@@ -610,10 +633,10 @@ if __name__ == '__main__':
 
 ## test
      ## matrices
-     a = [[1,1,1],[2,2,2],[3,3,3]]
+#     a = [[1.0,1.0,1.0],[2.0,2.0,2.0],[3.0,3.0,3.0]]
 #     a = [[1,1,1],[2,2,2]]
 #     a = [[1],[1],[1]]
-#     b = [[1,2,3], [1,2,3], [1,2,3]]
+#     b = [[1.0,2.0,3.0], [1.0,2.0,3.0], [1.0,2.0,3.0]]
 
 #     nn.mat_show( a ) 
 #     print ""
@@ -634,6 +657,9 @@ if __name__ == '__main__':
 #     res = nn.revsigma( a )
 #     print "---"
 #     nn.mat_show( res )
+
+#     nn.mat_avg( [], b)
+#     nn.mat_avg( a, b)
 #     die( "STOP" )
     
 #     nn.snapshot()
