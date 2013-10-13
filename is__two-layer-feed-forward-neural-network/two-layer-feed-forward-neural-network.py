@@ -166,14 +166,67 @@ class Perceptron( object ):
 
 
     def sigma( self, product ):
-        return product
+        return product                               
 ## QUICKFIX: sigma activation function is turned off,
 ## since this over 1000 epochs explodes the data, and results in inf/nan results
-        try:
-            ## overflow erors
-            return 1/(1 + math.exp(product))
-        except OverflowError:
-            return product
+#        try:
+        ## overflow erors
+        return 1/(1 + math.exp(product))
+#        except OverflowError:
+#            return product
+
+# TODO use
+    def revsigma( self, product ):
+        return -math.exp(product)/((math.exp(product) + 1) * (math.exp(product) + 1))
+
+
+    def _printmatrix( self, a ):
+        for y in range(0,len(a)):
+            for x in range(0,len(a[y])):
+                print a[y][x],
+            print ""
+
+    def _matrixmultiplication( self, a, b ):
+        aylen = len( a )
+        axlen = len( a[0] )
+
+        bylen = len( b )
+        bxlen = len( b[0] )
+
+        ## safety
+        if axlen != bylen: die("matrix multiplication: nonconformat arguments")
+
+        cylen = aylen
+        cxlen = bxlen
+
+        ## init c
+        c = []
+        for y in range(0, cylen):
+            row = []
+            for x in range(0, cxlen):
+                row += [0]
+            c.append( row )
+
+        ## matrix matrix multiplication, brute force
+        for ay in range(0,aylen):
+
+            for bx in range(0,bxlen):
+                tmp = 0
+                for xy in range(0,bylen):
+                    tmp += a[ay][xy] * b[xy][bx]
+                c[ay][bx] = tmp
+        return c
+
+
+# TODO use?
+    def dot( self, a, b ):
+        res = 0
+        for idx in range(0, len(a)):
+            res += a[idx]*b[idx]
+        return res
+
+## self.hiddenlist = self._matrixmultiplication( currentset, self._weight1matrix)  
+
 
 
 
@@ -205,6 +258,9 @@ class Perceptron( object ):
                 total += 1
 
 ## forward - layer 1
+                
+#                self.hiddenlist = self._matrixmultiplication( currentset, self._weight1matrix)  
+                
                 for idxInpt in range(0, len(currentset)): # per input node + bias, here 3x
                     inpt = currentset[idxInpt]
                     xval = inpt[idxVal]
@@ -216,6 +272,7 @@ class Perceptron( object ):
                         self._hiddenlist[idxHidden][idxVal] += self.sigma(xval * weight)
                     ## / idxHidden
                 ## / idxInpt
+                
 
 ## forward - layer 2
                 y = 0
@@ -251,6 +308,9 @@ class Perceptron( object ):
                     for idxHidden in range(1, len( self._hiddenlist) ): # per hidden node, 3 + 1 (bias)
 #                        idxWeight = 3* idxInpt + (idxHidden-1)
                         idxWeight = (len(self._hiddenlist) -1) * idxInpt + (idxHidden-1)   
+                        
+                        idxWeight = (len(self._hiddenlist) -1) * self.revsigma( idxInpt + (idxHidden-1))   
+                        
                         ## backward: 
                         dwlist1[idxWeight] += self._learningrate * xval * dwtmp2[idxHidden]
                     ## / idxHidden
@@ -289,10 +349,27 @@ class Perceptron( object ):
 
 
 if __name__ == '__main__':
-    nn = Perceptron()
-#    nn.snapshot()
-    nn.training()
-#    nn.snapshot()
-    nn.snapshot_learning()
+     nn = Perceptron()
+
+## test
+     ## matrices
+#     a = [[1,1,1],[2,2,2]]
+#     b = [[1,2,3], [1,2,3], [1,2,3]]
+#     nn._printmatrix( a ) 
+#     nn._printmatrix( b ) 
+
+     ## matrix matrix multiplication
+#     c = nn._matrixmultiplication( a, b )
+#     nn._printmatrix( c )
+
+     ## dot product
+# TODO
+
+
+    
+# #    nn.snapshot()
+#     nn.training()
+# #    nn.snapshot()
+#     nn.snapshot_learning()
 
 print "READY."
