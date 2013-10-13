@@ -333,9 +333,9 @@ class Perceptron( object ):
         self.mat_show( mat ) 
         print "transpose"
         trans = []
-        for y in range(0, len(mat)):
+        for y in range(0, len(mat[0])):
             tmp = []
-            for x in range(0, len(mat[0])):
+            for x in range(0, len(mat)):
                 tmp += [mat[x][y]]
             trans.append(tmp)
         self.mat_show( trans ) 
@@ -614,11 +614,7 @@ class Perceptron( object ):
 
             self.mat_addition( self._weight1matrix, dw1data_history )
             self.mat_addition( self._weight2matrix, self.mat_transpose(  dw2data_history) )
-            print "---"
-            print "AAA"
-            self.mat_show( self._weight2matrix )
-            print "BBB"
-            self.mat_show( dw2data_history )
+
 
             die( "XXX" )   
 
@@ -646,7 +642,7 @@ if __name__ == '__main__':
 #     nn.mat_show( c )
 
      ## dot product
-#     nn.mat_show(nn.mat_transpose(b))
+#     nn.mat_transpose(a)
 #     nn.mat_addx( a, b )
 #     nn.mat_addy( a, b )
 #     nn.mat_addition( a, b )
