@@ -69,6 +69,7 @@ class Perceptron( object ):
     _weight1matrix = [] # weights, 1st thru 2nd layer
     _weight2matrix = [] # weights, 2nd thru net layer
     _dwhistory = []     # printable history of dw
+    _hiddendata = []    # hidden data
 
     _trainingset = []  # training data (class 1 and 2)
     _testset = []      # test set
@@ -267,13 +268,11 @@ class Perceptron( object ):
     def revsigma( self, product ):
         return -math.exp(product)/((math.exp(product) + 1) * (math.exp(product) + 1))
 
-    def _printmatrix( self, a ):
-        for y in range(0,len(a)):
-            for x in range(0,len(a[y])):
-                print a[y][x],
-            print ""
-
     def _matrixmultiplication( self, a, b ):
+        self.mat_show( a )
+        print "x"
+        self.mat_show( b )
+
         aylen = len( a )
         axlen = len( a[0] )
 
@@ -302,8 +301,11 @@ class Perceptron( object ):
                 for xy in range(0,bylen):
                     tmp += a[ay][xy] * b[xy][bx]
                 c[ay][bx] = tmp
-        return c
 
+        print "="
+        self.mat_show( c )
+
+        return c
 
 # TODO use?
     def dot( self, a, b ):
@@ -312,7 +314,22 @@ class Perceptron( object ):
             res += a[idx]*b[idx]
         return res
 
-## self.hiddenlist = self._matrixmultiplication( currentset, self._weight1matrix)  
+
+    def mat_transpose( self, mat ):
+        trans = []
+        for y in range(0, len(mat)):
+            tmp = []
+            for x in range(0, len(mat[0])):
+                tmp += [mat[x][y]]
+            trans.append(tmp)
+        return trans
+
+
+    def mat_show( self, mat ):
+        for y in range(0,len(mat)):
+            for x in range(0,len(mat[y])):
+                print mat[y][x],
+            print ""
 
 
 
@@ -336,37 +353,42 @@ class Perceptron( object ):
             
 
 
-
-        die( "STOP" )       
 ## calculating net epochs
-        for epoch in range(0, 1000):
+        maxtime = 1000
+        for epoch in range(0, maxtime):
 
-            if 999 == epoch:
-                currentset = self._testset
-                currenttargetlist = self._testtargetlist
+# TODO         
+#            if (maxtime-1) == epoch:
+#                currentset = self._testset
+#                currenttargetlist = self._testtargetlist
 
             dw = 0
             total = 0
+
 ## forward pass (linear)
             y = 0
-            for idxVal in range(0, len(currentset[0])): # per value, 13x
+#            for idxVal in range(0, len(currentset[0])): # per value set, 13x
+            for idxVal in range(0, len(current_data)):
+                current_input = [current_data[idxVal]]
                 total += 1
 
 ## forward - layer 1
                 
-#                self.hiddenlist = self._matrixmultiplication( currentset, self._weight1matrix)  
+#                 for idxInpt in range(0, len(currentset)): # per input node + bias, here 3x
+#                     inpt = currentset[idxInpt]
+#                     xval = inpt[idxVal]
+#                     for idxHidden in range(1, len(self._hiddenlist)): # per hidden node, 1 = no bias
+# #                        idxWeight = 3* idxInpt + (idxHidden-1)
+#                         idxWeight = (len(self._hiddenlist) -1) * idxInpt + (idxHidden-1)
+#                         weight = self._weight1list[idxWeight]
+#                         ## sum of values
+#                         self._hiddenlist[idxHidden][idxVal] += self.sigma(xval * weight)
+#                     ## / idxHidden
+#                 ## / idxInpt
                 
-                for idxInpt in range(0, len(currentset)): # per input node + bias, here 3x
-                    inpt = currentset[idxInpt]
-                    xval = inpt[idxVal]
-                    for idxHidden in range(1, len(self._hiddenlist)): # per hidden node, 1 = no bias
-#                        idxWeight = 3* idxInpt + (idxHidden-1)
-                        idxWeight = (len(self._hiddenlist) -1) * idxInpt + (idxHidden-1)
-                        weight = self._weight1list[idxWeight]
-                        ## sum of values
-                        self._hiddenlist[idxHidden][idxVal] += self.sigma(xval * weight)
-                    ## / idxHidden
-                ## / idxInpt
+                self._hiddendata = self._matrixmultiplication( current_input, self._weight1matrix)  
+
+                die("STOP")
                 
 
 ## forward - layer 2
@@ -450,20 +472,20 @@ if __name__ == '__main__':
      ## matrices
 #     a = [[1,1,1],[2,2,2]]
 #     b = [[1,2,3], [1,2,3], [1,2,3]]
-#     nn._printmatrix( a ) 
-#     nn._printmatrix( b ) 
+#     nn.mat_show(b)
+#     nn.mat_show( a ) 
+#     nn.mat_show( b ) 
 
      ## matrix matrix multiplication
 #     c = nn._matrixmultiplication( a, b )
-#     nn._printmatrix( c )
+#     nn.mat_show( c )
 
      ## dot product
 # TODO
-
-
+#     nn.mat_show(nn.mat_transpose(b))
     
 # #    nn.snapshot()
-     nn.training()
+     nn.training()  
 # #    nn.snapshot()
 #     nn.snapshot_learning()
 
