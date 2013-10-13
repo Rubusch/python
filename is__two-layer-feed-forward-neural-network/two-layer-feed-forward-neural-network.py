@@ -143,7 +143,7 @@ class Perceptron( object ):
         #                           ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] 
         #                           ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
         
-        self._hiddendata = [[1.0, 0.0, 0.0, 0.0]]
+        self._hiddendata = [[0.0, 0.0, 0.0]]
                           # , [1.0, 0.0, 0.0, 0.0]
                           # , [1.0, 0.0, 0.0, 0.0]
                           # , [1.0, 0.0, 0.0, 0.0]
@@ -166,7 +166,8 @@ class Perceptron( object ):
 # #        self._weight1list = [1,1,1,1,1,1,1,1,1] ## debugging        
         
         ## 1. layer weights
-        nhidden = len(self._hiddendata[0])-1 # w/o bias
+#        nhidden = len(self._hiddendata[0])-1 # w/o bias
+        nhidden = len(self._hiddendata[0])
         ninput = len(self._trainingdata[0])
         self._weight1matrix = self._initweights( ninput, nhidden)
 
@@ -178,7 +179,7 @@ class Perceptron( object ):
 ##        self._weight2list = [1,1,1,1] ## debugging        
             
         ## 2. layer weights
-        nhidden = len(self._hiddendata[0]) # with bias
+        nhidden = len(self._hiddendata[0])
         ny = 1
         self._weight2matrix = self._initweights( nhidden, ny)
 
@@ -270,9 +271,28 @@ class Perceptron( object ):
 #        ## overflow erors
 #        return 1/(1 + math.exp(product))
 
-# TODO use
-    def revsigma( self, product ):
-        return -math.exp(product)/((math.exp(product) + 1) * (math.exp(product) + 1))
+    def revsigma( self, mat ):
+        ## revsigma = sigma(x) * (1 - sigma(x))
+        sigmat = self.sigma(mat)
+
+        ## sigma*sigma
+        res = []
+        for y in range(0,len(sigmat)):
+            tmp = []
+            for x in range(0, len(sigmat[0])):
+                tmp += [sigmat[y][x] * sigmat[y][x]]
+            res.append(tmp)
+
+        ## -(sigma*sigma)
+        res = self.mat_factorize( -1, res )
+
+        ## sigma - (sigma*sigma) == sigma * (1 - sigma)
+        return self.mat_addition( sigmat, res )
+
+
+
+
+#        return -math.exp(product)/((math.exp(product) + 1) * (math.exp(product) + 1))
 
     def mat_multiplication( self, a, b ):
         print ""
@@ -427,7 +447,7 @@ class Perceptron( object ):
             dw1data.append(tmp)
 
         dw2data = []
-        for y in self._weight2matrix[0]:
+        for y in self._weight2matrix[0]: # TODO check this
             tmp = []
             for x in self._weight2matrix:
                 tmp += [0.0]
@@ -470,8 +490,6 @@ class Perceptron( object ):
                 
                 # input * weights
                 self._hiddendata = self.mat_multiplication( current_input, self._weight1matrix)
-                # prepend 1, for bias2
-                self._hiddendata = self.mat_addx( [[1.0]], self._hiddendata)  
                 # sigma
                 self._hiddendata = self.sigma( self._hiddendata )
 
@@ -508,14 +526,11 @@ class Perceptron( object ):
 #                 ## / idxHidden
                     
 
-                dw = current_targetdata[idxVal][0] - y[0][0]
-                dw *= self._learningrate
 
                 ## backward: learningrate * delta * outputvalue
-                for y in range(0, len(self._hiddendata)):
-                    for x in range(0, len(self._hiddendata[0])):
-                        dw2data[y][x] += dw * self._hiddendata[y][x]
-
+                dw = current_targetdata[idxVal][0] - y[0][0]
+                dw *= self._learningrate 
+                dw2data = self.mat_factorize( dw, self._hiddendata )#* outputvalue
 
 
                 ## dwlist1 = nu * x * delta = nu * x * dwlist2, per x neuron
@@ -532,17 +547,28 @@ class Perceptron( object ):
 #                     ## / idxHidden
 #                 ## / idxInpt
                         
+                dw1tmp = self.mat_factorize( self._learningrate, dw2data )
+#                dw1tmp = self.mat_revsigma( dw1tmp )
+                
+                print "---"
+                self.mat_show( current_input ) # input, x
+                self.mat_show( dw1tmp )
+
+#                dw1tmp = self.mat_multiplication( dw
 
 
 
-                print self._hiddenlist
+
+#                for y in range(0, len(self._hiddendata)):
+#                    for x in range(0, len(self._hiddendata[0])):
+#                        dw2data[y][x] += self._learningrate * 
 #                dw1data[y][x] += self._learningrate * self.revsigma(self._hiddenlist - bias)
 #                idxWeight = (len(self._hiddenlist) -1) * self.revsigma( idxInpt + (idxHidden-1))   
 
 
 
                 print "---"
-                self.mat_show( self._hiddendata )
+                self.mat_show( dw1tmp )
                 die( "STOP" )
 
 
@@ -584,7 +610,7 @@ if __name__ == '__main__':
 
 ## test
      ## matrices
-#     a = [[1,1,1],[2,2,2],[3,3,3]]
+     a = [[1,1,1],[2,2,2],[3,3,3]]
 #     a = [[1,1,1],[2,2,2]]
 #     a = [[1],[1],[1]]
 #     b = [[1,2,3], [1,2,3], [1,2,3]]
@@ -605,6 +631,9 @@ if __name__ == '__main__':
 #     nn.mat_addition( a, b )
 #     nn.mat_factorize( 4, b )
 #     print ""
+#     res = nn.revsigma( a )
+#     print "---"
+#     nn.mat_show( res )
 #     die( "STOP" )
     
 #     nn.snapshot()
