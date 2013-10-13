@@ -143,19 +143,19 @@ class Perceptron( object ):
         #                           ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] 
         #                           ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
         
-        self._hiddendata = [[1.0, 0.0, 0.0, 0.0]
-                          , [1.0, 0.0, 0.0, 0.0]
-                          , [1.0, 0.0, 0.0, 0.0]
-                          , [1.0, 0.0, 0.0, 0.0]
-                          , [1.0, 0.0, 0.0, 0.0]
-                          , [1.0, 0.0, 0.0, 0.0]
-                          , [1.0, 0.0, 0.0, 0.0]
-                          , [1.0, 0.0, 0.0, 0.0]
-                          , [1.0, 0.0, 0.0, 0.0]
-                          , [1.0, 0.0, 0.0, 0.0]
-                          , [1.0, 0.0, 0.0, 0.0]
-                          , [1.0, 0.0, 0.0, 0.0]
-                          , [1.0, 0.0, 0.0, 0.0]]
+        self._hiddendata = [[1.0, 0.0, 0.0, 0.0]]
+                          # , [1.0, 0.0, 0.0, 0.0]
+                          # , [1.0, 0.0, 0.0, 0.0]
+                          # , [1.0, 0.0, 0.0, 0.0]
+                          # , [1.0, 0.0, 0.0, 0.0]
+                          # , [1.0, 0.0, 0.0, 0.0]
+                          # , [1.0, 0.0, 0.0, 0.0]
+                          # , [1.0, 0.0, 0.0, 0.0]
+                          # , [1.0, 0.0, 0.0, 0.0]
+                          # , [1.0, 0.0, 0.0, 0.0]
+                          # , [1.0, 0.0, 0.0, 0.0]
+                          # , [1.0, 0.0, 0.0, 0.0]
+                          # , [1.0, 0.0, 0.0, 0.0]]
 
         
 #         ## 1-layer weights
@@ -317,12 +317,68 @@ class Perceptron( object ):
 
     def mat_transpose( self, mat ):
         trans = []
+        self.mat_show( mat ) 
+        print "transpose"
         for y in range(0, len(mat)):
             tmp = []
             for x in range(0, len(mat[0])):
                 tmp += [mat[x][y]]
             trans.append(tmp)
+        self.mat_show( trans ) 
         return trans
+
+    def mat_addx( self, a, b ):
+        if len(a) != len(b): die("mat_addx failed, different sizes")
+        self.mat_show( a ) 
+        print "addx"
+        self.mat_show( b ) 
+        c = []
+        for y in range(0,len(a)):
+            c.append( a[y] + b[y] )
+        print "="
+        self.mat_show( c ) 
+        return c
+
+    def mat_addy( self, a, b ):
+        if len(a[0]) != len(b[0]): die("mat_addy failed: different sizes")
+        self.mat_show( a ) 
+        print "addy"
+        self.mat_show( b ) 
+        c = a
+        c += b
+        print "="
+        self.mat_show( c ) 
+        return c
+
+    def mat_addition( self, a, b ):
+        if len(a) != len(b): die("mat_addition failed: not implemented for different sizes")
+        self.mat_show( a ) 
+        print "addition"
+        self.mat_show( b ) 
+        c = []
+        for y in range(0, len(a)):
+            tmp = []
+            for x in range(0, len(a[0])):
+                tmp += [a[y][x] + b[y][x]]
+            c.append(tmp)
+        print "="
+        self.mat_show( c ) 
+        return c
+
+    def mat_factorize( self, fact, mat ):
+        print fact
+        print "*"
+        self.mat_show( mat )
+        res = []
+        for y in range(0, len(mat)):
+            tmp = []
+            for x in range(0, len(mat[0])):
+                tmp += [fact * mat[y][x]]
+            res.append( tmp )
+        print "="
+        self.mat_show( res ) 
+        return res
+        
 
 
     def mat_show( self, mat ):
@@ -386,9 +442,10 @@ class Perceptron( object ):
 #                     ## / idxHidden
 #                 ## / idxInpt
                 
-                self._hiddendata = self._matrixmultiplication( current_input, self._weight1matrix)  
-
-                die("STOP")
+                self._hiddendata = self.mat_addx( [[1.0]], self._matrixmultiplication( current_input, self._weight1matrix))  
+                print ""
+                self.mat_show(self._hiddendata)
+                die( "STOP" )
                 
 
 ## forward - layer 2
@@ -470,23 +527,32 @@ if __name__ == '__main__':
 
 ## test
      ## matrices
+#     a = [[1,1,1],[2,2,2],[3,3,3]]
 #     a = [[1,1,1],[2,2,2]]
+#     a = [[1],[1],[1]]
 #     b = [[1,2,3], [1,2,3], [1,2,3]]
-#     nn.mat_show(b)
+
 #     nn.mat_show( a ) 
+#     print ""
 #     nn.mat_show( b ) 
+#     print ""
 
      ## matrix matrix multiplication
 #     c = nn._matrixmultiplication( a, b )
 #     nn.mat_show( c )
 
      ## dot product
-# TODO
 #     nn.mat_show(nn.mat_transpose(b))
+#     nn.mat_addx( a, b )
+#     nn.mat_addy( a, b )
+#     nn.mat_addition( a, b )
+#     nn.mat_factorize( 4, b )
+#     print ""
+#     die( "STOP" )
     
-# #    nn.snapshot()
+#     nn.snapshot()
      nn.training()  
-# #    nn.snapshot()
+#     nn.snapshot()
 #     nn.snapshot_learning()
 
 print "READY."
