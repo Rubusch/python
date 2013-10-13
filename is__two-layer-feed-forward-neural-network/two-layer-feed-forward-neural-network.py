@@ -613,8 +613,7 @@ class Perceptron( object ):
                 
 
             self.mat_addition( self._weight1matrix, dw1data_history )
-
-
+            self.mat_addition( self._weight2matrix, self.mat_transpose(  dw2data_history) )
             print "---"
             print "AAA"
             self.mat_show( self._weight2matrix )
@@ -623,7 +622,6 @@ class Perceptron( object ):
 
             die( "XXX" )   
 
-            self.mat_addition( self._weight2matrix, self.mat_transpose(  dw2data_history) )
         ## / epoch
         ## dw = nu * y * (y-t) d/dnet
 
