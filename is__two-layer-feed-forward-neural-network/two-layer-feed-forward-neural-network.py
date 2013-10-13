@@ -233,13 +233,18 @@ class Perceptron( object ):
 
 
     def snapshot_learning( self ):
-        for idx in range(0, len(self._epochdwlist)):
-            if ((len(self._hiddenlist)-1)*len(self._trainingset)) == idx: continue
-            if ((len(self._hiddenlist)-1)*(len(self._hiddenlist)-1)) == idx: continue
+#         for idx in range(0, len(self._epochdwlist)):
+#             if ((len(self._hiddenlist)-1)*len(self._trainingset)) == idx: continue
+#             if ((len(self._hiddenlist)-1)*(len(self._hiddenlist)-1)) == idx: continue
 
+# #            print "plot " + str(idx) ## debugging 
+#             plt.plot( self._epochdwlist[idx] )
+# #            plt.show() ## debugging 
+        for idx in range(0, len(self._dwhistory)):
 #            print "plot " + str(idx) ## debugging 
-            plt.plot( self._epochdwlist[idx] )
+            plt.plot( self._dwhistory[idx] )
 #            plt.show() ## debugging 
+
 
         plt.xlabel('time')
         plt.ylabel('error')
@@ -419,7 +424,30 @@ class Perceptron( object ):
                 print mat[y][x],
             print ""
 
+    def update_history( self ):
+        # print "hist"
+        # print self._dwhistory 
+        # print "mat1"
+        # print self._weight1matrix
+        # print "mat2"
+        # print self._weight2matrix
 
+#        print self._dwhistory  
+        idx = 0
+        for y in range(0, len(self._weight1matrix)):
+            for x in range(0, len(self._weight1matrix[0])):
+                self._dwhistory[idx] += [self._weight1matrix[y][x]]
+                idx +=1
+#                self._dwhistory.append( [self._weight1matrix[y][x]] )
+
+        for y in range(0, len(self._weight2matrix)):
+            for x in range(0, len(self._weight2matrix[0])):
+                self._dwhistory[idx] += [self._weight2matrix[y][x]]
+                idx +=1
+#                self._dwhistory.append( [self._weight2matrix[y][x]] )
+
+#        print self._dwhistory
+#        die( "XXX" )
 
 
     def training( self ):
@@ -457,7 +485,8 @@ class Perceptron( object ):
 
 
 ## calculating net epochs
-        maxtime = 1000
+#        maxtime = 1000
+        maxtime = 100
         for epoch in range(0, maxtime):
 
 # TODO         
@@ -611,13 +640,14 @@ class Perceptron( object ):
 #                 self._epochdwlist[idxEpochplot+idxWeight].append(self._weight2list[idxWeight])
 #                 dwlist2[idxWeight]=0.0
                 
-
             self.mat_addition( self._weight1matrix, dw1data_history )
             self.mat_addition( self._weight2matrix, self.mat_transpose(  dw2data_history) )
 
-
-            die( "XXX" )   
-
+            self.update_history()
+            
+            print "---"
+            self.mat_show( self._dwhistory )   
+            if 3 == epoch: die("XXX")
         ## / epoch
         ## dw = nu * y * (y-t) d/dnet
 
@@ -659,6 +689,6 @@ if __name__ == '__main__':
 #     nn.snapshot()
      nn.training()  
 #     nn.snapshot()
-#     nn.snapshot_learning()
+     nn.snapshot_learning()
 
 print "READY."
