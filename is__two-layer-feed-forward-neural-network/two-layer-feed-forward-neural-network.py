@@ -63,8 +63,13 @@ def die( msg = "" ):
 
 class Perceptron( object ):
     ## overview
-    _weight1list = []  # weights, 1st layer
-    _weight2list = []  # weights, second layer
+    _weight1list = []  # weights, 1st layer 
+    _weight2list = []  # weights, second layer 
+
+    _weight1matrix = [] # weights, 1st thru 2nd layer
+    _weight2matrix = [] # weights, 2nd thru net layer
+    _dwhistory = []     # printable history of dw
+
     _trainingset = []  # training data (class 1 and 2)
     _testset = []      # test set
     _trainingtargetlist = []   # targets (size of class 1 + 2)
@@ -80,9 +85,11 @@ class Perceptron( object ):
         ## bias
         ## x1
         ## x2
-        self._trainingset      =  [[1.0, 1.0, 1.0, 1.0, 1.0,    1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
-                                  ,[4.0, 4.0, 5.0, 5.0, 7.0,    1.0, 2.0, 3.0, 6.0, 3.0, 6.0, 4.0, 7.0]
-                                  ,[2.0, 4.0, 3.0, 1.0, 2.0,    2.0, 1.0, 1.0, 5.0, 6.0, 7.0, 6.0, 6.0]]
+
+        
+        # self._trainingset      =  [[1.0, 1.0, 1.0, 1.0, 1.0,    1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+        #                           ,[4.0, 4.0, 5.0, 5.0, 7.0,    1.0, 2.0, 3.0, 6.0, 3.0, 6.0, 4.0, 7.0]
+        #                           ,[2.0, 4.0, 3.0, 1.0, 2.0,    2.0, 1.0, 1.0, 5.0, 6.0, 7.0, 6.0, 6.0]]
 
         
         self._trainingdata = [ [1.0, 4.0, 2.0]
@@ -99,8 +106,8 @@ class Perceptron( object ):
                              , [1.0, 4.0, 6.0]
                              , [1.0, 7.0, 6.0] ]
 
-
-        self._trainingtargetlist = [1.0, 1.0, 1.0, 1.0, 1.0,   -1.0,-1.0,-1.0,-1.0,-1.0,-1.0,-1.0,-1.0]
+        
+        # self._trainingtargetlist = [1.0, 1.0, 1.0, 1.0, 1.0,   -1.0,-1.0,-1.0,-1.0,-1.0,-1.0,-1.0,-1.0]
         
         self._trainingtargetdata = [[1.0]
                                    ,[1.0]
@@ -114,65 +121,66 @@ class Perceptron( object ):
                                    ,[-1.0]
                                    ,[-1.0]]
 
-
+# TODO
         self._testset          = [ [1.0, 1.0, 1.0, 1.0, 1.0, 1.0,    1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
                                   ,[4.0, 5.0, 3.0, 5.0, 6.0, 7.0,    3.0, 8.0, 4.0, 7.0, 2.0, 2.0]
                                   ,[1.0, 2.0, 4.0, 4.0, 1.0, 1.0,    2.0, 7.0, 7.0, 5.0, 3.0, 5.0]]
 
+# TODO
         self._testtargetlist     = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0,   -1.0,-1.0,-1.0,-1.0,-1.0,-1.0]
 
-        self._hiddenlist       =  [[1.0, 1.0, 1.0, 1.0, 1.0,    1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
-                                  ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-                                  ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-                                  ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] 
-                                  ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] 
-                                  ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] 
-                                  ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] 
-                                  ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] 
-                                  ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] 
-                                  ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] 
-                                  ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
-
-        self._hiddendata = [[1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-                          , [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-                          , [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-                          , [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-                          , [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-                          , [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-                          , [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-                          , [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-                          , [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-                          , [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-                          , [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-                          , [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-                          , [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+        
+        # self._hiddenlist       =  [[1.0, 1.0, 1.0, 1.0, 1.0,    1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+        #                           ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        #                           ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        #                           ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] 
+        #                           ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] 
+        #                           ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] 
+        #                           ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] 
+        #                           ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] 
+        #                           ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] 
+        #                           ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] 
+        #                           ,[0.0, 0.0, 0.0, 0.0, 0.0,    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+        
+        self._hiddendata = [[1.0, 0.0, 0.0, 0.0]
+                          , [1.0, 0.0, 0.0, 0.0]
+                          , [1.0, 0.0, 0.0, 0.0]
+                          , [1.0, 0.0, 0.0, 0.0]
+                          , [1.0, 0.0, 0.0, 0.0]
+                          , [1.0, 0.0, 0.0, 0.0]
+                          , [1.0, 0.0, 0.0, 0.0]
+                          , [1.0, 0.0, 0.0, 0.0]
+                          , [1.0, 0.0, 0.0, 0.0]
+                          , [1.0, 0.0, 0.0, 0.0]
+                          , [1.0, 0.0, 0.0, 0.0]
+                          , [1.0, 0.0, 0.0, 0.0]
+                          , [1.0, 0.0, 0.0, 0.0]]
 
         
-        ## 1-layer weights
-        nnset = self._trainingset  
-#        for idxWeight in range( 0, 3 * len( nnset )): 
-        for idxWeight in range( 0, (len(self._hiddenlist) -1) * len( nnset )): 
-            self._weight1list.append( random.randrange(-100, 100) / 1000.0 )
-#        self._weight1list = [1,1,1,1,1,1,1,1,1] ## debugging        
+#         ## 1-layer weights
+#         nnset = self._trainingset  
+# #        for idxWeight in range( 0, 3 * len( nnset )): 
+#         for idxWeight in range( 0, (len(self._hiddenlist) -1) * len( nnset )): 
+#             self._weight1list.append( random.randrange(-100, 100) / 1000.0 )
+# #        self._weight1list = [1,1,1,1,1,1,1,1,1] ## debugging        
         
         ## 1. layer weights
         nhidden = len(self._hiddendata[0])-1 # w/o bias
         ninput = len(self._trainingdata[0])
-        weight1matrix = self._initweights( ninput, nhidden)
-
+        self._weight1matrix = self._initweights( ninput, nhidden)
 
 
             
-        ## 2-layer weights
-        nnset = self._hiddenlist  
-        for idxWeight in range( 0, len( nnset )):
-            self._weight2list.append( random.randrange(-100, 100) / 1000.0 )
-#        self._weight2list = [1,1,1,1] ## debugging        
+#        ## 2-layer weights
+#        nnset = self._hiddenlist  
+#        for idxWeight in range( 0, len( nnset )):
+#            self._weight2list.append( random.randrange(-100, 100) / 1000.0 )
+##        self._weight2list = [1,1,1,1] ## debugging        
             
         ## 2. layer weights
         nhidden = len(self._hiddendata[0]) # with bias
         ny = 1
-        weight2matrix = self._initweights( nhidden, ny)
+        self._weight2matrix = self._initweights( nhidden, ny)
 
         ## learningrate nu
         ## 1.0, 1.0/3.0, 1.0/10.0, 1.0/30.0, 1.0/100.0, 1.0/300.0, 1.0/1000.0
@@ -185,12 +193,17 @@ class Perceptron( object ):
 #        self._learningrate = 1.0/1000.0
 
         
-        for idxHidden in range(0, len(self._trainingset) * (len(self._hiddenlist)-1) + len(self._hiddenlist)):
-            self._epochdwlist.append([0.0])
-        self._epochtime = [0]
+#        for idxHidden in range(0, len(self._trainingset) * (len(self._hiddenlist)-1) + len(self._hiddenlist)):
+#            self._epochdwlist.append([0.0])
+#        self._epochtime = [0]
         
-        self._printmatrix( self._epochdwlist )
-        die( "STOP" )
+        ## history per weight entry
+        nweights = len(self._weight1matrix[0]) * len(self._weight1matrix)
+        nweights += len(self._weight2matrix[0])
+        self._dwhistory = []
+        for w in range(0, nweights):
+            self._dwhistory.append([0])
+
 
     def snapshot( self ):
         ## class data: dots
@@ -303,12 +316,16 @@ class Perceptron( object ):
 
     def training( self ):
 ## init, no bias in dwlist1 connections
-        dwlist1 = []
-        dwlist2 = []
+#        dwlist1 = []
+#        dwlist2 = []
         
-        currentset = self._trainingset
-        currenttargetlist = self._trainingtargetlist
+#        currentset = self._trainingset
+#        currenttargetlist = self._trainingtargetlist
         
+        current_data = self._trainingdata
+        current_targetdata = self._trainingtargetdata
+        die( "STOP" )       
+
         for idxHidden in range(0, len(currentset) * (len(self._hiddenlist)-1)):
             dwlist1.append(0.0)
         for idxHidden in range(0, len(self._hiddenlist)):
