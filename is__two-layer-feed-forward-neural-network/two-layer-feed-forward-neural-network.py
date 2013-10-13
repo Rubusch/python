@@ -199,19 +199,14 @@ class Perceptron( object ):
         
         ## history per weight entry
         self._dwhistory = []
+
         for y in range(0, len(self._weight1matrix)):
             for x in range(0, len(self._weight1matrix[0])):
                 self._dwhistory.append( [self._weight1matrix[y][x]] )
 
-
-#        nweights = len(self._weight1matrix[0]) * len(self._weight1matrix)
-#        nweights += len(self._weight2matrix[0])
-#        for w in range(0, nweights):
-#            self._dwhistory.append([0])
-        self._printmatrix( self._weight1matrix )
-        print ""
-        self._printmatrix( self._dwhistory )
-        die( "STOP" )
+        for y in range(0, len(self._weight2matrix)):
+            for x in range(0, len(self._weight2matrix[0])):
+                self._dwhistory.append( [self._weight2matrix[y][x]] )
 
 
     def snapshot( self ):
@@ -272,7 +267,6 @@ class Perceptron( object ):
     def revsigma( self, product ):
         return -math.exp(product)/((math.exp(product) + 1) * (math.exp(product) + 1))
 
-
     def _printmatrix( self, a ):
         for y in range(0,len(a)):
             for x in range(0,len(a[y])):
@@ -325,8 +319,6 @@ class Perceptron( object ):
 
     def training( self ):
 ## init, no bias in dwlist1 connections
-#        dwlist1 = []
-#        dwlist2 = []
         
 #        currentset = self._trainingset
 #        currenttargetlist = self._trainingtargetlist
@@ -335,10 +327,12 @@ class Perceptron( object ):
         current_targetdata = self._trainingtargetdata
 
         
-        for idxHidden in range(0, len(currentset) * (len(self._hiddenlist)-1)):
-            dwlist1.append(0.0)
-        for idxHidden in range(0, len(self._hiddenlist)):
-            dwlist2.append(0.0)
+        # dwlist1 = []
+        # dwlist2 = []
+        # for idxHidden in range(0, len(currentset) * (len(self._hiddenlist)-1)):
+        #     dwlist1.append(0.0)
+        # for idxHidden in range(0, len(self._hiddenlist)):
+        #     dwlist2.append(0.0)
             
 
 
