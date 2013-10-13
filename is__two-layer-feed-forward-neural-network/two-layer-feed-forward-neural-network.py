@@ -508,7 +508,6 @@ class Perceptron( object ):
 #                 ## / idxHidden
                     
 
-
                 dw = current_targetdata[idxVal][0] - y[0][0]
                 dw *= self._learningrate
 
@@ -519,27 +518,32 @@ class Perceptron( object ):
 
 
 
+                ## dwlist1 = nu * x * delta = nu * x * dwlist2, per x neuron
+                        
+#                 dwtmp1 = []
+#                 for idxInpt in range(0, len(currentset)): # per input node + bias, here 3x
+#                     inpt = currentset[idxInpt]
+#                     xval = inpt[idxVal]
+#                     for idxHidden in range(1, len( self._hiddenlist) ): # per hidden node, 3 + 1 (bias)
+# #                        idxWeight = 3* idxInpt + (idxHidden-1)
+#                         idxWeight = (len(self._hiddenlist) -1) * idxInpt + (idxHidden-1)   
+#                         ## backward: 
+#                         dwlist1[idxWeight] += self._learningrate * xval * dwtmp2[idxHidden]
+#                     ## / idxHidden
+#                 ## / idxInpt
+                        
+
+
+#                dw1data[y][x] += 
+#                idxWeight = (len(self._hiddenlist) -1) * self.revsigma( idxInpt + (idxHidden-1))   
+
+
 
                 print "---"
-                self.mat_show( dw2data ) 
+                self.mat_show( self._hiddendata ) 
                 die( "STOP" )
 
 
-                ## dwlist1 = nu * x * delta = nu * x * dwlist2, per x neuron
-                dwtmp1 = []
-                for idxInpt in range(0, len(currentset)): # per input node + bias, here 3x
-                    inpt = currentset[idxInpt]
-                    xval = inpt[idxVal]
-                    for idxHidden in range(1, len( self._hiddenlist) ): # per hidden node, 3 + 1 (bias)
-#                        idxWeight = 3* idxInpt + (idxHidden-1)
-                        idxWeight = (len(self._hiddenlist) -1) * idxInpt + (idxHidden-1)   
-                        
-                        idxWeight = (len(self._hiddenlist) -1) * self.revsigma( idxInpt + (idxHidden-1))   
-                        
-                        ## backward: 
-                        dwlist1[idxWeight] += self._learningrate * xval * dwtmp2[idxHidden]
-                    ## / idxHidden
-                ## / idxInpt
             ## / idxVal
 
 ## average dw
