@@ -170,7 +170,6 @@ class Perceptron( object ):
         ninput = len(self._trainingdata[0])
         self._weight1matrix = self._initweights( ninput, nhidden)
 
-
             
 #        ## 2-layer weights
 #        nnset = self._hiddenlist  
@@ -420,6 +419,20 @@ class Perceptron( object ):
         # for idxHidden in range(0, len(self._hiddenlist)):
         #     dwlist2.append(0.0)
             
+        dw1data = []
+        for y in self._weight1matrix[0]:
+            tmp=[]
+            for x in self._weight1matrix:
+                tmp += [0.0]
+            dw1data.append(tmp)
+
+        dw2data = []
+        for y in self._weight2matrix[0]:
+            tmp = []
+            for x in self._weight2matrix:
+                tmp += [0.0]
+            dw2data.append( tmp )
+
 
 
 ## calculating net epochs
@@ -478,26 +491,39 @@ class Perceptron( object ):
                 
 #                target = currenttargetlist[idxVal]
                 
-                print current_targetdata
+
+## backward pass - layer 2
+                
+#                 ## dwlist2 = nu * y[j] * delta = nu * y[j] * (y[k] - t) * dy/dnet
+#                 dwtmp2 = [] # just to transfer to next block (as backup)
+#                 for idxHidden in range(0, len( self._hiddenlist) ): # per hidden node, 3 + 1 (bias)
+#                     hidden =  self._hiddenlist[idxHidden]
+#                     xval = hidden[idxVal]
+#                     ## backward: learningrate * delta * outputvalue
+#                     dwtmp2.append(self._learningrate * (target - y) * xval)
+# ## DEBUG some checks where original settings seem to explode in infinity, and finally NAN values
+#                     if math.isnan(dwlist2[idxHidden]): die( "NAN" )   
+#                     if math.isinf(dwlist2[idxHidden]): die( "INF" )   
+#                     dwlist2[idxHidden] += self._learningrate * (target-y) * xval # backup
+#                 ## / idxHidden
+                    
+
+
+                dw = current_targetdata[idxVal][0] - y[0][0]
+                dw *= self._learningrate
+
+                ## backward: learningrate * delta * outputvalue
+                for y in range(0, len(self._hiddendata)):
+                    for x in range(0, len(self._hiddendata[0])):
+                        dw2data[y][x] += dw * self._hiddendata[y][x]
+
+
 
 
                 print "---"
+                self.mat_show( dw2data ) 
                 die( "STOP" )
-                
 
-## backward pass - layer 2
-                ## dwlist2 = nu * y[j] * delta = nu * y[j] * (y[k] - t) * dy/dnet
-                dwtmp2 = [] # just to transfer to next block (as backup)
-                for idxHidden in range(0, len( self._hiddenlist) ): # per hidden node, 3 + 1 (bias)
-                    hidden =  self._hiddenlist[idxHidden]
-                    xval = hidden[idxVal]
-                    ## backward: learningrate * delta * outputvalue
-                    dwtmp2.append(self._learningrate * (target - y) * xval)
-## DEBUG some checks where original settings seem to explode in infinity, and finally NAN values
-                    if math.isnan(dwlist2[idxHidden]): die( "NAN" )   
-                    if math.isinf(dwlist2[idxHidden]): die( "INF" )   
-                    dwlist2[idxHidden] += self._learningrate * (target-y) * xval # backup
-                ## / idxHidden
 
                 ## dwlist1 = nu * x * delta = nu * x * dwlist2, per x neuron
                 dwtmp1 = []
