@@ -198,11 +198,20 @@ class Perceptron( object ):
 #        self._epochtime = [0]
         
         ## history per weight entry
-        nweights = len(self._weight1matrix[0]) * len(self._weight1matrix)
-        nweights += len(self._weight2matrix[0])
         self._dwhistory = []
-        for w in range(0, nweights):
-            self._dwhistory.append([0])
+        for y in range(0, len(self._weight1matrix)):
+            for x in range(0, len(self._weight1matrix[0])):
+                self._dwhistory.append( [self._weight1matrix[y][x]] )
+
+
+#        nweights = len(self._weight1matrix[0]) * len(self._weight1matrix)
+#        nweights += len(self._weight2matrix[0])
+#        for w in range(0, nweights):
+#            self._dwhistory.append([0])
+        self._printmatrix( self._weight1matrix )
+        print ""
+        self._printmatrix( self._dwhistory )
+        die( "STOP" )
 
 
     def snapshot( self ):
@@ -324,13 +333,17 @@ class Perceptron( object ):
         
         current_data = self._trainingdata
         current_targetdata = self._trainingtargetdata
-        die( "STOP" )       
 
+        
         for idxHidden in range(0, len(currentset) * (len(self._hiddenlist)-1)):
             dwlist1.append(0.0)
         for idxHidden in range(0, len(self._hiddenlist)):
             dwlist2.append(0.0)
+            
 
+
+
+        die( "STOP" )       
 ## calculating net epochs
         for epoch in range(0, 1000):
 
