@@ -474,14 +474,16 @@ class Perceptron( object ):
                     
                 y = self.mat_multiplication( self._hiddendata, self._weight2matrix ) 
 
+## preparing dw from sum(y)
+                
+#                target = currenttargetlist[idxVal]
+                
+                print current_targetdata
+
 
                 print "---"
                 die( "STOP" )
                 
-
-
-## preparing dw from sum(y)
-                target = currenttargetlist[idxVal]
 
 ## backward pass - layer 2
                 ## dwlist2 = nu * y[j] * delta = nu * y[j] * (y[k] - t) * dy/dnet
