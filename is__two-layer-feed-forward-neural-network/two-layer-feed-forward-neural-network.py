@@ -134,7 +134,11 @@ class Perceptron( object ):
 
         self._test_targetdata     = self._training_targetdata
 
-        self._hiddendata = [[0.0, 0.0, 0.0]]
+#        self._hiddendata = [[0.0, 0.0, 0.0]] ## original
+        self._hiddendata = [[0.0, 0.0, 0.0, 0.0]] ## 4 hidden nodes  
+#        self._hiddendata = [[0.0, 0.0, 0.0, 0.0, 0.0]] ## 5 hidden nodes  
+#        self._hiddendata = [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]] ## 10 hidden nodes  
+
 
         ## 1. layer weights
         nhidden = len(self._hiddendata[0])
@@ -428,7 +432,8 @@ class Perceptron( object ):
 
 
 ## calculating net epochs
-        MAXTIME = 1000    
+#        MAXTIME = 1000    
+        MAXTIME = 3000    
 #        MAXTIME = 100
         for epoch in range(0, MAXTIME):
             total = 0
