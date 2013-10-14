@@ -105,7 +105,7 @@ class Perceptron( object ):
                              , [1.0, 4.0, 6.0]
                              , [1.0, 7.0, 6.0] ]
 
-        self._trainingtargetdata = [[1.0]
+        self._training_targetdata = [[1.0]
                                    ,[1.0]
                                    ,[1.0]
                                    ,[1.0]
@@ -119,18 +119,25 @@ class Perceptron( object ):
                                    ,[-1.0]
                                    ,[-1.0]]
 
-# TODO
-        self._testset          = [ [1.0, 1.0, 1.0, 1.0, 1.0, 1.0,    1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
-                                  ,[4.0, 5.0, 3.0, 5.0, 6.0, 7.0,    3.0, 8.0, 4.0, 7.0, 2.0, 2.0]
-                                  ,[1.0, 2.0, 4.0, 4.0, 1.0, 1.0,    2.0, 7.0, 7.0, 5.0, 3.0, 5.0]]
+        self._testdata         = [[1.0, 4.0, 1.0]
+                                  , [1.0, 5.0, 2.0]
+                                  , [1.0, 3.0, 4.0]
+                                  , [1.0, 5.0, 4.0]
+                                  , [1.0, 6.0, 1.0]
+                                  , [1.0, 7.0, 1.0]
+                                  , [1.0, 3.0, 2.0]
+                                  , [1.0, 8.0, 7.0]
+                                  , [1.0, 4.0, 7.0]
+                                  , [1.0, 7.0, 5.0]
+                                  , [1.0, 2.0, 3.0]
+                                  , [1.0, 2.0, 5.0]]
 
-# TODO
-        self._testtargetlist     = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0,   -1.0,-1.0,-1.0,-1.0,-1.0,-1.0]
+
+        self._test_targetdata     = self._training_targetdata
 
         self._hiddendata = [[0.0, 0.0, 0.0]]
 
         ## 1. layer weights
-#        nhidden = len(self._hiddendata[0])-1 # w/o bias
         nhidden = len(self._hiddendata[0])
         ninput = len(self._trainingdata[0])
         self._weight1matrix = self._initweights( ninput, nhidden)
@@ -402,7 +409,7 @@ class Perceptron( object ):
     def training( self ):
 ## init, no bias in dwlist1 connections
         current_data = self._trainingdata
-        current_targetdata = self._trainingtargetdata
+        current_targetdata = self._training_targetdata
 
         dw1data = []
         for y in self._weight1matrix:
@@ -413,7 +420,7 @@ class Perceptron( object ):
         dw1data_history = []
 
         dw2data = []
-        for y in self._weight2matrix[0]: # TODO check this
+        for y in self._weight2matrix[0]:
             tmp = []
             for x in self._weight2matrix:
                 tmp += [0.0]
@@ -422,7 +429,7 @@ class Perceptron( object ):
 
 
 ## calculating net epochs
-        MAXTIME = 2000    
+        MAXTIME = 1000    
 #        MAXTIME = 100
         for epoch in range(0, MAXTIME):
             total = 0
