@@ -62,7 +62,7 @@ def die( msg = "" ):
     sys.exit( -1 )
 
 DEBUG = 0
-#DEBUG = 1
+#DEBUG = 1   
 
 class Perceptron( object ):
 ## TODO biggest mistake, was / is not to have an explicit initialization of all
@@ -135,8 +135,8 @@ class Perceptron( object ):
         self._test_targetdata     = self._training_targetdata
 
 #        self._hiddendata = [[0.0, 0.0, 0.0]] ## original
-        self._hiddendata = [[0.0, 0.0, 0.0, 0.0]] ## 4 hidden nodes  
-#        self._hiddendata = [[0.0, 0.0, 0.0, 0.0, 0.0]] ## 5 hidden nodes  
+#        self._hiddendata = [[0.0, 0.0, 0.0, 0.0]] ## 4 hidden nodes  
+        self._hiddendata = [[0.0, 0.0, 0.0, 0.0, 0.0]] ## 5 hidden nodes  
 #        self._hiddendata = [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]] ## 10 hidden nodes  
 
 
@@ -144,6 +144,10 @@ class Perceptron( object ):
         nhidden = len(self._hiddendata[0])
         ninput = len(self._trainingdata[0])
         self._weight1matrix = self._initweights( ninput, nhidden)
+        
+        # TODO test
+        self._weight1matrix = self.mat_transpose( self._weight1matrix )  
+        
 
         ## 2. layer weights
         nhidden = len(self._hiddendata[0])
@@ -206,8 +210,10 @@ class Perceptron( object ):
     def _initweights( self, nsource, ntarget):
         weightmatrix = []
         for h in range(0, nsource):
+#        for h in range(0, ntarget): 
             tmp = []
             for x in range(0, ntarget):
+#            for x in range(0, nsource): 
                 tmp += [random.randrange(-100, 100) / 1000.0]
             weightmatrix.append(tmp)
         return weightmatrix
@@ -415,9 +421,9 @@ class Perceptron( object ):
         current_targetdata = self._training_targetdata
 
         dw1data = []
-        for y in self._weight1matrix:
+        for y in self._weight1matrix:  
             tmp=[]
-            for x in self._weight1matrix[0]:
+            for x in self._weight1matrix[0]:  
                 tmp += [0.0]
             dw1data.append(tmp)
         dw1data_history = []
@@ -432,9 +438,9 @@ class Perceptron( object ):
 
 
 ## calculating net epochs
+#        MAXTIME = 100
 #        MAXTIME = 1000    
         MAXTIME = 3000    
-#        MAXTIME = 100
         for epoch in range(0, MAXTIME):
             total = 0
 
@@ -449,7 +455,8 @@ class Perceptron( object ):
 
 ## forward - layer 1
                 ## hidden = sigma(input * weights1)
-                self._hiddendata = self.mat_multiplication( current_input, self._weight1matrix)
+#                self._hiddendata = self.mat_multiplication( current_input, self._weight1matrix) 
+                self._hiddendata = self.mat_multiplication( current_input, self.mat_transpose(self._weight1matrix))
                 self._hiddendata = self.sigma( self._hiddendata )
 
 ## forward - layer 2
@@ -468,11 +475,15 @@ class Perceptron( object ):
                 dw1tmp = self.revsigma( dw2data )
                 dw1tmp = self.mat_factorize( self._learningrate, dw1tmp )
                 dw1tmp = self.mat_multiplication( dw1tmp, self._weight1matrix )
+#                dw1tmp = self.mat_multiplication( dw1tmp, self.mat_transpose( self._weight1matrix ) )  
 
-                ## making a 3x3 matrix out of 3 value vector
+                ## making a 3 x len( hidden ) matrix out of 3 value vector
                 dw1matrix = self.mat_addy( dw1tmp, dw1tmp )
-                dw1tmp = self.mat_addy( dw1tmp, dw1matrix )
-                dw1tmp = self.mat_factor_multiplication( dw1tmp, self._weight1matrix) # TODO is this a matrix multiplication?
+                for matcol in range(2, len( self._hiddendata[0])):
+                    dw1matrix = self.mat_addy( dw1tmp, dw1matrix )
+                dw1tmp = dw1matrix
+
+                dw1tmp = self.mat_factor_multiplication( dw1tmp, self._weight1matrix)
                 dw1data = self.mat_addition( dw1data, dw1tmp )
 
                 ## average filter after each round
