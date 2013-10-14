@@ -443,34 +443,19 @@ class Perceptron( object ):
 
 ## forward - layer 2
                 ## net = hidden * weights2
-                net = self.mat_multiplication( self._hiddendata, self._weight2matrix ) 
-
+                net = self.mat_multiplication( self._hiddendata, self._weight2matrix )
 
 ## backward - layer 2
-                ## backward: delta(target - net) * learningrate * outputvalue
+                ## dw2 =  delta(target - net) * learningrate * outputvalue
                 delta = current_targetdata[idxVal][0] - net[0][0]
-                delta *= self._learningrate 
+                delta *= self._learningrate
                 dw2data = self.mat_factorize( delta, self._hiddendata )
-#                dw2data = self.mat_factorize( delta, self.revsigma( self._hiddendata ))  
 
 ## backward - layer 1
-                ## dwlist1 = revsigma(delta_net) * learningrate * x = nu * x * dwlist2, per x neuron
- 
-                ## dwlist1 = nu * x[i] * sum( dw2data * weights1[i] * revsigma( hidden[i] ) ) 
- 
+                ## dw1 = revsigma(delta_net) * learningrate * weights1
+                ## multiplication with original input value can be omited (?)
                 dw1tmp = self.revsigma( dw2data )
-                dw1tmp = self.mat_factorize( self._learningrate, dw1tmp ) 
-
-                
-#                tr_weight1matrix = self.mat_transpose( self._weight1matrix ) # TODO check
-#                dw1tmp = self.mat_multiplication( dw1tmp, tr_weight1matrix) # TODO is this a matrix multiplication?
-
-                
-#                dw1testA = self.mat_multiplication( dw1tmp, tr_weight1matrix) # TODO is this a matrix multiplication?
-
-
-
-#                dw1tmp = self.mat_multiplication( dw1tmp, self._weight1matrix )
+                dw1tmp = self.mat_factorize( self._learningrate, dw1tmp )
                 dw1tmp = self.mat_multiplication( dw1tmp, self._weight1matrix )
 
 
