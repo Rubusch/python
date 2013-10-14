@@ -61,6 +61,9 @@ def die( msg = "" ):
         print ": " + str(msg)
     sys.exit( -1 )
 
+DEBUG = 0
+#DEBUG = 1
+
 class Perceptron( object ):
     ## overview
 #    _weight1list = []  # weights, 1st layer 
@@ -181,11 +184,11 @@ class Perceptron( object ):
 
     def snapshot_learning( self ):
         for idx in range(0, len(self._dwhistory)):
-#            print "plot " + str(idx) ## debugging 
+            print "plot " + str(idx) ## debugging 
             plt.plot( self._dwhistory[idx] )
-#            plt.show() ## debugging 
+            plt.show() ## debugging 
 
-
+        return ## debugging  
         plt.xlabel('time')
         plt.ylabel('error')
         plt.show()
@@ -202,23 +205,25 @@ class Perceptron( object ):
 
 
     def sigma( self, mat ):
-        print ""
-        self.mat_show( mat )
-        print "sigma"
+        if 1 == DEBUG: print ""
+        if 1 == DEBUG: self.mat_show( mat )
+        if 1 == DEBUG: print "sigma"
         res = []
         for y in range(0, len(mat)):
             tmp = []
             for x in range(0, len(mat[0])):
                 tmp += [1/(1 + math.exp(mat[y][x]))]
             res.append(tmp)
-
-        self.mat_show( res )
+        if 1 == DEBUG: print "="
+        if 1 == DEBUG: self.mat_show( res )
         return res
 
     def revsigma( self, mat ):
+        if 1 == DEBUG: print ""
+        if 1 == DEBUG: self.mat_show( mat )
+        if 1 == DEBUG: print "revsigma"
         ## revsigma = sigma(x) * (1 - sigma(x))
         sigmat = self.sigma(mat)
-
         ## sigma*sigma
         res = []
         for y in range(0,len(sigmat)):
@@ -229,15 +234,16 @@ class Perceptron( object ):
 
         ## -(sigma*sigma)
         res = self.mat_factorize( -1, res )
-
         ## sigma - (sigma*sigma) == sigma * (1 - sigma)
-        return self.mat_addition( sigmat, res )
+        if 1 == DEBUG: print "="
+        if 1 == DEBUG: self.mat_addition( sigmat, res )
+        return res
 
     def mat_multiplication( self, a, b ):
-        print ""
-        self.mat_show( a )
-        print "x"
-        self.mat_show( b )
+        if 1 == DEBUG: print ""
+        if 1 == DEBUG: self.mat_show( a )
+        if 1 == DEBUG: print "x"
+        if 1 == DEBUG: self.mat_show( b )
 
         aylen = len( a )
         axlen = len( a[0] )
@@ -268,15 +274,15 @@ class Perceptron( object ):
                     tmp += a[ay][xy] * b[xy][bx]
                 c[ay][bx] = tmp
 
-        print "="
-        self.mat_show( c )
+        if 1 == DEBUG: print "="
+        if 1 == DEBUG: self.mat_show( c )
         return c
 
     def mat_factor_multiplication( self, a, b):
-        print ""
-        self.mat_show( a ) 
-        print "factor-multiplication"
-        self.mat_show( b ) 
+        if 1 == DEBUG: print ""
+        if 1 == DEBUG: self.mat_show( a ) 
+        if 1 == DEBUG: print "factor-multiplication"
+        if 1 == DEBUG: self.mat_show( b ) 
         if len(a) != len(b): raise Exception("mat_factor_multiplication - different y lenghts")
         if len(a[0]) != len(b[0]): raise Exception( "mat_factor_multiplication - different x lengths")
         res = []
@@ -285,53 +291,53 @@ class Perceptron( object ):
             for x in range(0, len(a[0])):
                 tmp += [a[y][x] * b[y][x]]
             res.append(tmp)
-        print "="
-        self.mat_show( res ) 
+        if 1 == DEBUG: print "="
+        if 1 == DEBUG: self.mat_show( res ) 
         return res
 
     def mat_transpose( self, mat ):
-        print ""
-        self.mat_show( mat ) 
-        print "transpose"
+        if 1 == DEBUG: print ""
+        if 1 == DEBUG: self.mat_show( mat ) 
+        if 1 == DEBUG: print "transpose"
         trans = []
         for y in range(0, len(mat[0])):
             tmp = []
             for x in range(0, len(mat)):
                 tmp += [mat[x][y]]
             trans.append(tmp)
-        self.mat_show( trans ) 
+        if 1 == DEBUG: self.mat_show( trans ) 
         return trans
 
     def mat_addx( self, a, b ):
-        print ""
-        self.mat_show( a ) 
-        print "addx"
-        self.mat_show( b ) 
+        if 1 == DEBUG: print ""
+        if 1 == DEBUG: self.mat_show( a ) 
+        if 1 == DEBUG: print "addx"
+        if 1 == DEBUG: self.mat_show( b ) 
         if len(a) != len(b): raise Exception("mat_addx failed, different sizes")
         c = []
         for y in range(0,len(a)):
             c.append( a[y] + b[y] )
-        print "="
-        self.mat_show( c ) 
+        if 1 == DEBUG: print "="
+        if 1 == DEBUG: self.mat_show( c ) 
         return c
 
     def mat_addy( self, a, b ):
-        print ""
-        self.mat_show( a ) 
-        print "addy"
-        self.mat_show( b ) 
+        if 1 == DEBUG: print ""
+        if 1 == DEBUG: self.mat_show( a ) 
+        if 1 == DEBUG: print "addy"
+        if 1 == DEBUG: self.mat_show( b ) 
         if len(a[0]) != len(b[0]): raise Exception("mat_addy failed: different sizes")
         c = [i for i in a]
         c += [i for i in b]
-        print "="
-        self.mat_show( c ) 
+        if 1 == DEBUG: print "="
+        if 1 == DEBUG: self.mat_show( c ) 
         return c
 
     def mat_addition( self, a, b ):
-        print ""
-        self.mat_show( a ) 
-        print "addition"
-        self.mat_show( b ) 
+        if 1 == DEBUG: print ""
+        if 1 == DEBUG: self.mat_show( a ) 
+        if 1 == DEBUG: print "addition"
+        if 1 == DEBUG: self.mat_show( b ) 
         if len(a) != len(b): raise Exception("mat_addition failed: not implemented for different sizes")
         c = []
         for y in range(0, len(a)):
@@ -339,30 +345,30 @@ class Perceptron( object ):
             for x in range(0, len(a[0])):
                 tmp += [a[y][x] + b[y][x]]
             c.append(tmp)
-        print "="
-        self.mat_show( c ) 
+        if 1 == DEBUG: print "="
+        if 1 == DEBUG: self.mat_show( c ) 
         return c
 
     def mat_factorize( self, fact, mat ):
-        print ""
-        print fact
-        print "*"
-        self.mat_show( mat )
+        if 1 == DEBUG: print ""
+        if 1 == DEBUG: print fact
+        if 1 == DEBUG: print "*"
+        if 1 == DEBUG: self.mat_show( mat )
         res = []
         for y in range(0, len(mat)):
             tmp = []
             for x in range(0, len(mat[0])):
                 tmp += [fact * mat[y][x]]
             res.append( tmp )
-        print "="
-        self.mat_show( res ) 
+        if 1 == DEBUG: print "="
+        if 1 == DEBUG: self.mat_show( res ) 
         return res
 
     def mat_avg( self, old, new):
-        print ""
-        self.mat_show( old ) 
-        print "avg"
-        self.mat_show( new ) 
+        if 1 == DEBUG: print ""
+        if 1 == DEBUG: self.mat_show( old ) 
+        if 1 == DEBUG: print "avg"
+        if 1 == DEBUG: self.mat_show( new ) 
         if 0 == len(old): return [i for i in new]
         res = []
         for y in range(0,len(new)):
@@ -370,8 +376,8 @@ class Perceptron( object ):
             for x in range(0,len(new[0])):
                 tmp += [ (old[y][x] + new[y][x]) / 2 ]
             res.append(tmp)
-        print "="
-        self.mat_show( res ) 
+        if 1 == DEBUG: print "="
+        if 1 == DEBUG: self.mat_show( res ) 
         return res
 
     def mat_show( self, mat ):
@@ -417,8 +423,8 @@ class Perceptron( object ):
 
 
 ## calculating net epochs
-        maxtime = 1000    
-#        maxtime = 100
+#        maxtime = 1000    
+        maxtime = 100
         for epoch in range(0, maxtime):
 
             dw = 0
@@ -472,8 +478,27 @@ class Perceptron( object ):
 #            dw1data_history = self.mat_factorize( self._learningrate, dw1data_history)             
 #            self._weight1matrix = self.mat_addition( self._weight1matrix, dw1data_history )
                 
-            self._weight1matrix = self.mat_factor_multiplication( self._weight1matrix, dw1data_history )
-#            self._weight1matrix = self.mat_addition( self._weight1matrix, self.mat_factor_multiplication( self._weight1matrix, dw1data_history ) )
+
+
+            print "---"
+            dw1data = self.mat_transpose( dw1data )
+            self.mat_show( dw1data_history )  
+            print "==="
+
+ #           die("XXX" )   
+
+#            self._weight1matrix = self.mat_factor_multiplication( self._weight1matrix, dw1data_history )  
+
+
+
+
+            self._weight1matrix = self.mat_addition( self._weight1matrix, self.mat_factor_multiplication( self._weight1matrix, dw1data_history ))
+#            self._weight1matrix = self.mat_addition( self._weight1matrix, self.mat_factorize( self._learningrate, self.mat_factor_multiplication( self._weight1matrix, dw1data_history )))   
+
+
+
+
+#            self._weight1matrix = self.mat_addition( self._weight1matrix, self.mat_factor_multiplication( self._weight1matrix, dw1data_history ))
 #            self._weight1matrix =  dw1data_history
 
             ## learning rate
@@ -485,8 +510,8 @@ class Perceptron( object ):
 #            self._weight2matrix = self.mat_addition( self._weight2matrix, dw2data_history)
 #            self._weight2matrix = self.mat_addition( self._weight2matrix, self.mat_transpose(dw2data_history))
 
-#           self._weight2matrix = self.mat_factor_multiplication( self._weight2matrix, self.mat_transpose( dw2data_history ))
-            self._weight2matrix = self.mat_addition( self._weight2matrix, self.mat_factor_multiplication( self._weight2matrix, self.mat_transpose( dw2data_history )))
+#            self._weight2matrix = self.mat_factor_multiplication( self._weight2matrix, self.mat_transpose(dw2data_history )) 
+            self._weight2matrix = self.mat_addition( self._weight2matrix, self.mat_factor_multiplication( self._weight2matrix, self.mat_transpose( dw2data_history ))) 
 #            self._weight2matrix = dw2data_history
             ## learning rate
 #            self._weight2matrix = self.mat_factorize( self._learningrate, self._weight2matrix)              
