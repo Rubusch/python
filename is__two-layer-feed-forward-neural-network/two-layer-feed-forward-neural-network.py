@@ -422,10 +422,13 @@ class Perceptron( object ):
 
 
 ## calculating net epochs
-#        maxtime = 1000    
-        maxtime = 1000
-        for epoch in range(0, maxtime):
+        MAXTIME = 2000    
+#        MAXTIME = 100
+        for epoch in range(0, MAXTIME):
             total = 0
+
+            if MAXTIME == epoch:
+                pass
 
 ## forward pass (linear)
             for idxVal in range(0, len(current_data)):
@@ -470,17 +473,24 @@ class Perceptron( object ):
             self._weight1matrix = self.mat_addition( self._weight1matrix, self.mat_factor_multiplication( self._weight1matrix, dw1data_history ))
             self._weight2matrix = self.mat_addition( self._weight2matrix, self.mat_factor_multiplication( self._weight2matrix, self.mat_transpose( dw2data_history )))
 
+            ## update history for plotting
             self.update_history()
         ## / epoch
-        ## dw = nu * y * (y-t) d/dnet
 
 
 if __name__ == '__main__':
      nn = Perceptron()
 
+## snapshot
 #     nn.snapshot()
-     nn.training()  
+
+## training with test set
+     nn.training()
+
+## another snapshot
 #     nn.snapshot()
+
+## display learning curve
      nn.snapshot_learning()
 
 print "READY."
