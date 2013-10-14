@@ -425,13 +425,9 @@ class Perceptron( object ):
 #        maxtime = 1000    
         maxtime = 1000
         for epoch in range(0, maxtime):
-
-#            dw = 0  
             total = 0
 
 ## forward pass (linear)
-            y = 0
-#            for idxVal in range(0, len(currentset[0])): # per value set, 13x
             for idxVal in range(0, len(current_data)):
                 current_input = [current_data[idxVal]]
                 total += 1
@@ -458,59 +454,21 @@ class Perceptron( object ):
                 dw1tmp = self.mat_factorize( self._learningrate, dw1tmp )
                 dw1tmp = self.mat_multiplication( dw1tmp, self._weight1matrix )
 
-
-                
                 ## making a 3x3 matrix out of 3 value vector
                 dw1matrix = self.mat_addy( dw1tmp, dw1tmp )
                 dw1tmp = self.mat_addy( dw1tmp, dw1matrix )
                 dw1tmp = self.mat_factor_multiplication( dw1tmp, self._weight1matrix) # TODO is this a matrix multiplication?
                 dw1data = self.mat_addition( dw1data, dw1tmp )
-                
-## or???   
-# TODO keep?   
-#                dw1data = self.mat_factor_multiplication( dw1tmp, self._weight1matrix) # TODO is this a matrix multiplication?
 
-
+                ## average filter after each round
                 dw1data_history = self.mat_avg( dw1data_history, dw1data)
                 dw2data_history = self.mat_avg( dw2data_history, dw2data)
-                
-            ## w(new) = w(old) + learningrate * revsigma(delta)
-#            dw1data_history = self.mat_factorize( self._learningrate, dw1data_history)             
-#            self._weight1matrix = self.mat_addition( self._weight1matrix, dw1data_history )
-                
 
+            ## / training set
 
-
-#            self._weight1matrix = self.mat_factor_multiplication( self._weight1matrix, dw1data_history )  
-
-
-
-
+            ## update weights after training cycle
             self._weight1matrix = self.mat_addition( self._weight1matrix, self.mat_factor_multiplication( self._weight1matrix, dw1data_history ))
-#            self._weight1matrix = self.mat_addition( self._weight1matrix, self.mat_factorize( self._learningrate, self.mat_factor_multiplication( self._weight1matrix, dw1data_history )))   
-
-
-
-
-#            self._weight1matrix = self.mat_addition( self._weight1matrix, self.mat_factor_multiplication( self._weight1matrix, dw1data_history ))
-#            self._weight1matrix =  dw1data_history
-
-            ## learning rate
-#            self._weight1matrix = self.mat_factorize( self._learningrate, self._weight1matrix)             
-            
-
-#            dw2data_history = self.mat_transpose( dw2data_history)
-#            dw2data_history = self.mat_factorize( self._learningrate, self.mat_transpose(dw2data_history))             
-#            self._weight2matrix = self.mat_addition( self._weight2matrix, dw2data_history)
-#            self._weight2matrix = self.mat_addition( self._weight2matrix, self.mat_transpose(dw2data_history))
-
-#            self._weight2matrix = self.mat_factor_multiplication( self._weight2matrix, self.mat_transpose(dw2data_history )) 
-            self._weight2matrix = self.mat_addition( self._weight2matrix, self.mat_factor_multiplication( self._weight2matrix, self.mat_transpose( dw2data_history ))) 
-#            self._weight2matrix = dw2data_history
-            ## learning rate
-#            self._weight2matrix = self.mat_factorize( self._learningrate, self._weight2matrix)              
-
-
+            self._weight2matrix = self.mat_addition( self._weight2matrix, self.mat_factor_multiplication( self._weight2matrix, self.mat_transpose( dw2data_history )))
 
             self.update_history()
         ## / epoch
