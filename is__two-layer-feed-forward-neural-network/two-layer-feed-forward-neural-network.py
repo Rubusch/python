@@ -184,11 +184,10 @@ class Perceptron( object ):
 
     def snapshot_learning( self ):
         for idx in range(0, len(self._dwhistory)):
-            print "plot " + str(idx) ## debugging 
+#            print "plot " + str(idx) ## debugging 
             plt.plot( self._dwhistory[idx] )
-            plt.show() ## debugging 
-
-        return ## debugging  
+#            plt.show() ## debugging 
+#        return ## debugging  
         plt.xlabel('time')
         plt.ylabel('error')
         plt.show()
@@ -424,10 +423,10 @@ class Perceptron( object ):
 
 ## calculating net epochs
 #        maxtime = 1000    
-        maxtime = 100
+        maxtime = 1000
         for epoch in range(0, maxtime):
 
-            dw = 0
+#            dw = 0  
             total = 0
 
 ## forward pass (linear)
@@ -438,38 +437,54 @@ class Perceptron( object ):
                 total += 1
 
 ## forward - layer 1
-                # input * weights
+                ## hidden = sigma(input * weights1)
                 self._hiddendata = self.mat_multiplication( current_input, self._weight1matrix)
-
-                # sigma
                 self._hiddendata = self.sigma( self._hiddendata )
 
 ## forward - layer 2
+                ## net = hidden * weights2
                 net = self.mat_multiplication( self._hiddendata, self._weight2matrix ) 
 
 
-## backward pass - layer 2
-                ## backward: learningrate * delta * outputvalue
-                dw = current_targetdata[idxVal][0] - net[0][0]
-                dw *= self._learningrate 
-                dw2data = self.mat_factorize( dw, self._hiddendata )#* outputvalue
+## backward - layer 2
+                ## backward: delta(target - net) * learningrate * outputvalue
+                delta = current_targetdata[idxVal][0] - net[0][0]
+                delta *= self._learningrate 
+                dw2data = self.mat_factorize( delta, self._hiddendata )
+#                dw2data = self.mat_factorize( delta, self.revsigma( self._hiddendata ))  
 
-
-                ## dwlist1 = nu * x * delta = nu * x * dwlist2, per x neuron
+## backward - layer 1
+                ## dwlist1 = revsigma(delta_net) * learningrate * x = nu * x * dwlist2, per x neuron
+ 
+                ## dwlist1 = nu * x[i] * sum( dw2data * weights1[i] * revsigma( hidden[i] ) ) 
+ 
                 dw1tmp = self.revsigma( dw2data )
                 dw1tmp = self.mat_factorize( self._learningrate, dw1tmp ) 
 
-                tr_weight1matrix = self.mat_transpose( self._weight1matrix ) # TODO check
+                
+#                tr_weight1matrix = self.mat_transpose( self._weight1matrix ) # TODO check
 #                dw1tmp = self.mat_multiplication( dw1tmp, tr_weight1matrix) # TODO is this a matrix multiplication?
 
                 
 #                dw1testA = self.mat_multiplication( dw1tmp, tr_weight1matrix) # TODO is this a matrix multiplication?
+
+
+
+#                dw1tmp = self.mat_multiplication( dw1tmp, self._weight1matrix )
+                dw1tmp = self.mat_multiplication( dw1tmp, self._weight1matrix )
+
+
                 
+                ## making a 3x3 matrix out of 3 value vector
                 dw1matrix = self.mat_addy( dw1tmp, dw1tmp )
                 dw1tmp = self.mat_addy( dw1tmp, dw1matrix )
                 dw1tmp = self.mat_factor_multiplication( dw1tmp, self._weight1matrix) # TODO is this a matrix multiplication?
-
                 dw1data = self.mat_addition( dw1data, dw1tmp )
+                
+## or???   
+# TODO keep?   
+#                dw1data = self.mat_factor_multiplication( dw1tmp, self._weight1matrix) # TODO is this a matrix multiplication?
+
 
                 dw1data_history = self.mat_avg( dw1data_history, dw1data)
                 dw2data_history = self.mat_avg( dw2data_history, dw2data)
@@ -480,12 +495,6 @@ class Perceptron( object ):
                 
 
 
-            print "---"
-            dw1data = self.mat_transpose( dw1data )
-            self.mat_show( dw1data_history )  
-            print "==="
-
- #           die("XXX" )   
 
 #            self._weight1matrix = self.mat_factor_multiplication( self._weight1matrix, dw1data_history )  
 
