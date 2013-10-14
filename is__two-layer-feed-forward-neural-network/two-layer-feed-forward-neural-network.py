@@ -65,22 +65,22 @@ DEBUG = 0
 #DEBUG = 1
 
 class Perceptron( object ):
-    ## overview
-#    _weight1list = []  # weights, 1st layer 
-#    _weight2list = []  # weights, second layer 
+## TODO biggest mistake, was / is not to have an explicit initialization of all
+## weight matrices available with precalculated intermedeate results to check
+## automated as reference if A) the implementation actually "really" works, and
+## B) if and overall C) where something is broken, when working on the code
 
+
+    ## overview
     _weight1matrix = [] # weights, 1st thru 2nd layer
     _weight2matrix = [] # weights, 2nd thru net layer
     _dwhistory = []     # printable history of dw
     _hiddendata = []    # hidden data
-
-    _trainingset = []  # training data (class 1 and 2)
-    _testset = []      # test set
-    _trainingtargetlist = []   # targets (size of class 1 + 2)
-    _hiddenlist = []   # hidden nodes
+    _trainingdata = []  # training data (class 1 and 2)
+    _training_targetdata = []   # targets (size of class 1 + 2)
+    _testdata = []      # test set
+    _test_targetdata = []
     _learningrate = [] # provided
-    _epochdwlist = []  # for plotting
-    _epochtime = []    # for plotting
 
     def __init__( self ):
         ## training set
@@ -89,7 +89,6 @@ class Perceptron( object ):
         ## bias
         ## x1
         ## x2
-
 
         self._trainingdata = [ [1.0, 4.0, 2.0]
                              , [1.0, 4.0, 4.0]
