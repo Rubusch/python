@@ -136,8 +136,8 @@ class Perceptron( object ):
 
 #        self._hiddendata = [[0.0, 0.0, 0.0]] ## original
 #        self._hiddendata = [[0.0, 0.0, 0.0, 0.0]] ## 4 hidden nodes  
-        self._hiddendata = [[0.0, 0.0, 0.0, 0.0, 0.0]] ## 5 hidden nodes  
-#        self._hiddendata = [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]] ## 10 hidden nodes  
+#        self._hiddendata = [[0.0, 0.0, 0.0, 0.0, 0.0]] ## 5 hidden nodes  
+        self._hiddendata = [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]] ## 10 hidden nodes  
 
 
         ## 1. layer weights
@@ -440,6 +440,7 @@ class Perceptron( object ):
 ## calculating net epochs
 #        MAXTIME = 100
 #        MAXTIME = 1000    
+#        MAXTIME = 2000    
         MAXTIME = 3000    
         for epoch in range(0, MAXTIME):
             total = 0
