@@ -453,7 +453,6 @@ class Perceptron( object ):
 
 ## forward - layer 1
                 ## hidden = sigma(input * weights1)
-#                self._hiddendata = self.mat_multiplication( current_input, self._weight1matrix) 
                 self._hiddendata = self.mat_multiplication( current_input, self.mat_transpose(self._weight1matrix))
                 self._hiddendata = self.sigma( self._hiddendata )
 
