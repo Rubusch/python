@@ -4,6 +4,9 @@
 # Code to train a single-layer neural network
 # Assignment01 for Intelligent Systems
 #
+# author: Lothar Rubusch
+# email: l.rubusch@gmx.ch
+#
 ## training set
 # Class1 (t=1): (1,8), (6,2), (3,6), (4,4), (3,1), (1,6)
 # Class2 (t=-1): (6,10), (7,7), (6,11), (10,5), (4,11)
