@@ -9,13 +9,14 @@
 #
 # Given:
 #
-#     #########
-#     #.......#
-#     #.S#....#
-#     #.##....#
-#     #..#..#.#
-#     #.....#G#
-#     #########
+#     x0123456x
+#    y#########
+#    0#.......#
+#    1#.S#....#
+#    2#.##....#
+#    3#..#..#.#
+#    4#.....#G#
+#    y#########
 #
 # Figure 1: 30-State Maze. For all questions refer to this figure. The agent has
 # four possible actions: North, South, East, West. When the agent takes an
@@ -54,4 +55,94 @@
 #     Output V ~ V^pi
 ##
 
+class Pos( object ):
+    _x = 0
+    _y = 0
+    def __init__( self, x, y):
+        self._x = x
+        self._y = y
+        
+    def x(self):
+        return self._x
+
+    def y(self):
+        return self._y
+
+    def setx(self, x):
+        self._x = x
+
+    def sety(self, y):
+        self._y = y
+
+    def __str__(self):
+        return "[" + str(self._x) + ":" + str(self._y) + "]"
+
+
+
+class Robot(object):
+    _x_limit=""
+    _y_limit=""
+    _maze=[]
+    def __init__(self, maze):
+        self._maze=maze
+        self._y_limit=len(self._maze)
+        self._x_limit=len(self._maze[0])
+#        print "XXX x-limit: " + str(self._x_limit) + ", y-limit: " + str(self._y_limit)
+
+
+    def move_north(self, pos):
+        y=pos.y()
+        y=y-1
+        if(0>y):
+            print "BORDER - NORTH"
+        else:
+            pos.sety(y)
+        return pos
+
+    def move_south(self, pos):
+        y=pos.y()
+        y=y+1
+        if(self._y_limit<=y):
+            print "BORDER - SOUTH"
+        else:
+            pos.sety(y)
+        return pos
+
+    def move_west(self, pos):
+        x=pos.x()
+        x=x-1
+        if(0>x):
+            print "BORDER - WEST"
+        else:
+            pos.setx(x)
+        return pos
+
+    def move_east(self, pos):
+        x=pos.x()
+        x=x+1
+        if(self._x_limit<=x):
+            print "BORDER - EAST"
+        else:
+            pos.setx(x)
+        return pos
+
+
+
+
+
 # TODO 
+# p(dir) = 0.7
+# p(rest) = 0.1; sum = 0.3
+# V(s) = 0
+# pi(s, a) = 0.25
+if __name__ == '__main__':
+
+    maze=[[0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 1, 0, 0, 0, 0],
+          [0, 1, 1, 0, 0, 0, 0],
+          [0, 0, 1, 0, 0, 1, 0],
+          [0, 0, 0, 0, 0, 1, 2]]
+
+    rob=Robot(maze)
+
+    print "READY."
