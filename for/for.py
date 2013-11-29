@@ -7,7 +7,12 @@
 # @2013-May-01
 
 arr = ['cat', 'mouse', 'monkey']
+print "...by element:"
 for x in arr:
-    print x, len(x)
+    print x
+
+print "...by index:"
+for x in range(len(arr)):
+    print x, arr[x]
 
 print "READY.\n"

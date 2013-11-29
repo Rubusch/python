@@ -126,7 +126,11 @@ class Agent(object):
             pos.setx(x)
         return pos
 
-
+    def print_maze( self ):
+        for y in len(self._maze):
+            for x in len(self._maze[y]):
+                print maze[y][x],
+            print ""
 
 
 
@@ -143,6 +147,8 @@ if __name__ == '__main__':
           [0, 0, 1, 0, 0, 1, 0],
           [0, 0, 0, 0, 0, 1, 2]]
 
-    rob=Agent(maze)
+    agent=Agent(maze)
+
+    agent.print_maze()
 
     print "READY."
