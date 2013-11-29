@@ -127,11 +127,20 @@ class Agent(object):
         return pos
 
     def print_maze( self ):
-        for y in len(self._maze):
-            for x in len(self._maze[y]):
-                print maze[y][x],
+        for y in range(len(self._maze)):
+            for x in range(len(self._maze[y])):
+                print maze[y][x],"\t",
             print ""
 
+# TODO
+    def isout( self, pos ):
+        x=pos.x()
+        if(self._x_limit<=x):
+            return 0
+        if(0>x):
+            return 0
+        if(self.
+# TODO 
 
 
 # TODO 
