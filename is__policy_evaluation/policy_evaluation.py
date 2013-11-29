@@ -79,7 +79,7 @@ class Pos( object ):
 
 
 
-class Robot(object):
+class Agent(object):
     _x_limit=""
     _y_limit=""
     _maze=[]
@@ -143,6 +143,6 @@ if __name__ == '__main__':
           [0, 0, 1, 0, 0, 1, 0],
           [0, 0, 0, 0, 0, 1, 2]]
 
-    rob=Robot(maze)
+    rob=Agent(maze)
 
     print "READY."
