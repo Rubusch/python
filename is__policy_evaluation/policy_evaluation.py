@@ -79,14 +79,12 @@ class Position( object ):
     _reward=0.0
     _wall=False
     _value=0.0
-    _base=3
-    def __init__( self, x, y, reward=0.0, wall=False, value=0.0, rounding_base=3):
+    def __init__( self, x, y, reward=0.0, wall=False, value=0.0):
         self._x = x
         self._y = y
         self._reward=reward
         self._wall=wall
         self._value=value
-        self._base=rounding_base
 
     def x(self):
         return self._x
@@ -112,7 +110,7 @@ class Position( object ):
 
     def setwall(self):
         self._wall=True
-        self._value=0.0   
+        self._value=0.0
 
     def value(self):
         return self._value
@@ -120,11 +118,8 @@ class Position( object ):
     def setvalue(self,value):
         self._value=value
 
-    def _round(self, val, base=5):
-        return round(val,base)
-
     def __str__(self):
-        return str(self._round(self._value, self._base))
+        return str(self._value)
 
 
 
@@ -140,7 +135,8 @@ class Agent(object):
     def print_maze(self):
         for y in range(len(self._maze)):
             for x in range(len(self._maze[y])):
-                print maze[y][x],"\t",
+#                print "%.7f\t"% maze[y][x].value(), # rounded values
+                print maze[y][x],"\t", # raw values
             print ""
 
     def isout(self, y, x):
@@ -175,6 +171,7 @@ class Agent(object):
         return delta,value
 
     def policy_evolution(self):
+        cnt=0
         while True:
             ## init delta per round
             delta = 0
@@ -195,19 +192,26 @@ class Agent(object):
                     delta,value=self.updatestate(maze[y][x], 1, 0, delta,value)
                     delta,value=self.updatestate(maze[y][x],-1, 0, delta,value)
 
-                    ## store value
-                    ny = maze[y][x].value()    
-                    delta = max(delta, abs(ny-value)) # max( delta, | ny - value | )     
+                    ## compare differences after 4 x 4 permuted additions
+                    ny = maze[y][x].value()
+                    delta = max(delta, abs(ny-value)) # max( delta, | ny - value | )
 
+                    ## store resulting value
                     maze[y][x].setvalue(value)
 
             ## check delta
-            print "delta:"+str(delta)+" < "+str(self._convergence)
+            print "%d. iteration, delta: %.7f > %.7f" % (cnt,delta,self._convergence)
             if delta < self._convergence:
+                print "STOP"
                 break
 
+            ## increment loop iteration
+            cnt+=1
 
-    ## DEBUG printouts
+        ## // while
+
+
+## DEBUG printouts
     ## boundary - cuts off very high values
     def DEBUG_plot(self,boundary=1.0):
         xs = []; xb = []
@@ -227,7 +231,6 @@ class Agent(object):
                         zs.append( float(val) ) ## take default  by Position str()
                     xs.append(x)
                     ys.append(-y)
-
                 
 ## plot_surface
 #        y = np.arange(-len(self._maze), 0.0, 1.0)
@@ -265,6 +268,7 @@ class Agent(object):
         ax.set_zlabel('Z Label')
 
         plt.show()
+## // DEBUG printouts
         
 
 
@@ -273,14 +277,14 @@ if __name__ == '__main__':
 
     ymax = 5 + 2
     xmax = 7 + 2
-    LIMIT = 7
+    LIMIT = 7 #digits
 
     ## initialize V(s)=0 for all elements of S(maze)
     maze=[]
     for y in range(ymax):
         line=[]
         for x in range(xmax):
-            pos = Position(x,y,rounding_base=LIMIT)
+            pos = Position(x,y)
 
             ## set boundaries
             if y == 0 or y == ymax-1: pos.setwall()
@@ -302,10 +306,18 @@ if __name__ == '__main__':
 
     ## start algorithm
 
-# FIXME no difference by different gammas ?!
-    gamma = 0.9                    
-#    gamma = 0.7                   
+    ## Exercise 1a)
+    print "Exercise 1a) gamma=0.9"
+    gamma = 0.9
+    agent=Agent(maze, gamma, 0.1**LIMIT)
+    agent.policy_evolution()
+    agent.print_maze()
 
+    agent.DEBUG_plot(1.0)
+
+    ## Exercise 1b)
+    print "Exercise 1b) gamma=0.7"
+    gamma = 0.7
     agent=Agent(maze, gamma, 0.1**LIMIT)
     agent.policy_evolution()
     agent.print_maze()
