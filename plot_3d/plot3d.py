@@ -18,6 +18,10 @@ x, y, z = zip(*data)
 
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
+
+## easier
+#ax = fig.gca(projection='3d')
+
 ax.scatter(x,y,z)
 plt.show()
 

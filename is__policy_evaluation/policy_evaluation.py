@@ -61,8 +61,7 @@ import sys
 ## plotting library
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
+from matplotlib import cm # color settings
 
 def die( msg = "" ):
     print "FATAL",
@@ -217,9 +216,20 @@ class Agent(object):
         zs = []
         for y in range(len(self._maze)):
             for x in range(len(self._maze[y])):
-                zs.append( maze[y][x].value() )
+                zs.append( maze[y][x].value() ) ## value
+#                zs.append( maze[y][x].delta() ) ## value
 
-        Axes3D.scatter(xs, ys, zs)
+        fig = plt.figure()
+#        ax = fig.add_subplot(111, projection='3d')
+        ax = fig.gca(projection='3d')
+
+#        ax.scatter(xs,ys,zs)
+#        ax.plot_surface(xs,ys,zs, rstride=1, cstride=1, cmap=cm.coolwarm, linewidth=0, antialiased=False)
+        ax.plot_surface(xs,ys,zs)
+#        ax.plot_wireframe(xs,ys,zs)
+#        ax.plot_trisurf(xs,ys,zs)
+        plt.show()
+#        Axes3D.scatter(xs, ys, zs)
 
 
 
