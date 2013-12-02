@@ -152,33 +152,10 @@ class Agent(object):
 
         ## check if s' is out
         if self.isout( pos.y()+dy, pos.x()+dx): return delta,value
-
         ny = pos.value()
         reward = pos.reward()
-
         nextValue = maze[pos.y()+dy][pos.x()+dx].value()
-
-#        value = 0.25 * pdir * (reward + gamma * nextValue)
-
-#        if reward != 0:
-#            value += 0.25 * pdir * (reward)
-#        else:
         value += 0.25 * pdir * (reward + gamma * nextValue)
-
-# DEBUG
-#        if pos.x()==7 and pos.y()==5: print value # next to Goal  
-#        if pos.x()==7 and pos.y()==4: print value  # next to next to Goal  
-
-
-#        delta = max(delta, abs(ny-value)) # max( delta, | ny - value | )
-
-
-#        print delta         
-        ## write back
-# FIXME write back
-#        pos.setvalue(value) # TODO check if maze is updated by this   
-#        pos.setvalue(delta)    
-#        pos.setvalue(max(ny, value)) # TODO check if maze is updated by this   
         return delta,value
 
 
@@ -199,8 +176,9 @@ class Agent(object):
 
     def policy_evolution(self):
         while True:
-#        for i in range(3): # TODO repeat until delta < theta    
+            ## init delta per round
             delta = 0
+
             ## foreach position s element of S
             for y in range(len(self._maze)):
                 for x in range(len(self._maze[y])):
@@ -223,9 +201,8 @@ class Agent(object):
 
                     maze[y][x].setvalue(value)
 
-            print "delta ",delta
-
             ## check delta
+            print "delta: %f < %f"%self._convergence,delta
             if delta < self._convergence:
                 break
 
