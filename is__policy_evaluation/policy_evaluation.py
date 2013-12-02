@@ -185,29 +185,15 @@ class Agent(object):
 
         
     def plot(self):
-
         xs = []
-#        for y in range(len(self._maze)):
-#            xs += range(len(self._maze[0]))
-
         ys = []
-#        for x in range(len(self._maze[0])):
-#            ys += [-y for y in range(len(self._maze))]
-
         zs = []
-#        for y in range(len(self._maze)):
-#            for x in range(len(self._maze[y])):
-#                val = str(maze[y][x])
-#                zs.append( float(val) ) ## take default  by Position str()
-
         for y in range(len(self._maze)):
             for x in range(len(self._maze[y])):
                 val = str(maze[y][x])
                 zs.append( float(val) ) ## take default  by Position str()
                 xs.append(x)
                 ys.append(-y)
-        
-
 
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
@@ -282,7 +268,7 @@ if __name__ == '__main__':
     ## start algorithm
     agent=Agent(maze)
     agent.policy_evolution()
-    agent.plot()
+#    agent.plot()
     agent.print_maze()
 
     print "READY."
