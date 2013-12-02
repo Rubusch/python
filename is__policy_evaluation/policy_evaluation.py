@@ -59,9 +59,10 @@
 import sys
 
 ## plotting library
+import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-from matplotlib import cm # color settings
+#from matplotlib import cm # color settings
 
 def die( msg = "" ):
     print "FATAL",
@@ -131,22 +132,9 @@ class Pos( object ):
 
 
 class Agent(object):
-#    _x_limit=""
-#    _y_limit=""
     _maze=[]
     def __init__(self, maze):
         self._maze=maze
-#        self._y_limit=len(self._maze)
-#        self._x_limit=len(self._maze[0])
-
-    # def move(self, pos, dx, dy):
-    #     x=pos.x()+dx
-    #     y=pos.y()+dy
-    #     if(isout(y,x)): print "out: dx '"+dx+"', dy '"+dy+"'"
-    #     else:
-    #         pos.setx(x)
-    #         pos.sety(y)
-    #     return pos
 
     def print_maze(self):
         for y in range(len(self._maze)):
@@ -159,13 +147,16 @@ class Agent(object):
         return False
 
     def direction(self,pos,dy,dx,pdir):
+# FIXME no difference by different gammas ?!
         gamma = 0.9
+#        gamma = 0.7
         ## check if s' is out
         if self.isout( pos.y()+dy, pos.x()+dx): return
         ny = pos.value()
         reward = pos.reward() # TODO which reward?
         delta = pos.delta()
         nextValue = maze[pos.y()+dy][pos.x()+dx].value()
+# TODO check summation
         
         value = ny
         value += 0.75 * pdir * (reward + gamma * nextValue)
@@ -191,17 +182,22 @@ class Agent(object):
         else: self.direction(pos,dy,dx,0.1)
 
     def normalize(self):
-        maxval = 0
+        maxval = 0  
+#        maxdelta = 0
         for y in range(len(self._maze)):
             for x in range(len(self._maze[0])):
                 if self.isout(y,x): continue
-                maxval = max( maxval, maze[y][x].value() )
+                maxval = max( maxval, maze[y][x].value() )  
+#                maxdelta = max( maxdelta, maze[y][x].delta() )
 
         for y in range(len(self._maze)):
             for x in range(len(self._maze[0])):
                 if self.isout(y,x): continue
-                if 0 != maxval: maze[y][x].setvalue(maze[y][x].value() / maxval)
-                else: maze[y][x].setvalue(0)
+                if 0 != maxval: maze[y][x].setvalue(maze[y][x].value() / maxval)  
+                else: maze[y][x].setvalue(0)  
+#                if 0 != maxdelta: maze[y][x].setdelta(maze[y][x].delta() / maxdelta)
+#                else: maze[y][x].setdelta(0)
+
 
 
     def plot(self):
@@ -220,14 +216,23 @@ class Agent(object):
 #                zs.append( maze[y][x].delta() ) ## value
 
         fig = plt.figure()
-#        ax = fig.add_subplot(111, projection='3d')
-        ax = fig.gca(projection='3d')
+        ax = fig.add_subplot(111, projection='3d')
+#        ax = fig.gca(projection='3d')
 
-#        ax.scatter(xs,ys,zs)
+        ax.scatter(xs,ys,zs)
 #        ax.plot_surface(xs,ys,zs, rstride=1, cstride=1, cmap=cm.coolwarm, linewidth=0, antialiased=False)
-        ax.plot_surface(xs,ys,zs)
+#        ax.plot_surface(xs,ys,zs)
+
+#        X,Y = np.meshgrid(xs,ys)
+#        ax.plot_surface(X,Y,zs)
+
 #        ax.plot_wireframe(xs,ys,zs)
 #        ax.plot_trisurf(xs,ys,zs)
+
+#        ax.set_xlabel('X Label')
+#        ax.set_ylabel('Y Label')
+#        ax.set_zlabel('Z Label')
+
         plt.show()
 #        Axes3D.scatter(xs, ys, zs)
 
@@ -235,7 +240,7 @@ class Agent(object):
 
     def policy(self):
 
-        for i in range(10): # TODO repeat until delta < theta   
+        for i in range(20): # TODO repeat until delta < theta   
             ## foreach position s element of S
             for y in range(len(self._maze)):
                 for x in range(len(self._maze[y])):
@@ -249,7 +254,7 @@ class Agent(object):
                     self.updatestate(maze[y][x], 1, 0)
                     self.updatestate(maze[y][x],-1, 0)
 
-        self.normalize()
+#        self.normalize()
         self.plot()
 # TODO 
 # p(dir) = 0.7
