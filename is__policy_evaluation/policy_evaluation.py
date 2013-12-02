@@ -70,7 +70,7 @@ def die( msg = "" ):
         print ": " + str(msg)
     sys.exit( -1 )
 
-class Pos( object ):
+class Position( object ):
     _x = 0.0
     _y = 0.0
     _reward=0.0
@@ -158,10 +158,10 @@ class Agent(object):
         nextValue = maze[pos.y()+dy][pos.x()+dx].value()
 # TODO check summation
         
-        value = ny
-        value += 0.75 * pdir * (reward + gamma * nextValue)
+#        value = ny
+#        value += 0.75 * pdir * (reward + gamma * nextValue)
         
-#        value = 0.75 * pdir * (reward + gamma * nextValue)
+        value = 0.75 * pdir * (reward + gamma * nextValue)
         
         delta = max(delta, abs(ny-value)) # max( delta, | ny - value | )
         ## write back
@@ -181,23 +181,6 @@ class Agent(object):
         if -1 == dy and 0 == dx: self.direction(pos,dy,dx,0.7)
         else: self.direction(pos,dy,dx,0.1)
 
-    def normalize(self):
-        maxval = 0  
-#        maxdelta = 0
-        for y in range(len(self._maze)):
-            for x in range(len(self._maze[0])):
-                if self.isout(y,x): continue
-                maxval = max( maxval, maze[y][x].value() )  
-#                maxdelta = max( maxdelta, maze[y][x].delta() )
-
-        for y in range(len(self._maze)):
-            for x in range(len(self._maze[0])):
-                if self.isout(y,x): continue
-                if 0 != maxval: maze[y][x].setvalue(maze[y][x].value() / maxval)  
-                else: maze[y][x].setvalue(0)  
-#                if 0 != maxdelta: maze[y][x].setdelta(maze[y][x].delta() / maxdelta)
-#                else: maze[y][x].setdelta(0)
-
 
 
     def plot(self):
@@ -212,8 +195,9 @@ class Agent(object):
         zs = []
         for y in range(len(self._maze)):
             for x in range(len(self._maze[y])):
-                zs.append( maze[y][x].value() ) ## value
-#                zs.append( maze[y][x].delta() ) ## value
+                val = str(maze[y][x])
+                zs.append( float(val) ) ## take Position policy
+
 
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
@@ -229,9 +213,9 @@ class Agent(object):
 #        ax.plot_wireframe(xs,ys,zs)
 #        ax.plot_trisurf(xs,ys,zs)
 
-#        ax.set_xlabel('X Label')
-#        ax.set_ylabel('Y Label')
-#        ax.set_zlabel('Z Label')
+        ax.set_xlabel('X Label')
+        ax.set_ylabel('Y Label')
+        ax.set_zlabel('Z Label')
 
         plt.show()
 #        Axes3D.scatter(xs, ys, zs)
@@ -271,7 +255,7 @@ if __name__ == '__main__':
     for y in range(ymax):
         line=[]
         for x in range(xmax):
-            pos = Pos(x,y)
+            pos = Position(x,y)
 
             ## set boundaries
             if y == 0 or y == ymax-1: pos.setwall()
