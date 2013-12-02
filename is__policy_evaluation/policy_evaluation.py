@@ -159,9 +159,9 @@ class Agent(object):
 # TODO check summation
         
 #        value = ny
-#        value += 0.75 * pdir * (reward + gamma * nextValue)
+#        value += 0.25 * pdir * (reward + gamma * nextValue)
         
-        value = 0.75 * pdir * (reward + gamma * nextValue)
+        value = 0.25 * pdir * (reward + gamma * nextValue)
         
         delta = max(delta, abs(ny-value)) # max( delta, | ny - value | )
         ## write back
@@ -183,20 +183,30 @@ class Agent(object):
 
 
 
+        
     def plot(self):
+
         xs = []
-        for i in range(len(self._maze)):
-            xs += range(len(self._maze[0]))
+#        for y in range(len(self._maze)):
+#            xs += range(len(self._maze[0]))
 
         ys = []
-        for i in range(len(self._maze[0])):
-            ys += range(len(self._maze))
+#        for x in range(len(self._maze[0])):
+#            ys += [-y for y in range(len(self._maze))]
 
         zs = []
+#        for y in range(len(self._maze)):
+#            for x in range(len(self._maze[y])):
+#                val = str(maze[y][x])
+#                zs.append( float(val) ) ## take default  by Position str()
+
         for y in range(len(self._maze)):
             for x in range(len(self._maze[y])):
                 val = str(maze[y][x])
-                zs.append( float(val) ) ## take Position policy
+                zs.append( float(val) ) ## take default  by Position str()
+                xs.append(x)
+                ys.append(-y)
+        
 
 
         fig = plt.figure()
@@ -219,12 +229,11 @@ class Agent(object):
 
         plt.show()
 #        Axes3D.scatter(xs, ys, zs)
+        
 
 
-
-    def policy(self):
-
-        for i in range(20): # TODO repeat until delta < theta   
+    def policy_evolution(self):
+        for i in range(1): # TODO repeat until delta < theta   
             ## foreach position s element of S
             for y in range(len(self._maze)):
                 for x in range(len(self._maze[y])):
@@ -238,13 +247,8 @@ class Agent(object):
                     self.updatestate(maze[y][x], 1, 0)
                     self.updatestate(maze[y][x],-1, 0)
 
-#        self.normalize()
-        self.plot()
-# TODO 
-# p(dir) = 0.7
-# p(rest) = 0.1; sum = 0.3
-# V(s) = 0
-# pi(s, a) = 0.25
+#        self.plot() 
+
 if __name__ == '__main__':
 
     ymax = 5 + 2
@@ -277,9 +281,8 @@ if __name__ == '__main__':
 
     ## start algorithm
     agent=Agent(maze)
-    agent.policy()
-
-           
+    agent.policy_evolution()
+    agent.plot()
     agent.print_maze()
 
     print "READY."
