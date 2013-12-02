@@ -58,11 +58,14 @@
 ## sys.exit()
 import sys
 
-## plotting library
+## DEBUG plotting library
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 #from matplotlib import cm # color settings
+
+## value rounding
+import decimal
 
 def die( msg = "" ):
     print "FATAL",
@@ -76,12 +79,14 @@ class Position( object ):
     _reward=0.0
     _wall=False
     _value=0.0
-    def __init__( self, x, y, reward=0.0, wall=False, value=0.0):
+    _base=3
+    def __init__( self, x, y, reward=0.0, wall=False, value=0.0, rounding_base=3):
         self._x = x
         self._y = y
         self._reward=reward
         self._wall=wall
         self._value=value
+        self._base=rounding_base
 
     def x(self):
         return self._x
@@ -107,7 +112,6 @@ class Position( object ):
 
     def setwall(self):
         self._wall=True
-#        self._value="."   
         self._value=0.0   
 
     def value(self):
@@ -116,18 +120,22 @@ class Position( object ):
     def setvalue(self,value):
         self._value=value
 
-    def __str__(self):
-        return str(self._value)
+    def _round(self, val, base=5):
+        return round(val,base)
 
+    def __str__(self):
+        return str(self._round(self._value, self._base))
 
 
 
 class Agent(object):
     _maze=[]
     _gamma=1.0
-    def __init__(self, maze,gamma):
+    _convergence=0.1
+    def __init__(self, maze,gamma,convergence):
         self._maze=maze
         self._gamma=gamma
+        self._convergence=convergence
 
     def print_maze(self):
         for y in range(len(self._maze)):
@@ -151,20 +159,26 @@ class Agent(object):
         nextValue = maze[pos.y()+dy][pos.x()+dx].value()
 
 #        value = 0.25 * pdir * (reward + gamma * nextValue)
+
+#        if reward != 0:
+#            value += 0.25 * pdir * (reward)
+#        else:
         value += 0.25 * pdir * (reward + gamma * nextValue)
 
 # DEBUG
 #        if pos.x()==7 and pos.y()==5: print value # next to Goal  
 #        if pos.x()==7 and pos.y()==4: print value  # next to next to Goal  
 
-        delta = max(delta, abs(ny-value)) # max( delta, | ny - value | )
 
+#        delta = max(delta, abs(ny-value)) # max( delta, | ny - value | )
+
+
+#        print delta         
         ## write back
 # FIXME write back
 #        pos.setvalue(value) # TODO check if maze is updated by this   
 #        pos.setvalue(delta)    
 #        pos.setvalue(max(ny, value)) # TODO check if maze is updated by this   
-
         return delta,value
 
 
@@ -184,7 +198,8 @@ class Agent(object):
         return delta,value
 
     def policy_evolution(self):
-        for i in range(1000): # TODO repeat until delta < theta
+        while True:
+#        for i in range(3): # TODO repeat until delta < theta    
             delta = 0
             ## foreach position s element of S
             for y in range(len(self._maze)):
@@ -203,22 +218,38 @@ class Agent(object):
                     delta,value=self.updatestate(maze[y][x],-1, 0, delta,value)
 
                     ## store value
+                    ny = maze[y][x].value()    
+                    delta = max(delta, abs(ny-value)) # max( delta, | ny - value | )     
+
                     maze[y][x].setvalue(value)
 
             print "delta ",delta
 
+            ## check delta
+            if delta < self._convergence:
+                break
+
 
     ## DEBUG printouts
-    def plot(self):
-        xs = []
-        ys = []
-        zs = []
+    ## boundary - cuts off very high values
+    def DEBUG_plot(self,boundary=1.0):
+        xs = []; xb = []
+        ys = []; yb = []
+        zs = []; zb = []
         for y in range(len(self._maze)):
             for x in range(len(self._maze[y])):
-                val = str(maze[y][x])
-                zs.append( float(val) ) ## take default  by Position str()
-                xs.append(x)
-                ys.append(-y)
+                if self.isout(y,x):
+                    xb.append(x)
+                    yb.append(-y)
+                    zb.append(0.0)
+                else:
+                    val = str(maze[y][x])
+                    if float(val) >= boundary:
+                        zs.append( boundary )
+                    else:
+                        zs.append( float(val) ) ## take default  by Position str()
+                    xs.append(x)
+                    ys.append(-y)
 
                 
 ## plot_surface
@@ -246,8 +277,11 @@ class Agent(object):
 
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
-#        ax = fig.gca(projection='3d')
-        ax.scatter(xs,ys,zs)  
+        ax.scatter(xs,ys,zs,s=50,c="#FFD700") # values, yellow
+#        ax.scatter(xs,ys,zs,s=50,c="#FF3300") # values, red
+#        ax.scatter(xs,ys,zs,s=50,c="#FF3300") # values, blue
+
+        ax.scatter(xb,yb,zb,s=100,c="#838B8B") # boundary
 
         ax.set_xlabel('X Label')
         ax.set_ylabel('Y Label')
@@ -258,19 +292,18 @@ class Agent(object):
 
 
 
-
-
 if __name__ == '__main__':
 
     ymax = 5 + 2
     xmax = 7 + 2
+    LIMIT = 7
 
     ## initialize V(s)=0 for all elements of S(maze)
     maze=[]
     for y in range(ymax):
         line=[]
         for x in range(xmax):
-            pos = Position(x,y)
+            pos = Position(x,y,rounding_base=LIMIT)
 
             ## set boundaries
             if y == 0 or y == ymax-1: pos.setwall()
@@ -296,9 +329,10 @@ if __name__ == '__main__':
     gamma = 0.9                    
 #    gamma = 0.7                   
 
-    agent=Agent(maze, gamma)
+    agent=Agent(maze, gamma, 0.1**LIMIT)
     agent.policy_evolution()
     agent.print_maze()
-    agent.plot() 
+
+    agent.DEBUG_plot(1.0)
 
     print "READY."
