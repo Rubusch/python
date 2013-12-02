@@ -146,21 +146,17 @@ class Agent(object):
         if maze[y][x].iswall(): return True
         return False
 
-    def direction(self,pos,dy,dx,pdir):
+    def direction(self,pos,dy,dx,pdir,delta):
 # FIXME no difference by different gammas ?!
         gamma = 0.9
 #        gamma = 0.7
         ## check if s' is out
-        if self.isout( pos.y()+dy, pos.x()+dx): return
+        if self.isout( pos.y()+dy, pos.x()+dx): return delta
         ny = pos.value()
         reward = pos.reward() # TODO which reward?
-        delta = pos.delta()
+#        delta = pos.delta()
         nextValue = maze[pos.y()+dy][pos.x()+dx].value()
-# TODO check summation
-        
-#        value = ny
-#        value += 0.25 * pdir * (reward + gamma * nextValue)
-        
+
         value = ny
         value += 0.25 * pdir * (reward + gamma * nextValue)
 #        if pos.x()==7 and pos.y()==5: print value # next to Goal  
@@ -169,21 +165,24 @@ class Agent(object):
         delta = max(delta, abs(ny-value)) # max( delta, | ny - value | )
         ## write back
         pos.setvalue(value) # TODO check if maze is updated by this   
-        pos.setdelta(delta)
+#        pos.setdelta(delta)
+        return delta
+        
 
-    def updatestate(self,pos,dy,dx):
-        if 0 == dy and 1 == dx: self.direction(pos,dy,dx,0.7)
-        else: self.direction(pos,dy,dx,0.1)
+    def updatestate(self,pos,dy,dx, delta):
+        ## moving in one direction, three others still likely
+        if 0 == dy and 1 == dx: delta=self.direction(pos,dy,dx,0.7,delta)
+        else: delta=self.direction(pos,dy,dx,0.1,delta)
 
-        if 1 == dy and 0 == dx: self.direction(pos,dy,dx,0.7)
-        else: self.direction(pos,dy,dx,0.1)
+        if 1 == dy and 0 == dx: delta=self.direction(pos,dy,dx,0.7,delta)
+        else: delta=self.direction(pos,dy,dx,0.1,delta)
 
-        if 0 == dy and -1 == dx: self.direction(pos,dy,dx,0.7)
-        else: self.direction(pos,dy,dx,0.1)
+        if 0 == dy and -1 == dx: delta=self.direction(pos,dy,dx,0.7,delta)
+        else: delta=self.direction(pos,dy,dx,0.1,delta)
 
-        if -1 == dy and 0 == dx: self.direction(pos,dy,dx,0.7)
-        else: self.direction(pos,dy,dx,0.1)
-
+        if -1 == dy and 0 == dx: delta=self.direction(pos,dy,dx,0.7,delta)
+        else: delta=self.direction(pos,dy,dx,0.1,delta)
+        return delta
 
 
         
@@ -222,7 +221,8 @@ class Agent(object):
 
 
     def policy_evolution(self):
-        for i in range(100): # TODO repeat until delta < theta   
+        for i in range(20): # TODO repeat until delta < theta   
+            delta = 0
             ## foreach position s element of S
             for y in range(len(self._maze)):
                 for x in range(len(self._maze[y])):
@@ -231,11 +231,12 @@ class Agent(object):
                     if self.isout(y,x): continue
 
                     ## permutate all directions
-                    self.updatestate(maze[y][x], 0, 1)
-                    self.updatestate(maze[y][x], 0,-1)
-                    self.updatestate(maze[y][x], 1, 0)
-                    self.updatestate(maze[y][x],-1, 0)
+                    delta=self.updatestate(maze[y][x], 0, 1, delta)
+                    delta=self.updatestate(maze[y][x], 0,-1, delta)
+                    delta=self.updatestate(maze[y][x], 1, 0, delta)
+                    delta=self.updatestate(maze[y][x],-1, 0, delta)
 
+            print delta
 #        self.plot() 
 
 if __name__ == '__main__':
