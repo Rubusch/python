@@ -55,13 +55,36 @@
 #     Output V ~ V^pi
 ##
 
+## sys.exit()
+import sys
+
+## plotting library
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+
+def die( msg = "" ):
+    print "FATAL",
+    if 0 < len(str(msg)):
+        print ": " + str(msg)
+    sys.exit( -1 )
+
 class Pos( object ):
-    _x = 0
-    _y = 0
-    def __init__( self, x, y):
+    _x = 0.0
+    _y = 0.0
+    _reward=0.0
+    _wall=False
+    _value=0.0
+    _delta=0.0
+    def __init__( self, x, y, reward=0.0, wall=False, value=0.0, delta=0.0):
         self._x = x
         self._y = y
-        
+        self._reward=reward
+        self._wall=wall
+        self._value=value
+        self._delta=delta
+
     def x(self):
         return self._x
 
@@ -74,75 +97,150 @@ class Pos( object ):
     def sety(self, y):
         self._y = y
 
+    def reward(self):
+        return self._reward
+
+    def setreward(self, reward):
+        self._reward=reward
+        self._value=reward
+
+    def iswall(self):
+        return self._wall
+
+    def setwall(self):
+        self._wall=True
+#        self._value="."   
+        self._value=0.0   
+
+    def value(self):
+        return self._value
+
+    def setvalue(self,value):
+        self._value=value
+
+    def delta(self):
+        return self._delta
+
+    def setdelta(self,delta):
+        self._delta=delta
+
     def __str__(self):
-        return "[" + str(self._x) + ":" + str(self._y) + "]"
+#        return str(self._delta)
+        return str(self._value)
+
 
 
 
 class Agent(object):
-    _x_limit=""
-    _y_limit=""
+#    _x_limit=""
+#    _y_limit=""
     _maze=[]
     def __init__(self, maze):
         self._maze=maze
-        self._y_limit=len(self._maze)
-        self._x_limit=len(self._maze[0])
-#        print "XXX x-limit: " + str(self._x_limit) + ", y-limit: " + str(self._y_limit)
+#        self._y_limit=len(self._maze)
+#        self._x_limit=len(self._maze[0])
 
+    # def move(self, pos, dx, dy):
+    #     x=pos.x()+dx
+    #     y=pos.y()+dy
+    #     if(isout(y,x)): print "out: dx '"+dx+"', dy '"+dy+"'"
+    #     else:
+    #         pos.setx(x)
+    #         pos.sety(y)
+    #     return pos
 
-    def move_north(self, pos):
-        y=pos.y()
-        y=y-1
-        if(0>y):
-            print "BORDER - NORTH"
-        else:
-            pos.sety(y)
-        return pos
-
-    def move_south(self, pos):
-        y=pos.y()
-        y=y+1
-        if(self._y_limit<=y):
-            print "BORDER - SOUTH"
-        else:
-            pos.sety(y)
-        return pos
-
-    def move_west(self, pos):
-        x=pos.x()
-        x=x-1
-        if(0>x):
-            print "BORDER - WEST"
-        else:
-            pos.setx(x)
-        return pos
-
-    def move_east(self, pos):
-        x=pos.x()
-        x=x+1
-        if(self._x_limit<=x):
-            print "BORDER - EAST"
-        else:
-            pos.setx(x)
-        return pos
-
-    def print_maze( self ):
+    def print_maze(self):
         for y in range(len(self._maze)):
             for x in range(len(self._maze[y])):
                 print maze[y][x],"\t",
             print ""
 
-# TODO
-    def isout( self, pos ):
-        x=pos.x()
-        if(self._x_limit<=x):
-            return 0
-        if(0>x):
-            return 0
-        if(self.
-# TODO 
+    def isout(self, y, x):
+        if maze[y][x].iswall(): return True
+        return False
+
+    def direction(self,pos,dy,dx,pdir):
+        gamma = 0.9
+        ## check if s' is out
+        if self.isout( pos.y()+dy, pos.x()+dx): return
+        ny = pos.value()
+        reward = pos.reward() # TODO which reward?
+        delta = pos.delta()
+        nextValue = maze[pos.y()+dy][pos.x()+dx].value()
+        
+        value = ny
+        value += 0.75 * pdir * (reward + gamma * nextValue)
+        
+#        value = 0.75 * pdir * (reward + gamma * nextValue)
+        
+        delta = max(delta, abs(ny-value)) # max( delta, | ny - value | )
+        ## write back
+        pos.setvalue(value) # TODO check if maze is updated by this   
+        pos.setdelta(delta)
+
+    def updatestate(self,pos,dy,dx):
+        if 0 == dy and 1 == dx: self.direction(pos,dy,dx,0.7)
+        else: self.direction(pos,dy,dx,0.1)
+
+        if 1 == dy and 0 == dx: self.direction(pos,dy,dx,0.7)
+        else: self.direction(pos,dy,dx,0.1)
+
+        if 0 == dy and -1 == dx: self.direction(pos,dy,dx,0.7)
+        else: self.direction(pos,dy,dx,0.1)
+
+        if -1 == dy and 0 == dx: self.direction(pos,dy,dx,0.7)
+        else: self.direction(pos,dy,dx,0.1)
+
+    def normalize(self):
+        maxval = 0
+        for y in range(len(self._maze)):
+            for x in range(len(self._maze[0])):
+                if self.isout(y,x): continue
+                maxval = max( maxval, maze[y][x].value() )
+
+        for y in range(len(self._maze)):
+            for x in range(len(self._maze[0])):
+                if self.isout(y,x): continue
+                if 0 != maxval: maze[y][x].setvalue(maze[y][x].value() / maxval)
+                else: maze[y][x].setvalue(0)
 
 
+    def plot(self):
+        xs = []
+        for i in range(len(self._maze)):
+            xs += range(len(self._maze[0]))
+
+        ys = []
+        for i in range(len(self._maze[0])):
+            ys += range(len(self._maze))
+
+        zs = []
+        for y in range(len(self._maze)):
+            for x in range(len(self._maze[y])):
+                zs.append( maze[y][x].value() )
+
+        Axes3D.scatter(xs, ys, zs)
+
+
+
+    def policy(self):
+
+        for i in range(10): # TODO repeat until delta < theta   
+            ## foreach position s element of S
+            for y in range(len(self._maze)):
+                for x in range(len(self._maze[y])):
+
+                    ## check if s is out
+                    if self.isout(y,x): continue
+
+                    ## permutate all directions
+                    self.updatestate(maze[y][x], 0, 1)
+                    self.updatestate(maze[y][x], 0,-1)
+                    self.updatestate(maze[y][x], 1, 0)
+                    self.updatestate(maze[y][x],-1, 0)
+
+        self.normalize()
+        self.plot()
 # TODO 
 # p(dir) = 0.7
 # p(rest) = 0.1; sum = 0.3
@@ -150,14 +248,39 @@ class Agent(object):
 # pi(s, a) = 0.25
 if __name__ == '__main__':
 
-    maze=[[0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 1, 0, 0, 0, 0],
-          [0, 1, 1, 0, 0, 0, 0],
-          [0, 0, 1, 0, 0, 1, 0],
-          [0, 0, 0, 0, 0, 1, 2]]
+    ymax = 5 + 2
+    xmax = 7 + 2
 
+    ## initialize V(s)=0 for all elements of S(maze)
+    maze=[]
+    for y in range(ymax):
+        line=[]
+        for x in range(xmax):
+            pos = Pos(x,y)
+
+            ## set boundaries
+            if y == 0 or y == ymax-1: pos.setwall()
+            if x == 0 or x == xmax-1: pos.setwall()
+
+            ## set inside borders
+            if x==3 and y==2: pos.setwall()
+            if x==2 and y==3: pos.setwall()
+            if x==3 and y==3: pos.setwall()
+            if x==3 and y==4: pos.setwall()
+            if x==6 and y==4: pos.setwall()
+            if x==6 and y==5: pos.setwall()
+
+            ## goal
+            if x==7 and y==5: pos.setreward(10)
+
+            line += [pos]
+        maze.append(line)
+
+    ## start algorithm
     agent=Agent(maze)
+    agent.policy()
 
+           
     agent.print_maze()
 
     print "READY."
