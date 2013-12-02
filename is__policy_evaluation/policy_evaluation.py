@@ -197,11 +197,32 @@ class Agent(object):
                 xs.append(x)
                 ys.append(-y)
 
+                
+#        y = np.arange(-len(self._maze), 0.0, 1.0)
+#        x = np.arange(0.0, len(self._maze[0]), 1.0)
+#        X, Y = np.meshgrid(x,y)
+#        zs = np.array([z for z in zs])
+#        Z = zs.reshape(X.shape) 
+        
+        X = np.array(xs)
+        Y = np.array(ys)
+        Z = np.array(zs)
+        pts = mlab.points3d(X,Y,Z,Z)
+        mesh = mlab.pipeline.delaunay2d(pts)
+        pts.remove()
+        surf = mlab.pipeline.surface(mesh)
+        
+        
+        mlab.show()
+        return
+
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
 #        ax = fig.gca(projection='3d')
 
-        ax.scatter(xs,ys,zs)
+#        ax.scatter(xs,ys,zs)  
+        ax.plot_surface(X, Y, Z)
+
 #        ax.plot_surface(xs,ys,zs, rstride=1, cstride=1, cmap=cm.coolwarm, linewidth=0, antialiased=False)
 #        ax.plot_surface(xs,ys,zs)
 

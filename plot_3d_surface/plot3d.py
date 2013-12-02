@@ -11,10 +11,21 @@ def fun(x, y):
 
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
+
 x = y = np.arange(-3.0, 3.0, 0.05)
 X, Y = np.meshgrid(x, y)
+
 zs = np.array([fun(x,y) for x,y in zip(np.ravel(X), np.ravel(Y))])
 Z = zs.reshape(X.shape)
+
+#print "Z"
+#print Z
+
+#print "X"
+#print X
+
+#print "Y"
+#print Y
 
 ax.plot_surface(X, Y, Z)
 
