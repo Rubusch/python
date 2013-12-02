@@ -202,7 +202,7 @@ class Agent(object):
                     maze[y][x].setvalue(value)
 
             ## check delta
-            print "delta: %f < %f"%self._convergence,delta
+            print "delta:"+str(delta)+" < "+str(self._convergence)
             if delta < self._convergence:
                 break
 
