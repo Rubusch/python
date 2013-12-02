@@ -76,14 +76,12 @@ class Position( object ):
     _reward=0.0
     _wall=False
     _value=0.0
-    _delta=0.0
-    def __init__( self, x, y, reward=0.0, wall=False, value=0.0, delta=0.0):
+    def __init__( self, x, y, reward=0.0, wall=False, value=0.0):
         self._x = x
         self._y = y
         self._reward=reward
         self._wall=wall
         self._value=value
-        self._delta=delta
 
     def x(self):
         return self._x
@@ -118,14 +116,7 @@ class Position( object ):
     def setvalue(self,value):
         self._value=value
 
-    def delta(self):
-        return self._delta
-
-    def setdelta(self,delta):
-        self._delta=delta
-
     def __str__(self):
-#        return str(self._delta)
         return str(self._value)
 
 
@@ -133,8 +124,10 @@ class Position( object ):
 
 class Agent(object):
     _maze=[]
-    def __init__(self, maze):
+    _gamma=1.0
+    def __init__(self, maze,gamma):
         self._maze=maze
+        self._gamma=gamma
 
     def print_maze(self):
         for y in range(len(self._maze)):
@@ -146,46 +139,76 @@ class Agent(object):
         if maze[y][x].iswall(): return True
         return False
 
-    def direction(self,pos,dy,dx,pdir,delta):
-# FIXME no difference by different gammas ?!
-        gamma = 0.9
-#        gamma = 0.7
+    def direction(self,pos,dy,dx,pdir,delta,value):
+        gamma = self._gamma
+
         ## check if s' is out
-        if self.isout( pos.y()+dy, pos.x()+dx): return delta
+        if self.isout( pos.y()+dy, pos.x()+dx): return delta,value
+
         ny = pos.value()
-        reward = pos.reward() # TODO which reward?
-#        delta = pos.delta()
+        reward = pos.reward()
+
         nextValue = maze[pos.y()+dy][pos.x()+dx].value()
 
-        value = ny
+#        value = 0.25 * pdir * (reward + gamma * nextValue)
         value += 0.25 * pdir * (reward + gamma * nextValue)
+
+# DEBUG
 #        if pos.x()==7 and pos.y()==5: print value # next to Goal  
 #        if pos.x()==7 and pos.y()==4: print value  # next to next to Goal  
-        
+
         delta = max(delta, abs(ny-value)) # max( delta, | ny - value | )
+
         ## write back
-        pos.setvalue(value) # TODO check if maze is updated by this   
-#        pos.setdelta(delta)
-        return delta
-        
+# FIXME write back
+#        pos.setvalue(value) # TODO check if maze is updated by this   
+#        pos.setvalue(delta)    
+#        pos.setvalue(max(ny, value)) # TODO check if maze is updated by this   
 
-    def updatestate(self,pos,dy,dx, delta):
-        ## moving in one direction, three others still likely
-        if 0 == dy and 1 == dx: delta=self.direction(pos,dy,dx,0.7,delta)
-        else: delta=self.direction(pos,dy,dx,0.1,delta)
-
-        if 1 == dy and 0 == dx: delta=self.direction(pos,dy,dx,0.7,delta)
-        else: delta=self.direction(pos,dy,dx,0.1,delta)
-
-        if 0 == dy and -1 == dx: delta=self.direction(pos,dy,dx,0.7,delta)
-        else: delta=self.direction(pos,dy,dx,0.1,delta)
-
-        if -1 == dy and 0 == dx: delta=self.direction(pos,dy,dx,0.7,delta)
-        else: delta=self.direction(pos,dy,dx,0.1,delta)
-        return delta
+        return delta,value
 
 
-        
+    def updatestate(self,pos,dy,dx,delta,value):
+        ## 2. permutation by probability towards a specified direction
+        if 0 == dy and 1 == dx: delta,value=self.direction(pos,dy,dx,0.7,delta,value)
+        else: delta,value=self.direction(pos,dy,dx,0.1,delta,value)
+
+        if 1 == dy and 0 == dx: delta,value=self.direction(pos,dy,dx,0.7,delta,value)
+        else: delta,value=self.direction(pos,dy,dx,0.1,delta,value)
+
+        if 0 == dy and -1 == dx: delta,value=self.direction(pos,dy,dx,0.7,delta,value)
+        else: delta,value=self.direction(pos,dy,dx,0.1,delta,value)
+
+        if -1 == dy and 0 == dx: delta,value=self.direction(pos,dy,dx,0.7,delta,value)
+        else: delta,value=self.direction(pos,dy,dx,0.1,delta,value)
+        return delta,value
+
+    def policy_evolution(self):
+        for i in range(1000): # TODO repeat until delta < theta
+            delta = 0
+            ## foreach position s element of S
+            for y in range(len(self._maze)):
+                for x in range(len(self._maze[y])):
+
+                    ## load value for next round
+                    value = 0
+
+                    ## check if s is out
+                    if self.isout(y,x): continue
+
+                    ## 1. permutation by possible directions
+                    delta,value=self.updatestate(maze[y][x], 0, 1, delta,value)
+                    delta,value=self.updatestate(maze[y][x], 0,-1, delta,value)
+                    delta,value=self.updatestate(maze[y][x], 1, 0, delta,value)
+                    delta,value=self.updatestate(maze[y][x],-1, 0, delta,value)
+
+                    ## store value
+                    maze[y][x].setvalue(value)
+
+            print "delta ",delta
+
+
+    ## DEBUG printouts
     def plot(self):
         xs = []
         ys = []
@@ -198,67 +221,44 @@ class Agent(object):
                 ys.append(-y)
 
                 
+## plot_surface
 #        y = np.arange(-len(self._maze), 0.0, 1.0)
 #        x = np.arange(0.0, len(self._maze[0]), 1.0)
 #        X, Y = np.meshgrid(x,y)
 #        zs = np.array([z for z in zs])
 #        Z = zs.reshape(X.shape) 
+#        fig = plt.figure()
+#        ax = fig.add_subplot(111, projection='3d')
+#        ax.plot_surface(X, Y, Z)
+#        plt.show()
+
         
-        X = np.array(xs)
-        Y = np.array(ys)
-        Z = np.array(zs)
-        pts = mlab.points3d(X,Y,Z,Z)
-        mesh = mlab.pipeline.delaunay2d(pts)
-        pts.remove()
-        surf = mlab.pipeline.surface(mesh)
-        
-        
-        mlab.show()
-        return
+## delaunay
+#        from mayavi import mlab
+#        X = np.array(xs)
+#        Y = np.array(ys)
+#        Z = np.array(zs)
+#        pts = mlab.points3d(X,Y,Z,Z)
+#        mesh = mlab.pipeline.delaunay2d(pts)
+#        pts.remove()
+#        surf = mlab.pipeline.surface(mesh)
+#        mlab.show()
 
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
 #        ax = fig.gca(projection='3d')
-
-#        ax.scatter(xs,ys,zs)  
-        ax.plot_surface(X, Y, Z)
-
-#        ax.plot_surface(xs,ys,zs, rstride=1, cstride=1, cmap=cm.coolwarm, linewidth=0, antialiased=False)
-#        ax.plot_surface(xs,ys,zs)
-
-#        X,Y = np.meshgrid(xs,ys)
-#        ax.plot_surface(X,Y,zs)
-
-#        ax.plot_wireframe(xs,ys,zs)
-#        ax.plot_trisurf(xs,ys,zs)
+        ax.scatter(xs,ys,zs)  
 
         ax.set_xlabel('X Label')
         ax.set_ylabel('Y Label')
         ax.set_zlabel('Z Label')
 
         plt.show()
-#        Axes3D.scatter(xs, ys, zs)
         
 
 
-    def policy_evolution(self):
-        for i in range(20): # TODO repeat until delta < theta   
-            delta = 0
-            ## foreach position s element of S
-            for y in range(len(self._maze)):
-                for x in range(len(self._maze[y])):
 
-                    ## check if s is out
-                    if self.isout(y,x): continue
 
-                    ## permutate all directions
-                    delta=self.updatestate(maze[y][x], 0, 1, delta)
-                    delta=self.updatestate(maze[y][x], 0,-1, delta)
-                    delta=self.updatestate(maze[y][x], 1, 0, delta)
-                    delta=self.updatestate(maze[y][x],-1, 0, delta)
-
-            print delta
-#        self.plot() 
 
 if __name__ == '__main__':
 
@@ -291,9 +291,14 @@ if __name__ == '__main__':
         maze.append(line)
 
     ## start algorithm
-    agent=Agent(maze)
+
+# FIXME no difference by different gammas ?!
+    gamma = 0.9                    
+#    gamma = 0.7                   
+
+    agent=Agent(maze, gamma)
     agent.policy_evolution()
-    agent.plot()
     agent.print_maze()
+    agent.plot() 
 
     print "READY."
