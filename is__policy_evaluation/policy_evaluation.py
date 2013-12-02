@@ -161,7 +161,10 @@ class Agent(object):
 #        value = ny
 #        value += 0.25 * pdir * (reward + gamma * nextValue)
         
-        value = 0.25 * pdir * (reward + gamma * nextValue)
+        value = ny
+        value += 0.25 * pdir * (reward + gamma * nextValue)
+#        if pos.x()==7 and pos.y()==5: print value # next to Goal  
+#        if pos.x()==7 and pos.y()==4: print value  # next to next to Goal  
         
         delta = max(delta, abs(ny-value)) # max( delta, | ny - value | )
         ## write back
@@ -219,7 +222,7 @@ class Agent(object):
 
 
     def policy_evolution(self):
-        for i in range(1): # TODO repeat until delta < theta   
+        for i in range(100): # TODO repeat until delta < theta   
             ## foreach position s element of S
             for y in range(len(self._maze)):
                 for x in range(len(self._maze[y])):
@@ -268,7 +271,7 @@ if __name__ == '__main__':
     ## start algorithm
     agent=Agent(maze)
     agent.policy_evolution()
-#    agent.plot()
+    agent.plot()
     agent.print_maze()
 
     print "READY."
