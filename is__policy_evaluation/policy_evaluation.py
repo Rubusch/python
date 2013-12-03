@@ -59,9 +59,9 @@
 import sys
 
 ## DEBUG plotting library
-#import numpy as np
-#import matplotlib.pyplot as plt
-#from mpl_toolkits.mplot3d import Axes3D
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 def die( msg = "" ):
     print "FATAL",
@@ -227,36 +227,10 @@ class Agent(object):
                         zs.append( float(val) ) ## take default  by Position str()
                     xs.append(x)
                     ys.append(-y)
-                
-## plot_surface
-#        y = np.arange(-len(self._maze), 0.0, 1.0)
-#        x = np.arange(0.0, len(self._maze[0]), 1.0)
-#        X, Y = np.meshgrid(x,y)
-#        zs = np.array([z for z in zs])
-#        Z = zs.reshape(X.shape) 
-#        fig = plt.figure()
-#        ax = fig.add_subplot(111, projection='3d')
-#        ax.plot_surface(X, Y, Z)
-#        plt.show()
-
-        
-## delaunay
-#        from mayavi import mlab
-#        X = np.array(xs)
-#        Y = np.array(ys)
-#        Z = np.array(zs)
-#        pts = mlab.points3d(X,Y,Z,Z)
-#        mesh = mlab.pipeline.delaunay2d(pts)
-#        pts.remove()
-#        surf = mlab.pipeline.surface(mesh)
-#        mlab.show()
 
         fig = plt.figure()
         ax = fig.add_subplot(111, projection='3d')
         ax.scatter(xs,ys,zs,s=50,c="#FFD700") # values, yellow
-#        ax.scatter(xs,ys,zs,s=50,c="#FF3300") # values, red
-#        ax.scatter(xs,ys,zs,s=50,c="#FF3300") # values, blue
-
         ax.scatter(xb,yb,zb,s=100,c="#838B8B") # boundary
 
         ax.set_xlabel('X Label')
@@ -309,7 +283,7 @@ if __name__ == '__main__':
     agent.policy_evolution()
     agent.print_maze()
 
-#    agent.DEBUG_plot(1.0) # for plotting, uncomment imports on top   
+    agent.DEBUG_plot(1.0) # for plotting, uncomment imports on top   
 
     ## Exercise 1b)
     print "Exercise 1b) gamma=0.7"
@@ -318,6 +292,6 @@ if __name__ == '__main__':
     agent.policy_evolution()
     agent.print_maze()
 
-#    agent.DEBUG_plot(1.0)  
+    agent.DEBUG_plot(1.0)  
 
     print "READY."
