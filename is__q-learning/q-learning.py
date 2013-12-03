@@ -135,9 +135,18 @@ class Position( object ):
 class Agent(object):
     _maze=[]
     _gamma=1.0
-    _convergence=0.1
-    def __init__(self,maze):
+    def __init__(self,maze,gamma,alfa,ystart,xstart,ygoal,xgoal):
         self._maze=maze
+        self._gamma=gamma
+        self._alfa=alfa
+        self._xstart=xstart
+        self._ystart=ystart
+        self._xgoal=xgoal
+        self._ygoal=ygoal
+        self.NORTH=0
+        self.EAST=1
+        self.SOUTH=2
+        self.WEST=3
 
     def print_maze(self):
         for y in range(len(self._maze)):
@@ -150,12 +159,18 @@ class Agent(object):
         if maze[y][x].iswall(): return True
         return False
 
-    def direction(self):
+    def direction(self, pos):
         # NORTH=0
         # EAST=1
         # SOUTH=2
         # WEST=3
-        return random.randrange(0,4)
+        direction = random.randrange(0,4)
+        if direction == self.NORTH: pos=self.move(pos,1,0)
+        elif direction == self.EAST: pos=self.move(pos,0,1)
+        elif direction == self.SOUTH: pos=self.move(pos,-1,0)
+        elif direction == self.WEST: pos=self.move(pos,0,-1)
+        return pos
+
 
     # def direction(self,pos,dy,dx,pdir,delta,value):
     #     gamma = self._gamma
@@ -184,34 +199,26 @@ class Agent(object):
     #     else: delta,value=self.direction(pos,dy,dx,0.1,delta,value)
     #     return delta,value
 
-    def north(self, pos):
-        print "north"
+    def move(self,pos,dy,dx):
+        if self.isout(pos.y()+dy, pos.x()+dx): return pos
+        pos.sety(pos.y()+dy)
+        pos.setx(pos.x()+dx)
 
-    def east(self, pos):
-        print "east"
+        return pos
 
-    def south(self, pos):
-        print "south"
 
-    def west(self, pos):
-        print "west"
 
     def q_learning(self):
         cnt=0
+        
+        pos = Position(self._ystart, self._xstart)
         while True:
-            pos = Posistion(self._ystart, self._xstart)
+            pos=self.direction(pos)
+            print "pos: x=%d, y=%d"%(pos.x(),pos.y())
 
-
-            ##  directions
-            options = {0: self.north(pos),
-                       1: self.east(pos),
-                       2: self.south(pos),
-                       3: self.west(pos),
-                       }
-
-            ## choose a direction
-            direction = self.nextdirection()
-            options[direction]()
+            if self._ygoal==pos.y() and self._xgoal==pos.x():
+                print "GOAL"
+                break
 
             ## break out
             if 10 == cnt: break
@@ -332,6 +339,10 @@ if __name__ == '__main__':
     LIMIT = 7 #digits
 
     ## initialize V(s)=0 for all elements of S(maze)
+    ystart=2
+    xstart=2
+    ygoal=5
+    xgoal=7
     maze=[]
     for y in range(ymax):
         line=[]
@@ -351,16 +362,18 @@ if __name__ == '__main__':
             if x==6 and y==5: pos.setwall()
 
             ## goal
-            if x==7 and y==5: pos.setreward(10)
+            if x==xgoal and y==ygoal: pos.setreward(10)
 
             line += [pos]
         maze.append(line)
 
     ## start algorithm
-        
+
     ## Exercise 2a)
     print "Exercise 2a)"
-    agent=Agent(maze)
+    gamma=0.9
+    alfa=0.4
+    agent=Agent(maze,gamma,alfa,ystart,xstart,ygoal,xgoal)
     agent.q_learning();
 
 
