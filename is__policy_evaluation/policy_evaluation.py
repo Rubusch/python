@@ -75,7 +75,7 @@ class Position( object ):
     _reward=0.0
     _wall=False
     _value=0.0
-    def __init__( self, x, y, reward=0.0, wall=False, value=0.0):
+    def __init__( self, y, x, reward=0.0, wall=False, value=0.0):
         self._x = x
         self._y = y
         self._reward=reward
@@ -280,7 +280,7 @@ if __name__ == '__main__':
     for y in range(ymax):
         line=[]
         for x in range(xmax):
-            pos = Position(x,y)
+            pos = Position(y,x)
 
             ## set boundaries
             if y == 0 or y == ymax-1: pos.setwall()

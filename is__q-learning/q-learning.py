@@ -71,8 +71,9 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-#from matplotlib import cm # color settings
 
+## random number generator, randrange() or random()
+import random
 
 
 def die( msg = "" ):
@@ -87,7 +88,7 @@ class Position( object ):
     _reward=0.0
     _wall=False
     _value=0.0
-    def __init__( self, x, y, reward=0.0, wall=False, value=0.0):
+    def __init__( self, y, x, reward=0.0, wall=False, value=0.0):
         self._x = x
         self._y = y
         self._reward=reward
@@ -135,10 +136,8 @@ class Agent(object):
     _maze=[]
     _gamma=1.0
     _convergence=0.1
-    def __init__(self, maze,gamma,convergence):
+    def __init__(self,maze):
         self._maze=maze
-        self._gamma=gamma
-        self._convergence=convergence
 
     def print_maze(self):
         for y in range(len(self._maze)):
@@ -151,72 +150,117 @@ class Agent(object):
         if maze[y][x].iswall(): return True
         return False
 
-    def direction(self,pos,dy,dx,pdir,delta,value):
-        gamma = self._gamma
+    def direction(self):
+        # NORTH=0
+        # EAST=1
+        # SOUTH=2
+        # WEST=3
+        return random.randrange(0,4)
 
-        ## check if s' is out
-        if self.isout( pos.y()+dy, pos.x()+dx): return delta,value
-        ny = pos.value()
-        reward = pos.reward()
-        nextValue = maze[pos.y()+dy][pos.x()+dx].value()
-        value += 0.25 * pdir * (reward + gamma * nextValue)
-        return delta,value
+    # def direction(self,pos,dy,dx,pdir,delta,value):
+    #     gamma = self._gamma
+
+    #     ## check if s' is out
+    #     if self.isout( pos.y()+dy, pos.x()+dx): return delta,value
+    #     ny = pos.value()
+    #     reward = pos.reward()
+    #     nextValue = maze[pos.y()+dy][pos.x()+dx].value()
+    #     value += 0.25 * pdir * (reward + gamma * nextValue)
+    #     return delta,value
 
 
-    def updatestate(self,pos,dy,dx,delta,value):
-        ## 2. permutation by probability towards a specified direction
-        if 0 == dy and 1 == dx: delta,value=self.direction(pos,dy,dx,0.7,delta,value)
-        else: delta,value=self.direction(pos,dy,dx,0.1,delta,value)
+    # def updatestate(self,pos,dy,dx,delta,value):
+    #     ## 2. permutation by probability towards a specified direction
+    #     if 0 == dy and 1 == dx: delta,value=self.direction(pos,dy,dx,0.7,delta,value)
+    #     else: delta,value=self.direction(pos,dy,dx,0.1,delta,value)
 
-        if 1 == dy and 0 == dx: delta,value=self.direction(pos,dy,dx,0.7,delta,value)
-        else: delta,value=self.direction(pos,dy,dx,0.1,delta,value)
+    #     if 1 == dy and 0 == dx: delta,value=self.direction(pos,dy,dx,0.7,delta,value)
+    #     else: delta,value=self.direction(pos,dy,dx,0.1,delta,value)
 
-        if 0 == dy and -1 == dx: delta,value=self.direction(pos,dy,dx,0.7,delta,value)
-        else: delta,value=self.direction(pos,dy,dx,0.1,delta,value)
+    #     if 0 == dy and -1 == dx: delta,value=self.direction(pos,dy,dx,0.7,delta,value)
+    #     else: delta,value=self.direction(pos,dy,dx,0.1,delta,value)
 
-        if -1 == dy and 0 == dx: delta,value=self.direction(pos,dy,dx,0.7,delta,value)
-        else: delta,value=self.direction(pos,dy,dx,0.1,delta,value)
-        return delta,value
+    #     if -1 == dy and 0 == dx: delta,value=self.direction(pos,dy,dx,0.7,delta,value)
+    #     else: delta,value=self.direction(pos,dy,dx,0.1,delta,value)
+    #     return delta,value
 
-    def policy_evolution(self):
+    def north(self, pos):
+        print "north"
+
+    def east(self, pos):
+        print "east"
+
+    def south(self, pos):
+        print "south"
+
+    def west(self, pos):
+        print "west"
+
+    def q_learning(self):
         cnt=0
         while True:
-            ## init delta per round
-            delta = 0
+            pos = Posistion(self._ystart, self._xstart)
 
-            ## foreach position s element of S
-            for y in range(len(self._maze)):
-                for x in range(len(self._maze[y])):
 
-                    ## load value for next round
-                    value = 0
+            ##  directions
+            options = {0: self.north(pos),
+                       1: self.east(pos),
+                       2: self.south(pos),
+                       3: self.west(pos),
+                       }
 
-                    ## check if s is out
-                    if self.isout(y,x): continue
+            ## choose a direction
+            direction = self.nextdirection()
+            options[direction]()
 
-                    ## 1. permutation by possible directions
-                    delta,value=self.updatestate(maze[y][x], 0, 1, delta,value)
-                    delta,value=self.updatestate(maze[y][x], 0,-1, delta,value)
-                    delta,value=self.updatestate(maze[y][x], 1, 0, delta,value)
-                    delta,value=self.updatestate(maze[y][x],-1, 0, delta,value)
+            ## break out
+            if 10 == cnt: break
+            cnt += 1
 
-                    ## compare differences after 4 x 4 permuted additions
-                    ny = maze[y][x].value()
-                    delta = max(delta, abs(ny-value)) # max( delta, | ny - value | )
+        die("XXX")  
 
-                    ## store resulting value
-                    maze[y][x].setvalue(value)
 
-            ## check delta
-            print "%d. iteration, delta: %.7f > %.7f" % (cnt,delta,self._convergence)
-            if delta < self._convergence:
-                print "STOP"
-                break
 
-            ## increment loop iteration
-            cnt+=1
 
-        ## // while
+
+            
+# TODO rm
+        #     ## init delta per round
+        #     delta = 0
+
+        #     ## foreach position s element of S
+        #     for y in range(len(self._maze)):
+        #         for x in range(len(self._maze[y])):
+
+        #             ## load value for next round
+        #             value = 0
+
+        #             ## check if s is out
+        #             if self.isout(y,x): continue
+
+        #             ## 1. permutation by possible directions
+        #             delta,value=self.updatestate(maze[y][x], 0, 1, delta,value)
+        #             delta,value=self.updatestate(maze[y][x], 0,-1, delta,value)
+        #             delta,value=self.updatestate(maze[y][x], 1, 0, delta,value)
+        #             delta,value=self.updatestate(maze[y][x],-1, 0, delta,value)
+
+        #             ## compare differences after 4 x 4 permuted additions
+        #             ny = maze[y][x].value()
+        #             delta = max(delta, abs(ny-value)) # max( delta, | ny - value | )
+
+        #             ## store resulting value
+        #             maze[y][x].setvalue(value)
+
+        #     ## check delta
+        #     print "%d. iteration, delta: %.7f > %.7f" % (cnt,delta,self._convergence)
+        #     if delta < self._convergence:
+        #         print "STOP"
+        #         break
+
+        #     ## increment loop iteration
+        #     cnt+=1
+
+        # ## // while
 
 
 ## DEBUG printouts
@@ -292,7 +336,7 @@ if __name__ == '__main__':
     for y in range(ymax):
         line=[]
         for x in range(xmax):
-            pos = Position(x,y)
+            pos = Position(y,x)
 
             ## set boundaries
             if y == 0 or y == ymax-1: pos.setwall()
@@ -313,23 +357,11 @@ if __name__ == '__main__':
         maze.append(line)
 
     ## start algorithm
+        
+    ## Exercise 2a)
+    print "Exercise 2a)"
+    agent=Agent(maze)
+    agent.q_learning();
 
-    ## Exercise 1a)
-    print "Exercise 1a) gamma=0.9"
-    gamma = 0.9
-    agent=Agent(maze, gamma, 0.1**LIMIT)
-    agent.policy_evolution()
-    agent.print_maze()
-
-    agent.DEBUG_plot(1.0)
-
-    ## Exercise 1b)
-    print "Exercise 1b) gamma=0.7"
-    gamma = 0.7
-    agent=Agent(maze, gamma, 0.1**LIMIT)
-    agent.policy_evolution()
-    agent.print_maze()
-
-    agent.DEBUG_plot(1.0)
 
     print "READY."
