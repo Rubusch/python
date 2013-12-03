@@ -233,6 +233,8 @@ class Agent(object):
         ax.scatter(xs,ys,zs,s=50,c="#FFD700") # values, yellow
         ax.scatter(xb,yb,zb,s=100,c="#838B8B") # boundary
 
+#        ax.set_yscale('log')
+
         ax.set_xlabel('X Label')
         ax.set_ylabel('Y Label')
         ax.set_zlabel('Z Label')
