@@ -230,8 +230,7 @@ class Agent(object):
         ## algorithm
         q_value = q_old + alfa * (reward + gamma * max(self.next_q(pos)) - q_old)
 
-#        print "OUT ",q_value  
-
+        ## store q value
         pos.setvalue(q_value)
 
         ## move
@@ -371,5 +370,7 @@ if __name__ == '__main__':
     agent.print_maze()
 
     agent.DEBUG_plot(10)
+
+
 
     print "READY."
