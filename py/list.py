@@ -43,6 +43,15 @@ print res
 print "\n"
 
 
+## all indexes of a specific element in a list - here print all indexes of elment '5'
+arr=[1,2,3,4,5,1,5,2,3,5]
+brr=[i for i, j in enumerate(arr) if j == 5]
+print brr
+
+## number of elements x in list, e.g. '5'
+arr.count(5)
+
+
 ## print list columnwise / formats, etc
 print '%s' % '\n' .join( map( str, lst ))
 

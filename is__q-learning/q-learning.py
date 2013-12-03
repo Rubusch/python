@@ -143,10 +143,13 @@ class Agent(object):
         self._ystart=ystart
         self._xgoal=xgoal
         self._ygoal=ygoal
+        # directions
         self.NORTH=0
         self.EAST=1
         self.SOUTH=2
         self.WEST=3
+        # epsilon - initialized by a start value, which will be decremented
+        self._epsilon=0.1
 
     def print_maze(self):
         for y in range(len(self._maze)):
@@ -159,56 +162,60 @@ class Agent(object):
         if maze[y][x].iswall(): return True
         return False
 
-    def direction(self, pos):
+    def action(self, pos):
         # NORTH=0
         # EAST=1
         # SOUTH=2
         # WEST=3
-        direction = random.randrange(0,4)
+
+        ## epsilon - exploration and exploitation criteria
+        if random.random < self._epsilon:
+            ## EXPLORATION - when smaller than epsilon
+            direction = random.randrange(0,4)
+        else:
+            q_vals = self.next_q(pos)
+            max_q = max(q_vals)
+
+            count = q_vals.count( max_q )
+            if count > 1:
+                ## equal values, randomly choose one option
+                tmp_q_vals=[i for i,j in enumerate(q_vals) if j == max_q]
+                direction = tmp_q_vals[random.randrange(0,len(tmp_q_vals))]
+
+            else:
+                ## EXPLOITATION - go by the highest q already learned
+                direction = q_vals.index( max_q )
+
+
+        ## perform action
         if direction == self.NORTH: pos=self.move(pos,1,0)
         elif direction == self.EAST: pos=self.move(pos,0,1)
         elif direction == self.SOUTH: pos=self.move(pos,-1,0)
         elif direction == self.WEST: pos=self.move(pos,0,-1)
         return pos
 
+    ## directions 0:N, 1:E, 2:S, 3:W
+    def next_q(self,pos):
+        q_vals = []
 
-    # def direction(self,pos,dy,dx,pdir,delta,value):
-    #     gamma = self._gamma
+        # north
+        if self.isout(pos.y()+1,pos.x()): q_vals.append(-1.0) # wall
+        else: q_vals.append( self._maze[pos.y()+1][pos.x()].value() )
 
-    #     ## check if s' is out
-    #     if self.isout( pos.y()+dy, pos.x()+dx): return delta,value
-    #     ny = pos.value()
-    #     reward = pos.reward()
-    #     nextValue = maze[pos.y()+dy][pos.x()+dx].value()
-    #     value += 0.25 * pdir * (reward + gamma * nextValue)
-    #     return delta,value
+        # east
+        if self.isout(pos.y(),pos.x()+1): q_vals.append(-1.0) # wall
+        else: q_vals.append( self._maze[pos.y()][pos.x()+1].value() )
 
+        # south
+        if self.isout(pos.y()-1,pos.x()): q_vals.append(-1.0) # wall
+        else: q_vals.append( self._maze[pos.y()-1][pos.x()].value() )
 
-    # def updatestate(self,pos,dy,dx,delta,value):
-    #     ## 2. permutation by probability towards a specified direction
-    #     if 0 == dy and 1 == dx: delta,value=self.direction(pos,dy,dx,0.7,delta,value)
-    #     else: delta,value=self.direction(pos,dy,dx,0.1,delta,value)
+        # west
+        if self.isout(pos.y(),pos.x()-1): q_vals.append(-1.0) # wall
+        else: q_vals.append( self._maze[pos.y()][pos.x()-1].value() )
 
-    #     if 1 == dy and 0 == dx: delta,value=self.direction(pos,dy,dx,0.7,delta,value)
-    #     else: delta,value=self.direction(pos,dy,dx,0.1,delta,value)
+        return q_vals
 
-    #     if 0 == dy and -1 == dx: delta,value=self.direction(pos,dy,dx,0.7,delta,value)
-    #     else: delta,value=self.direction(pos,dy,dx,0.1,delta,value)
-
-    #     if -1 == dy and 0 == dx: delta,value=self.direction(pos,dy,dx,0.7,delta,value)
-    #     else: delta,value=self.direction(pos,dy,dx,0.1,delta,value)
-    #     return delta,value
-
-    def max_next(self,pos):
-        val=0
-        if not self.isout(pos.y()+1,pos.x()): val=max(val,maze[pos.y()+1][pos.x()].value())
-        if not self.isout(pos.y()-1,pos.x()): val=max(val,maze[pos.y()-1][pos.x()].value())
-        if not self.isout(pos.y(),pos.x()+1): val=max(val,maze[pos.y()][pos.x()+1].value())
-        if not self.isout(pos.y(),pos.x()-1): val=max(val,maze[pos.y()][pos.x()-1].value())
-
-        if 0 < val: print "IN ",val   
-
-        return val
 
     def move(self,pos,dy,dx):
         if self.isout(pos.y()+dy, pos.x()+dx): return pos
@@ -220,83 +227,40 @@ class Agent(object):
         reward = pos.reward()
         gamma = self._gamma
 
-        q_value = q_old + alfa * (reward + gamma * self.max_next(pos) - q_old)
-        print "OUT ",q_value  
+        ## algorithm
+        q_value = q_old + alfa * (reward + gamma * max(self.next_q(pos)) - q_old)
+
+#        print "OUT ",q_value  
 
         pos.setvalue(q_value)
 
         ## move
-        pos.sety(pos.y()+dy)
-        pos.setx(pos.x()+dx)
-
+        pos=self._maze[pos.y()+dy][pos.x()+dx]
         return pos
 
 
     def q_learning(self):
         cnt=0
-        
-        pos = Position(self._ystart, self._xstart)
-        print "start: x=%d, y=%d"%(pos.x(),pos.y())
+
         while True:
-            pos=self.direction(pos)
-            print "move: x=%d, y=%d"%(pos.x(),pos.y())
+            pos = maze[self._ystart][self._xstart]
+            print "start: x=%d, y=%d"%(pos.x(),pos.y())
+            for idx in range(100):
+                # each episode ends after 100 actions or once the goal has been reached
+                pos=self.action(pos)
+                print "move: x=%d, y=%d"%(pos.x(),pos.y())
 
-            if self._ygoal==pos.y() and self._xgoal==pos.x():
-                print "GOAL"
-                break
+                if self._ygoal==pos.y() and self._xgoal==pos.x():
+                    print "GOAL"
+                    break
 
+            ## break out, after x runs
+            if 10 == cnt: break
+            cnt += 1
 
-
-
-
-            ## break out
-#            if 10 == cnt: break
-#            cnt += 1
-
-
-
-
-
-
-
-            
-# TODO rm
-        #     ## init delta per round
-        #     delta = 0
-
-        #     ## foreach position s element of S
-        #     for y in range(len(self._maze)):
-        #         for x in range(len(self._maze[y])):
-
-        #             ## load value for next round
-        #             value = 0
-
-        #             ## check if s is out
-        #             if self.isout(y,x): continue
-
-        #             ## 1. permutation by possible directions
-        #             delta,value=self.updatestate(maze[y][x], 0, 1, delta,value)
-        #             delta,value=self.updatestate(maze[y][x], 0,-1, delta,value)
-        #             delta,value=self.updatestate(maze[y][x], 1, 0, delta,value)
-        #             delta,value=self.updatestate(maze[y][x],-1, 0, delta,value)
-
-        #             ## compare differences after 4 x 4 permuted additions
-        #             ny = maze[y][x].value()
-        #             delta = max(delta, abs(ny-value)) # max( delta, | ny - value | )
-
-        #             ## store resulting value
-        #             maze[y][x].setvalue(value)
-
-        #     ## check delta
-        #     print "%d. iteration, delta: %.7f > %.7f" % (cnt,delta,self._convergence)
-        #     if delta < self._convergence:
-        #         print "STOP"
-        #         break
-
-        #     ## increment loop iteration
-        #     cnt+=1
-
-        # ## // while
+            ## epsilon - should be reduced in each epoch, this leads to a progressive usage
+            ## of the already learned map
+            self._epsilon-=0.001
 
 
 ## DEBUG printouts
@@ -406,6 +370,6 @@ if __name__ == '__main__':
     agent.q_learning();
     agent.print_maze()
 
-    agent.DEBUG_plot()
+    agent.DEBUG_plot(10)
 
     print "READY."
