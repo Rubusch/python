@@ -199,32 +199,61 @@ class Agent(object):
     #     else: delta,value=self.direction(pos,dy,dx,0.1,delta,value)
     #     return delta,value
 
+    def max_next(self,pos):
+        val=0
+        if not self.isout(pos.y()+1,pos.x()): val=max(val,maze[pos.y()+1][pos.x()].value())
+        if not self.isout(pos.y()-1,pos.x()): val=max(val,maze[pos.y()-1][pos.x()].value())
+        if not self.isout(pos.y(),pos.x()+1): val=max(val,maze[pos.y()][pos.x()+1].value())
+        if not self.isout(pos.y(),pos.x()-1): val=max(val,maze[pos.y()][pos.x()-1].value())
+
+        if 0 < val: print "IN ",val   
+
+        return val
+
     def move(self,pos,dy,dx):
         if self.isout(pos.y()+dy, pos.x()+dx): return pos
+
+        ## Q update
+        q_old = pos.value()
+        q_next = self._maze[pos.y()+dy][pos.x()+dx].value()
+        alfa = self._alfa
+        reward = pos.reward()
+        gamma = self._gamma
+
+        q_value = q_old + alfa * (reward + gamma * self.max_next(pos) - q_old)
+        print "OUT ",q_value  
+
+        pos.setvalue(q_value)
+
+        ## move
         pos.sety(pos.y()+dy)
         pos.setx(pos.x()+dx)
 
         return pos
 
 
-
     def q_learning(self):
         cnt=0
         
         pos = Position(self._ystart, self._xstart)
+        print "start: x=%d, y=%d"%(pos.x(),pos.y())
         while True:
             pos=self.direction(pos)
-            print "pos: x=%d, y=%d"%(pos.x(),pos.y())
+            print "move: x=%d, y=%d"%(pos.x(),pos.y())
 
             if self._ygoal==pos.y() and self._xgoal==pos.x():
                 print "GOAL"
                 break
 
-            ## break out
-            if 10 == cnt: break
-            cnt += 1
 
-        die("XXX")  
+
+
+
+            ## break out
+#            if 10 == cnt: break
+#            cnt += 1
+
+
 
 
 
@@ -375,6 +404,8 @@ if __name__ == '__main__':
     alfa=0.4
     agent=Agent(maze,gamma,alfa,ystart,xstart,ygoal,xgoal)
     agent.q_learning();
+    agent.print_maze()
 
+    agent.DEBUG_plot()
 
     print "READY."
