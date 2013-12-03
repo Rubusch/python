@@ -150,6 +150,8 @@ class Agent(object):
         self.WEST=3
         # epsilon - initialized by a start value, which will be decremented
         self._epsilon=0.1
+        # earned reward
+        self._reward=0.0
 
     def print_maze(self):
         for y in range(len(self._maze)):
@@ -230,6 +232,9 @@ class Agent(object):
         ## algorithm
         q_value = q_old + alfa * (reward + gamma * max(self.next_q(pos)) - q_old)
 
+        ## accumulate reward
+        self._reward += q_value
+
         ## store q value
         pos.setvalue(q_value)
 
@@ -239,23 +244,36 @@ class Agent(object):
 
 
     def q_learning(self):
-        cnt=0
 
+        ## episode counts
+        episodes = 0
+
+        cnt=0
         while True:
+
+            ## (re)start
             pos = maze[self._ystart][self._xstart]
-            print "start: x=%d, y=%d"%(pos.x(),pos.y())
+
+            ## reset reward
+            self._reward = 0.0
+
+#            print "start: x=%d, y=%d"%(pos.x(),pos.y())    
             for idx in range(100):
-                # each episode ends after 100 actions or once the goal has been reached
+
+                ## "...each episode ends after 100 actions or once the goal has been reached"
                 pos=self.action(pos)
-                print "move: x=%d, y=%d"%(pos.x(),pos.y())
+#                print "move: x=%d, y=%d"%(pos.x(),pos.y())    
 
                 if self._ygoal==pos.y() and self._xgoal==pos.x():
-                    print "GOAL"
+                    print "%d. episode, total reward: %f"%(episodes, self._reward)
                     break
 
             ## break out, after x runs
-            if 10 == cnt: break
+            if 100 == cnt: break
             cnt += 1
+
+            ## count episodes
+            episodes += 1
 
             ## epsilon - should be reduced in each epoch, this leads to a progressive usage
             ## of the already learned map
@@ -363,6 +381,7 @@ if __name__ == '__main__':
 
     ## Exercise 2a)
     print "Exercise 2a)"
+    print "Exercise 2b)"
     gamma=0.9
     alfa=0.4
     agent=Agent(maze,gamma,alfa,ystart,xstart,ygoal,xgoal)
@@ -370,7 +389,6 @@ if __name__ == '__main__':
     agent.print_maze()
 
     agent.DEBUG_plot(10)
-
 
 
     print "READY."
