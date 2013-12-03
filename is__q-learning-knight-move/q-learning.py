@@ -31,17 +31,6 @@
 # state. You may number the states any way you want.
 #
 #
-# Question 2.
-#
-# A. (40 points) Implement Q-learning with learning rate alpha = 0.4. Initialize Q(s, a) = 0, for all s, a.
-# Starting each episode in state S, run Q-learning until it converges, using an -greedy policy.
-# Each episode ends after 100 actions or once the goal, G, has been reached, whichever happens
-# first.
-#
-# B. (10 points) Plot the accumulated reward for the run, i.e. plot the total amount of reward received
-# so far against the number of episodes, and show the greedy policy with respect to the value
-# function.
-#
 # Question 3.
 #
 # (15 points) If instead of moving N,S,E,W, the agent moves like a knight in chess (for
@@ -57,7 +46,7 @@
 # Repeat (for each episode):
 #     Initialize s
 #     Repeat (for each step of episode):
-#         Choose a from s using policy derived from Q (e.g. epsilon-greedy)
+#         Choose a from s using policy derived from Q (e.g. 72% )
 #         Take action a, observe r, s'
 #         Q(s,a) <- Q(s,a) + alpha * [r + gamma * max_a'(Q(s',a') - Q(s,a))]
 #         s <- s'
@@ -143,13 +132,27 @@ class Agent(object):
         self._ystart=ystart
         self._xgoal=xgoal
         self._ygoal=ygoal
+
+        # movements of the agent
+        #
+        #   NW NE
+        # WN  |  EN
+        #   --A--
+        # WS  |  ES
+        #   SW SE
+        #
+        #
+
         # directions
-        self.NORTH=0
-        self.EAST=1
-        self.SOUTH=2
-        self.WEST=3
-        # epsilon - initialized by a start value, which will be decremented
-        self._epsilon=0.1
+        self.NW=0 # North-West
+        self.NE=1
+        self.EN=2
+        self.ES=3
+        self.SE=4
+        self.SW=5
+        self.WS=6
+        self.WN=7
+
         # earned reward
         self._reward=0.0
 
@@ -161,18 +164,21 @@ class Agent(object):
             print ""
 
     def isout(self, y, x):
+        if y < 0: return True
+        if y >= len(self._maze): return True
+        if x < 0: return True
+        if x >= len(self._maze[0]): return True
         if maze[y][x].iswall(): return True
         return False
 
     def action(self, pos):
-        # NORTH=0
-        # EAST=1
-        # SOUTH=2
-        # WEST=3
-
-        ## epsilon - exploration and exploitation criteria
-        if random.random < self._epsilon:
-            ## EXPLORATION - when smaller than epsilon
+        ## 32% = 7*4% + 4%
+        ##
+        ## this means, 7*4% we go into the wrong direction, plus 4% the direction is
+        ## "by chance" the desired one, the 4% will be subtracted from the 72% "on purpose",
+        ## which results to 68% (just a dirty hack)
+        if 32 >= random.randrange(1,101):
+            ## EXPLORATION
             direction = random.randrange(0,4)
         else:
             q_vals = self.next_q(pos)
@@ -188,33 +194,53 @@ class Agent(object):
                 ## EXPLOITATION - go by the highest q already learned
                 direction = q_vals.index( max_q )
 
-
         ## perform action
-        if direction == self.NORTH: pos=self.move(pos,1,0)
-        elif direction == self.EAST: pos=self.move(pos,0,1)
-        elif direction == self.SOUTH: pos=self.move(pos,-1,0)
-        elif direction == self.WEST: pos=self.move(pos,0,-1)
+        if direction == self.NW:   pos=self.move(pos,-2,-1)
+        elif direction == self.NE: pos=self.move(pos,-2, 1)
+        elif direction == self.EN: pos=self.move(pos,-1, 2)
+        elif direction == self.ES: pos=self.move(pos, 1, 2)
+        elif direction == self.SE: pos=self.move(pos, 2, 1)
+        elif direction == self.SW: pos=self.move(pos, 2,-1)
+        elif direction == self.WS: pos=self.move(pos, 1,-2)
+        elif direction == self.WN: pos=self.move(pos,-1,-2)
         return pos
+
 
     ## directions 0:N, 1:E, 2:S, 3:W
     def next_q(self,pos):
         q_vals = []
 
-        # north
-        if self.isout(pos.y()+1,pos.x()): q_vals.append(-1.0) # wall
-        else: q_vals.append( self._maze[pos.y()+1][pos.x()].value() )
+        # NW
+        if self.isout(pos.y()-2,pos.x()-1): q_vals.append(-1.0) # wall
+        else: q_vals.append( self._maze[pos.y()-2][pos.x()-1].value() )
 
-        # east
-        if self.isout(pos.y(),pos.x()+1): q_vals.append(-1.0) # wall
-        else: q_vals.append( self._maze[pos.y()][pos.x()+1].value() )
+        # NE
+        if self.isout(pos.y()-2,pos.x()+1): q_vals.append(-1.0) # wall
+        else: q_vals.append( self._maze[pos.y()-2][pos.x()+1].value() )
 
-        # south
-        if self.isout(pos.y()-1,pos.x()): q_vals.append(-1.0) # wall
-        else: q_vals.append( self._maze[pos.y()-1][pos.x()].value() )
+        # EN
+        if self.isout(pos.y()-1,pos.x()+2): q_vals.append(-1.0) # wall
+        else: q_vals.append( self._maze[pos.y()-1][pos.x()+2].value() )
 
-        # west
-        if self.isout(pos.y(),pos.x()-1): q_vals.append(-1.0) # wall
-        else: q_vals.append( self._maze[pos.y()][pos.x()-1].value() )
+        # ES
+        if self.isout(pos.y()+1,pos.x()+2): q_vals.append(-1.0) # wall
+        else: q_vals.append( self._maze[pos.y()+1][pos.x()+2].value() )
+
+        # SE
+        if self.isout(pos.y()+2,pos.x()+1): q_vals.append(-1.0) # wall
+        else: q_vals.append( self._maze[pos.y()+2][pos.x()+1].value() )
+
+        # SW
+        if self.isout(pos.y()+2,pos.x()-1): q_vals.append(-1.0) # wall
+        else: q_vals.append( self._maze[pos.y()+2][pos.x()-1].value() )
+
+        # WS
+        if self.isout(pos.y()+1,pos.x()-2): q_vals.append(-1.0) # wall
+        else: q_vals.append( self._maze[pos.y()+1][pos.x()-2].value() )
+
+        # WN
+        if self.isout(pos.y()-1,pos.x()-2): q_vals.append(-1.0) # wall
+        else: q_vals.append( self._maze[pos.y()-1][pos.x()-2].value() )
 
         return q_vals
 
@@ -274,10 +300,6 @@ class Agent(object):
 
             ## count episodes
             episodes += 1
-
-            ## epsilon - should be reduced in each epoch, this leads to a progressive usage
-            ## of the already learned map
-            self._epsilon-=0.001
 
 
 ## DEBUG printouts
@@ -354,9 +376,8 @@ if __name__ == '__main__':
 
     ## start algorithm
 
-    ## Exercise 2a)
-    print "Exercise 2a)"
-    print "Exercise 2b)"
+    ## Exercise 3)
+    print "Exercise 3)"
     gamma=0.9
     alfa=0.4
     agent=Agent(maze,gamma,alfa,ystart,xstart,ygoal,xgoal)
