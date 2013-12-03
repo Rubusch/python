@@ -31,28 +31,37 @@
 # state. You may number the states any way you want.
 #
 #
-# Question 1.
+# Question 2.
 #
-# A. (35 points) Implement Policy Evaluation. Starting with V (s) = 0, for all
-# of s, and assuming a random policy (pi(s, a) = 1/4, for all of s, a), what are
-# the final values, V (s), after the evaluation has converged?
+# A. (40 points) Implement Q-learning with learning rate alpha = 0.4. Initialize Q(s, a) = 0, for all s, a.
+# Starting each episode in state S, run Q-learning until it converges, using an -greedy policy.
+# Each episode ends after 100 actions or once the goal, G, has been reached, whichever happens
+# first.
 #
-# B. (10 points) How and why do the values change if the discount factor, gamma
-# is changed to 0.7 (again starting with V (s) = 0, for all of s)?
+# B. (10 points) Plot the accumulated reward for the run, i.e. plot the total amount of reward received
+# so far against the number of episodes, and show the greedy policy with respect to the value
+# function.
+#
+# Question 3.
+#
+# (15 points) If instead of moving N,S,E,W, the agent moves like a knight in chess (for
+# example, one step North, then two steps East, in one move), how would the value of the states
+# change (run Q-learning with this new action set)? So the agent now has 8 possible moves. If an
+# action would take it outside the maze, it stays where it is. The probability for moving according
+# to the chosen action is 72% and 4% for each of the other 7 actions.
 #
 #
-# Policy Evaluation Algorithm
+# Q-learning
 #
-#     Input pi, the policy to be evaluated
-#     Initialize V(s) = 0, for all s element of S+
-#     Repeat
-#         delta <- 0
-#         For each s element of S:
-#             ny <- V(s)
-#             V(s) <- sum_a{ pi(s, a) sum_s, P_ss'^a, [R_ss'^a + gamma*V(s')]
-#             delta <- max( delta, |ny - V(s)|)
-#     until delta < theta // (theta - a small positive number)
-#     Output V ~ V^pi
+# Initialize Q(s,a) arbitrarily
+# Repeat (for each episode):
+#     Initialize s
+#     Repeat (for each step of episode):
+#         Choose a from s using policy derived from Q (e.g. epsilon-greedy)
+#         Take action a, observe r, s'
+#         Q(s,a) <- Q(s,a) + alpha * [r + gamma * max_a'(Q(s',a') - Q(s,a))]
+#         s <- s'
+#     until s is terminal
 ##
 
 ## sys.exit()
@@ -64,8 +73,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 #from matplotlib import cm # color settings
 
-## value rounding
-import decimal
+
 
 def die( msg = "" ):
     print "FATAL",

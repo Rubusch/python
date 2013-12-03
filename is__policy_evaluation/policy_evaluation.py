@@ -59,13 +59,9 @@
 import sys
 
 ## DEBUG plotting library
-import numpy as np
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-#from matplotlib import cm # color settings
-
-## value rounding
-import decimal
+#import numpy as np
+#import matplotlib.pyplot as plt
+#from mpl_toolkits.mplot3d import Axes3D
 
 def die( msg = "" ):
     print "FATAL",
@@ -313,7 +309,7 @@ if __name__ == '__main__':
     agent.policy_evolution()
     agent.print_maze()
 
-    agent.DEBUG_plot(1.0)
+#    agent.DEBUG_plot(1.0) # for plotting, uncomment imports on top   
 
     ## Exercise 1b)
     print "Exercise 1b) gamma=0.7"
@@ -322,6 +318,6 @@ if __name__ == '__main__':
     agent.policy_evolution()
     agent.print_maze()
 
-    agent.DEBUG_plot(1.0)
+#    agent.DEBUG_plot(1.0)  
 
     print "READY."
