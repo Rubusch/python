@@ -151,7 +151,7 @@ class Agent(object):
         # epsilon - initialized by a start value, which will be decremented
         self._epsilon=0.1
         # earned reward
-        self._reward=0.0
+        self._reward=[]
 
     def print_maze(self):
         for y in range(len(self._maze)):
@@ -233,7 +233,7 @@ class Agent(object):
         q_value = q_old + alfa * (reward + gamma * max(self.next_q(pos)) - q_old)
 
         ## accumulate reward
-        self._reward += q_value
+        self._reward[-1] += q_value
 
         ## store q value
         pos.setvalue(q_value)
@@ -255,17 +255,17 @@ class Agent(object):
             pos = maze[self._ystart][self._xstart]
 
             ## reset reward
-            self._reward = 0.0
+            self._reward += [0.0]
 
 #            print "start: x=%d, y=%d"%(pos.x(),pos.y())    
-            for idx in range(100):
+            for idx in range(30):        
 
                 ## "...each episode ends after 100 actions or once the goal has been reached"
                 pos=self.action(pos)
 #                print "move: x=%d, y=%d"%(pos.x(),pos.y())    
 
                 if self._ygoal==pos.y() and self._xgoal==pos.x():
-                    print "%d. episode, total reward: %f"%(episodes, self._reward)
+#                    print "%d. episode, total reward: %f"%(episodes, self._reward[cnt])
                     break
 
             ## break out, after x runs
@@ -278,6 +278,17 @@ class Agent(object):
             ## epsilon - should be reduced in each epoch, this leads to a progressive usage
             ## of the already learned map
             self._epsilon-=0.001
+
+    def reward_plot(self):
+#        print self._reward # DEBUG    
+        xs = range(len(self._reward))
+        ys = self._reward
+        plt.plot(xs, ys, 'ro')
+        plt.xlabel("episodes")
+        plt.ylabel("total reward")
+        plt.show()
+
+
 
 
 ## DEBUG printouts
@@ -360,9 +371,10 @@ if __name__ == '__main__':
     gamma=0.9
     alfa=0.4
     agent=Agent(maze,gamma,alfa,ystart,xstart,ygoal,xgoal)
-    agent.q_learning();
+    agent.q_learning()
     agent.print_maze()
 
     agent.DEBUG_plot(10)
+    agent.reward_plot()
 
     print "READY."
