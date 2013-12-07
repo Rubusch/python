@@ -280,6 +280,10 @@ class Agent(object):
             self._epsilon-=0.001
 
     def reward_plot(self):
+# REMARK:
+# here is not plotted the reward, but the cumulated sum of the
+# values in one episode
+#
 #        print self._reward # DEBUG    
         xs = range(len(self._reward))
         ys = self._reward
