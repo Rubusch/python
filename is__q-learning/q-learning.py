@@ -321,7 +321,6 @@ class Agent(object):
 
 
 if __name__ == '__main__':
-
     ymax = 5 + 2
     xmax = 7 + 2
     LIMIT = 7 #digits

@@ -28,9 +28,6 @@
 import random # randrange()
 
 
-POPULATION_SIZE = 10
-CHROMOSOME_SIZE = 5
-MUTATION_RATE = 0.2
 
 class Person(object):
     def __init__(self, chromosome=0.1, chromosome=0, prob=0):
@@ -44,233 +41,159 @@ class Person(object):
     def prob(self): return self._prob
     def set_prob(self,prob): self._prob=prob
 
-# TODO person new
-
-
-
 
 class Genetic(object):
-    def __init__(self):
-        self.presons=[]
+    def __init__(self,population_size, chromosome_size, mutation_rate):
+        self.population_size=population_size
+        self.chromosome_size=chromosome_size
+        self.mutation_rate=mutation_rate
+        self.persons=[]
         self.new_persons=[]
-        self.run=0
+        self._run=0
         self.optimal=0
 
+    def run(self):
         # 1. initialize random popolation of candidate solutions
         # create random chromosome
-        for idx in range(POPULATION_SIZE):
+        for idx in range(self.population_size):
             persons += [Person()]
-            for jdx in range(CHROMOSOME_SIZE):
+            for jdx in range(self.chromosome_size):
                 persons[idx].set_chromosome(self.get_chromosome())    
 
         while self.optimal==0:
-            self.run += 1
+            self._run += 1
 
-        # 2. evaluate solutions on problem and assign a fitnes score
-        self.evaluate()
+            # 2. evaluate solutions on problem and assign a fitnes score
+            self.evaluate()
 
-        # 3. select some solutions for mating
-        self.select()
+            # 3. select some solutions for mating
+            self.select()
 
-        # 4. recombine: create new solutions from selected ones by exchanging structure
-        self.recombine()
+            # 4. recombine: create new solutions from selected ones by exchanging structure
+            self.recombine()
 
+            # 5. IF good solution not found: GOTO 2
+            self.is_goto_two()
+            
 
-
-        
+        ## // while
+        return self._run
 
     def evaluate(self):
-        for idx in range(POPULATION_SIZE):
+        for idx in range(self.population_size):
             self.persons[idx].set_fitness(self.get_fitness(self.persons[idx].chromosome()))
 
     def select(self):
-        for idx in range(POPULATION_SIZE):
+        for idx in range(self.population_size):
             self.persons[idx].set_prob(self.get_prob(self.persons,self.persons[idx].fitness()))
 
         pidx=0
-        while pidx < POPULATION_SIZE:
+        while pidx < self.population_size:
             self.new_persons=[]
-            rand=random.randrange(1,POPULATION_SIZE-1)/10
+            rand=random.randrange(1,self.population_size-1)/10
             tmp=0
-#            idx=0
-            for idx in range(POPULATION_SIZE):
+            for idx in range(self.population_size):
                 self.new_persons=Person()
                 tmp += self.persons[idx].prob
                 if rand < tmp:
                     new_person[pidx].set_chromosome(persons[idx].chromosome())
+# TODO              
                     source[pidx]=idx   
                     pidx+=1
                     idx=100
-                ## if
-            ## for
-        ## while
-        parents=self.get_parents(self.new_persons)
-        self.new_persons=self.crossover(self.new_persons,parents)
-
-
-
+                ## // if
+            ## // for
+        ## // while
+        mother, father=self.get_parents(self.new_persons)
+        self.new_persons=self.crossover(self.new_persons,mother,father)
 
     def recombine(self):
-        for idx in range(POPULATION_SIZE):
-            for jdx in range(CHROMOSOME_SIZE):
+        for idx in range(self.population_size):
+            for jdx in range(self.chromosome_size):
                 rand = random.randrange(0,10000000)/10000000 * 1.0
-                if rand < MUTATION_RATE:
+                if rand < self.mutation_rate:
+# TODO              
                     if self.new_persons[idx].chromosome[jdx] == 0:   
                         self.new_persons[idx].chromosome[idx]=1
                     else:
                         self.new_persons[idx].chromosome[idx]=0
-                    ## if
-                ## if
-            ## for
-        ## for
+                    ## // if
+                ## // if
+            ## // for
+        ## // for
 
+    def is_goto_two(self):
         optimal=self.is_optimal(new_persons)
-        for idx in range(POPULATION_SIZE):
+        for idx in range(self.population_size):
             new_persons[idx].set_fitness(self.get_fitness(new_persons[idx].chromosome))
-
             print "Generation: "+run+"Best fitness: "+self.get_best_fitness(self.new_persons)    
-
             self.persons = self.new_persons
 
 
-    def goto_two(self):
-        # 5. IF good solution not found: GOTO 2
+            
+    def get_chromosome(self): # elements of [1;8[
+        return [random.randrange(1,8) for i in range(self.chromosome_size)]
+
+    def get_best_fitness(self, persons):
+        return max([persons[i].fitness() for i in range(self.population_size)])/self.chromosome_size
+
+    def get_prob(self, persons, fitness):
+        ## get total fitness
+        totalfitness=0
+        for idx in self.population_size:
+            totalfitness+=persons[idx].fitness
+        ## fraction of total fitness
+        return (1.0* fitness) / totalfitness
+
+    def get_parents(self, persons):
+        mother=None
+        father=mother
+        while mother == father:
+            mother = persons[random.randrange(0,self.population_size)]
+            father = persons[random.randrange(0,self.population_size)]
+        return mother, father
+
+    def crossover(self, persons, mother, father):
+        new_maternal_chromosome=[i for i in mother.chromosome]
+        new_paternal_chromosome=[i for i in father.chromosome]
+        crossover_point=random.randrange(0,self.chromosome_size)
+        for idx in range(crossover_point,self.chromosome_size):
+            new_maternal_chromosome[idx] = father.chromosome[idx]
+            new_paternal_chromosome[idx] = mother.chromosome[idx]
+            
+#            person   # TODO person new
+        pass
+
+    def is_optimal(self):
         
         pass
 
 
-    def get_chromosome(self):
-        
-        pass
+
+    
+    def print_new_chromosome(self):
+        print "Population : Chromosome"
+        for idx_pop in self.population_size:
+            for idx_chr in self.chromosome_size:
+                print "%d\t%d"%(idx_pop, self._new_persons[idx_pop].chromosome[idx_chr])
 
 
 
-                      
+
+## MAIN
+if __name__ == '__main__':
+    population_size = 10
+    chromosome_size = 5
+    mutation_rate = 0.2
+
+    genetic = Genetic(population_size, chromosome_size, mutation_rate)
+
+    print "optimal solution"
+    print "generations: ",genetic.run()
+    print "genes: "
 
 
-echo "<br>Optimal solution!<br>";
-echo "Generation: $run <br>";
-echo "Genes: <br>";
-
-echo "<table border=1>
-        <tr><th colspan = '4'>Population</th></tr>
-        <tr><td>Person </td><td>Chromosome</td></tr>";
-    for ($i=0; $i<POPULATION_SIZE; $i++) {
-        echo "<tr>";
-        echo "<td>$i</td>";
-        echo "<td>";
-        for ($j=0; $j<CHROMOSOME_SIZE; $j++)
-            echo $person_new[$i][chromosome][$j];
-        echo "</td>";
-        echo "</tr>";
-    }
-    echo "</table>";
-
-// create a random chomosomes
-function get_chromosome(){
-    
-    for ($i=0; $i<CHROMOSOME_SIZE; $i++) {
-        $rand = rand(0,1);
-        $chomo[$i] = $rand;  
-    }
-    
-    return $chomo;
-}
-
-function get_best_fitness ($p) {
-    
-    for ($i=0; $i<POPULATION_SIZE; $i++) {
-        $fitness[$i] = $p[$i][fitness];
-    }
-    
-    $best_fitness = max($fitness)/CHROMOSOME_SIZE;
-    
-    return $best_fitness;
-    
-}
-
-// calculate a fitness value for each person
-function get_fitness($chromo) {
-    
-    $sum=0;
-    
-    for ($i=0; $i<CHROMOSOME_SIZE; $i++)
-        $sum = $sum + $chromo[$i];
-     
-    return $sum;
-   
-}
-
-function get_sum_fitness($p) {
-    
-    $sum=0;
-    
-    for ($i=0; $i<POPULATION_SIZE; $i++)
-        $sum = $sum + $p[$i][fitness];
-    
-    return $sum;
-    
-}
-
-// calculate a fitness probability for each person
-function get_prob($person, $fitness) {
-
-    $prob = $fitness/get_sum_fitness($person);
-    
-    return round($prob,4);
-
-}
-
-// select randomly two parents
-function get_parents($person_new) {
-    
-    $parent[A] = rand(0,POPULATION_SIZE-1);
-    $parent[B] = rand(0,POPULATION_SIZE-1);
-    
-    // make sure that the same person will not be selected
-    while ($parent[A]==$parent[B]) {
-        $parent = get_parents($person_new);
-    }
-    
-    return $parent;
-    
-}
-
-function crossover($person_new, $parents) {
-    
-    $tmp = array();
-    
-    $crossover_point = rand(0,CHROMOSOME_SIZE-1);
-    for ($i=$crossover_point; $i<CHROMOSOME_SIZE; $i++) {
-        $tmp[$parents[A]][chromosome][$i] = $person_new[$parents[B]][chromosome][$i]; 
-        $tmp[$parents[B]][chromosome][$i] = $person_new[$parents[A]][chromosome][$i];
-        
-        $person_new[$parents[A]][chromosome][$i] = $tmp[$parents[A]][chromosome][$i];
-        $person_new[$parents[B]][chromosome][$i] = $tmp[$parents[B]][chromosome][$i];
-    }
-    
-    return $person_new;
-    
-}
-
-function is_optimal($person_new) {
-    
-    $con = 0;
-
-    for ($i=0; $i<POPULATION_SIZE; $i++) {
-        
-        $sum = 0;
-        for($j=0;$j<CHROMOSOME_SIZE;$j++)
-            $sum += $person_new[$i][chromosome][$j];
-        
-        if ($sum == CHROMOSOME_SIZE)
-           $con = 1;
-        
-    }
-    return $con;
-}
-
-                     
+    genetic.print_new_chromosome()
 
 
-print "READY."
+    print "READY."
