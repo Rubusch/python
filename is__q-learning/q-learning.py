@@ -156,7 +156,6 @@ class Agent(object):
     def print_maze(self):
         for y in range(len(self._maze)):
             for x in range(len(self._maze[y])):
-#                print "%.7f\t"% maze[y][x].value(), # rounded values
                 print maze[y][x],"\t", # raw values
             print ""
 
@@ -232,9 +231,6 @@ class Agent(object):
         ## algorithm
         q_value = q_old + alfa * (reward + gamma * max(self.next_q(pos)) - q_old)
 
-        ## accumulate reward
-        self._reward[-1] += q_value
-
         ## store q value
         pos.setvalue(q_value)
 
@@ -254,18 +250,15 @@ class Agent(object):
             ## (re)start
             pos = maze[self._ystart][self._xstart]
 
-            ## reset reward
-            self._reward += [0.0]
-
-#            print "start: x=%d, y=%d"%(pos.x(),pos.y())    
-            for idx in range(30):        
+            for idx in range(30):
 
                 ## "...each episode ends after 100 actions or once the goal has been reached"
                 pos=self.action(pos)
-#                print "move: x=%d, y=%d"%(pos.x(),pos.y())    
 
                 if self._ygoal==pos.y() and self._xgoal==pos.x():
-#                    print "%d. episode, total reward: %f"%(episodes, self._reward[cnt])
+                    self._reward += [pos.reward()]
+                    if len(self._reward) > 1:
+                        self._reward[-1] += self._reward[-2]
                     break
 
             ## break out, after x runs
@@ -280,11 +273,6 @@ class Agent(object):
             self._epsilon-=0.001
 
     def reward_plot(self):
-# REMARK:
-# here is not plotted the reward, but the cumulated sum of the
-# values in one episode
-#
-#        print self._reward # DEBUG    
         xs = range(len(self._reward))
         ys = self._reward
         plt.plot(xs, ys, 'ro')
