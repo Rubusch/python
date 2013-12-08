@@ -142,8 +142,6 @@ class Agent(object):
         self.WEST=3
         # epsilon - initialized by a start value, which will be decremented
         self._epsilon=0.1
-        # earned reward
-        self._reward=0.0
 
     def print_maze(self):
         for y in range(len(self._maze)):
@@ -235,9 +233,6 @@ class Agent(object):
         ## algorithm
         q_value = q_old + alfa * (reward + gamma * max(self.next_q(pos)) - q_old)
 
-        ## accumulate reward
-        self._reward += q_value
-
         ## store q value
         pos.setvalue(q_value)
 
@@ -257,9 +252,6 @@ class Agent(object):
             ## (re)start
             pos = maze[self._ystart][self._xstart]
 
-            ## reset reward
-            self._reward = 0.0
-
 #            print "start: x=%d, y=%d"%(pos.x(),pos.y())    
             for idx in range(100):
 
@@ -268,7 +260,6 @@ class Agent(object):
 #                print "move: x=%d, y=%d"%(pos.x(),pos.y())    
 
                 if self._ygoal==pos.y() and self._xgoal==pos.x():
-                    print "%d. episode, total reward: %f"%(episodes, self._reward)
                     break
 
             ## break out, after x runs
