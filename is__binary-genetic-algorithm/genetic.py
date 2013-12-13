@@ -93,14 +93,16 @@ class Genetic(object):
             self.recombine()
 
             # 5. IF good solution not found: GOTO 2
-            optimal = self.is_done()
+            self.optimal = self.is_done()
+
 
             
-            print "XXX total fitness %d"%sum([i.fitness() for i in self.population])    
-#            self.DB_population()    
-            print ""  
-            if self._run == 150: die("XXX")    
+#            print "XXX total fitness %d"%sum([i.fitness() for i in self.population])    
+            self.DB_population()    
+#            print ""  
+            if self._run == 150: die("150. generation XXX")    
             
+        print "XXX done"
 
         ## // while
         return self._run
@@ -128,18 +130,18 @@ class Genetic(object):
             for jdx in range(self.population_size):
                 probability = self.population[jdx].probability()
                 if rnd_probability < probability:
-                    print "rnd_probability %f"%rnd_probability  
+#                    print "rnd_probability %f"%rnd_probability  
                     if -1 == idx_parent_a:
-                        print "probability a: %f"%probability   
+#                        print "probability a: %f"%probability   
                         idx_parent_a = jdx
                     elif jdx != idx_parent_a:
-                        print "probability b: %f"%probability   
+#                        print "probability b: %f"%probability   
                         idx_parent_b = jdx
                         ## we're done
                         idx = self.population_size
                     else:
                         continue
-                    print ""                                    
+#                    print ""                                    
                     break
             ## increment idx
 #            idx+=1
@@ -219,13 +221,14 @@ class Genetic(object):
         ## // for
 
     def is_done(self):
-        if 0 != self.is_optimal(self.new_population): return 1
+        print "generation: %d - best fitness: %d"%(self._run, self.get_best_fitness(self.new_population))   
+        if 0 != self.is_optimal(self.new_population):
+            return 1
 
         for idx in range(self.population_size):
             self.new_population[idx].set_fitness(self.get_fitness(self.new_population[idx].chromosome()))
 
 # TODO check where new_population is set up, in terms of fitness and probability
-        print "generation: %d - best fitness: %d"%(self._run, self.get_best_fitness(self.new_population))
         self.population = [Person( chromosome=elem.chromosome(), fitness=elem.fitness(), probability=elem.probability()) for elem in self.new_population]
         return 0
 
@@ -271,6 +274,9 @@ class Genetic(object):
 
     def is_optimal(self, population):
         for pop in population:
+#            print "chromsome_size %d"%self.chromosome_size    
+#            print "sum %d"%sum(pop.chromosome())    
+#            print ""    
             if self.chromosome_size == sum(pop.chromosome()):
                 return 1
         return 0
