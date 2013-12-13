@@ -93,7 +93,7 @@ class Genetic(object):
             self.recombine()
 
             # 5. IF good solution not found: GOTO 2
-            optimal = self.is_optimal()
+            optimal = self.is_done()
 
             
             print "XXX total fitness %d"%sum([i.fitness() for i in self.population])    
@@ -218,7 +218,7 @@ class Genetic(object):
             ## // for
         ## // for
 
-    def is_optimal(self):
+    def is_done(self):
         if 0 != self.is_optimal(self.new_population): return 1
 
         for idx in range(self.population_size):
