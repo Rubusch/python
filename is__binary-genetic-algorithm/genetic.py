@@ -64,12 +64,15 @@ class Genetic(object):
     def run(self):
         # 1. initialize random popolation of candidate solutions
         # create random chromosome
-        for idx in range(self.population_size):
-            self.population += [Person()]
-            self.new_population += [Person()]
-            self.population[idx].set_chromosome(self.get_chromosome())
+        self.population = [Person(chromosome=self.generate_chromosome()) for p in range(self.population_size)]
+
+#        for idx in range(self.population_size):
+#            self.population += [Person()]
+#            self.new_population += [Person()]
+#            self.population[idx].set_chromosome(self.generate_chromosome())
+
 # TODO rm
-#            self.new_population[idx].set_chromosome(self.get_chromosome())   
+#            self.new_population[idx].set_chromosome(self.generate_chromosome())   
 
         while self.optimal==0:
             self._run += 1
@@ -77,20 +80,27 @@ class Genetic(object):
             # 2. evaluate solutions on problem and assign a fitnes score
             self.evaluate()
 
+#            self.DB_population()     
+#            print ""                 
+
             # 3. select some solutions for mating
             self.selection()
+
+#            self.DB_population()     
+#            die("FAHRKARTENKONTROLLE")                                         
 
             # 4. recombine: create new solutions from selected ones by exchanging structure
             self.recombine()
 
             # 5. IF good solution not found: GOTO 2
-            self.is_goto_two()
+            optimal = self.is_optimal()
 
-            self.DB_population()    
+            
+            print "XXX total fitness %d"%sum([i.fitness() for i in self.population])    
+#            self.DB_population()    
             print ""  
-
             if self._run == 150: die("XXX")    
-
+            
 
         ## // while
         return self._run
@@ -104,38 +114,98 @@ class Genetic(object):
 
         ## calculate a genotypes probability of being selected in proportion to its fitness
         for idx in range(self.population_size):
-            self.population[idx].set_probability(self.get_probability(self.population, self.population[idx].fitness()))
+            self.population[idx].set_probability(self.compute_probability(self.population, self.population[idx].fitness()))
 
-        pidx=0
-        while pidx < self.population_size:
-#            self.new_population=[]
-            random_probability=(1.0*random.randrange(1, self.population_size)) / 10
-            prob=0
-            for idx in range(self.population_size):
-#                print "XXX pidx '%d'"%pidx  
-#                self.new_population[pidx] = Person()   
-                self.new_population[idx] = Person()   
-                prob += self.population[idx].probability()
-#                print "random_probability: %f, prob: %f"%(random_probability,prob)    
-                if random_probability < prob:
-#                    chromo=self.population[idx].chromosome()  
-#                    self.new_population[pidx].set_chromosome(chromo)  
-                    self.new_population[pidx].set_chromosome(self.population[idx].chromosome())
-# TODO is this needed: "from" ?              
-#                    source[pidx]=idx   
-                    pidx+=1
-                    break;
-# TODO how should this algorithm work??     
-# FIXME     
-#                    idx=100
-                ## // if
-            ## // for
-        ## // while
+        self.new_population = [Person(chromosome=p.chromosome()) for p in self.population]  
+
+#        idx_parent_a, idx_parent_b
+        idx=0
+        idx_parent_a=-1
+        idx_parent_b=-1
+        while idx < self.population_size:
+            rnd_probability = (1.0*random.randrange(1, self.population_size)) / 10
+            probability = 0.0
+            for jdx in range(self.population_size):
+                probability = self.population[jdx].probability()
+                if rnd_probability < probability:
+                    print "rnd_probability %f"%rnd_probability  
+                    if -1 == idx_parent_a:
+                        print "probability a: %f"%probability   
+                        idx_parent_a = jdx
+                    elif jdx != idx_parent_a:
+                        print "probability b: %f"%probability   
+                        idx_parent_b = jdx
+                        ## we're done
+                        idx = self.population_size
+                    else:
+                        continue
+                    print ""                                    
+                    break
+            ## increment idx
+#            idx+=1
+
+#            print "XXX idx_parent_a '%d', idx_parent_b '%d'"%(idx_parent_a,idx_parent_b)  
+
+            
+
+        # new_pop_idx=0
+        # while new_pop_idx < self.population_size:
+        #     rnd_probability = (1.0*random.randrange(1, self.population_size)) / 10
+        #     probability = 0.0
+        #     for pop_idx in range(self.population_size):
+        #         self.new_population[pop_idx] = Person()
+        #         probability += self.population[pop_idx].probability()
+        #         if rnd_probability < probability:
+        #             self.new_population[new_pop_idx].set_chromosome(self.population[pop_idx].chromosome()) 
+        #             new_pop_idx += 1
+        #             break
+
+
+
+                    
+
+
+            
+#         new_pop_idx=0
+# #        prob=0.0  
+#         while new_pop_idx < self.population_size:
+# #            self.new_population=[]
+#             random_probability=(1.0*random.randrange(1, self.population_size)) / 10
+
+#             prob=0.0  
+#             for pop_idx in range(self.population_size):
+# #                print( "new_pop_idx '%d', pop_idx '%d' - prob '%f'"%(new_pop_idx,pop_idx,prob))     
+
+# #                self.new_population[new_pop_idx] = Person()   
+#                 self.new_population[pop_idx] = Person()   
+#                 prob += self.population[pop_idx].probability()
+
+# #                print("prob '%d'"%prob)     
+# #                print "random_probability: %f, prob: %f"%(random_probability,prob)    
+#                 if random_probability < prob:
+# #                    chromo=self.population[pop_idx].chromosome()  
+# #                    self.new_population[new_pop_idx].set_chromosome(chromo)  
+#                     self.new_population[new_pop_idx].set_chromosome(self.population[pop_idx].chromosome())
+#                     new_pop_idx+=1
+# #                    print("break - len(new_population) = '%d'"%len(self.new_population))              
+#                     break
+
+# # TODO how should this algorithm work??     
+# # FIXME     
+# #                    pop_idx=100
+#                 ## // if
+#             ## // for
+#         ## // while
+            
+
+
+
 
         ## then select some number of genotypes for mating according to probabilities
 # TODO check, get_parents selects randomly, ando not "according to probabilities"     
-        idx_parent_a, idx_parent_b = self.get_parents()
+#        idx_parent_a, idx_parent_b = self.get_parents()  
         self.new_population=self.crossover(self.population, self.new_population, idx_parent_a, idx_parent_b)
+        
 
     def recombine(self):
         for idx in range(self.population_size):
@@ -148,16 +218,18 @@ class Genetic(object):
             ## // for
         ## // for
 
-    def is_goto_two(self):
-        optimal=self.is_optimal(self.new_population)
+    def is_optimal(self):
+        if 0 != self.is_optimal(self.new_population): return 1
+
         for idx in range(self.population_size):
             self.new_population[idx].set_fitness(self.get_fitness(self.new_population[idx].chromosome()))
 
 # TODO check where new_population is set up, in terms of fitness and probability
         print "generation: %d - best fitness: %d"%(self._run, self.get_best_fitness(self.new_population))
         self.population = [Person( chromosome=elem.chromosome(), fitness=elem.fitness(), probability=elem.probability()) for elem in self.new_population]
+        return 0
 
-    def get_chromosome(self): # elements of [0;2[
+    def generate_chromosome(self): # elements of [0;2[
         return [random.randrange(0,2) for i in range(self.chromosome_size)]
 
     def get_best_fitness(self, population):
@@ -166,13 +238,7 @@ class Genetic(object):
     def get_fitness(self, chromosome):
         return sum(chromosome)
 
-    def get_probability(self, population, fitness):
-        ## get total fitness
-#        totalfitness=0
-#        for idx in self.population_size:
-#            totalfitness+=population[idx].fitness
-        ## fraction of total fitness
-#        return (1.0* fitness) / totalfitness
+    def compute_probability(self, population, fitness):
         return (1.0 * fitness) / sum([i.fitness() for i in population])
 
     def get_parents(self):
@@ -204,15 +270,22 @@ class Genetic(object):
         return [i for i in population]
 
     def is_optimal(self, population):
-        totalchromosome=0
-        con=0   
-        for idx_pop in range(self.population_size):
-            for idx_chr in range(self.chromosome_size):
-                totalchromosome += population[idx_pop].chromosome()[idx_chr]
-            if self.chromosome_size == totalchromosome:
-                con = 1    
-# TODO check this...
-        return con    
+        for pop in population:
+            if self.chromosome_size == sum(pop.chromosome()):
+                return 1
+        return 0
+
+        
+#         totalchromosome=0
+#         con=0   
+#         for idx_pop in range(self.population_size):
+#             for idx_chr in range(self.chromosome_size):
+#                 totalchromosome += population[idx_pop].chromosome()[idx_chr]
+#             print "totalchromosome_size"
+#             if self.chromosome_size == totalchromosome:
+#                 con = 1    
+# # TODO check this...
+#         return con    
 
 
     ## debug, print the chromosomes of all population
@@ -222,7 +295,7 @@ class Genetic(object):
             print "%d. individuum, fitness: '%d', probability: '%f', chromosome: "%(idx, self.population[idx].fitness(), self.population[idx].probability()),
             print '%s'%' '.join(map(str,self.population[idx].chromosome()))
         print "self.new_population"
-        for idx in range(self.population_size):
+        for idx in range(len(self.new_population)):
             print "%d. individuum, fitness: '%d', probability: '%f', chromosome: "%(idx, self.new_population[idx].fitness(), self.new_population[idx].probability()),
             print '%s'%' '.join(map(str,self.new_population[idx].chromosome()))
             
