@@ -67,13 +67,17 @@ class Genetic(object):
         self.population = [Person(chromosome=self.generate_chromosome()) for p in range(self.population_size)]
 
         while self.optimal==0:
-            print "generation: %d"%(self._run)
+#            print "generation: %d"%(self._run)    
+            self.DB_population()     
+            print "self.population_siz %d"%len(self.population)  
 
             # 2. evaluate solutions on problem and assign a fitnes score
             self.evaluate()
+            print "self.population_siz %d"%len(self.population)  
 
             # 3. select some solutions for mating
             self.selection()
+            print "self.population_siz %d"%len(self.population)  
 
             # 4. recombine: create new solutions from selected ones by exchanging structure
             self.recombination()
@@ -85,9 +89,8 @@ class Genetic(object):
 
             if self._run == 1000: die("I give up") ## avoid infinite loops due to bugs
             
+        ## only print the number of runs, it took to compute the result
 #        self.DB_population()     
-#        die("FAHRKARTENKONTROLLE")                                         
-
 
         ## // while
         return self._run
@@ -119,7 +122,6 @@ class Genetic(object):
                     cnt=0
                     break
             cnt+=1
-
 
     def recombination(self):
         ## mating
@@ -170,6 +172,10 @@ class Genetic(object):
             ## 1 point chrossover
             xo_pt=random.randrange(0,self.chromosome_size)
             for idx_c in range(self.chromosome_size):
+                print "XXX idx_p %d, population_siz %d, idx_c %d"%(idx_p, len(population), idx_c)   
+                print "XXX [idx-1]chromosome_siz %d"%(len(population[idx_p].chromosome()))   
+                print "XXX [idx]chromosome_siz %d"%(len(population[idx_p].chromosome()))   
+                print "" 
                 chromosome_a += [population[idx_p-1 if idx_c < xo_pt else idx_p].chromosome()[idx_c]]
                 chromosome_b += [population[idx_p if idx_c < xo_pt else idx_p-1].chromosome()[idx_c]]
             ## init by generated chromosome
@@ -184,7 +190,6 @@ class Genetic(object):
         if total == self.chromosome_size * self.population_size:
             return 1
         return 0
-
     
     ## debug, print the chromosomes of all population
     def DB_population(self):
@@ -196,32 +201,39 @@ class Genetic(object):
         for idx in range(len(self.new_population)):
             print "%d. individuum, fitness: '%d', probability: '%f', chromosome: "%(idx, self.new_population[idx].fitness(), self.new_population[idx].probability()),
             print '%s'%' '.join(map(str,self.new_population[idx].chromosome()))
-            
-
 
     def print_new_chromosome(self):
         print "Population : Chromosome"
         for idx_pop in self.population_size:
             for idx_chr in self.chromosome_size:
                 print "%d\t%d"%(idx_pop, self._new_population[idx_pop].chromosome[idx_chr])
+    
+    def __str__(self):
+        return str(self.run())
 
 
-
-
+                                                                               
 ## MAIN
 if __name__ == '__main__':
     population_size = 10
-    chromosome_size = 5
+    chromosome_sizes = [5,10,20,50]
     mutation_rate = 0.2
 
-    genetic = Genetic(population_size, chromosome_size, mutation_rate)
-    genetic.run()
+    for chromosome_size in chromosome_sizes:
+#        print chromosome_size
+        genetic = Genetic(population_size, 5, mutation_rate)
+#        genetic = Genetic(population_size, chromosome_size, mutation_rate)
+#        x=genetic.run()
+#        print x
+#        break
+        print genetic,
+    print ""
 
     die("STOP")    
 
-    print "optimal solution"
-    print "generations: ",genetic.run()
-    print "genes: "
+#    print "optimal solution"
+#    print "generations: ",genetic.run()
+#    print "genes: "
 
 
     genetic.print_new_chromosome()
