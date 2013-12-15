@@ -27,8 +27,9 @@
 
 import random # randrange()
 
-
 import sys # sys.exit()
+
+import matplotlib.pyplot as plt # plotting
 
 def die( msg = "" ):
     print "FATAL",
@@ -61,7 +62,7 @@ class Genetic(object):
         self._run=0
         self.optimal=0
 
-    def run(self):
+    def run(self,average=None,limit=5000):
         self._run = 0
         # 1. initialize random popolation of candidate solutions
         # create random chromosome
@@ -80,8 +81,13 @@ class Genetic(object):
             # 5. IF good solution not found: GOTO 2
             self.optimal = self.is_done()
 
+            if None != average:
+                total = sum([sum(p.chromosome()) for p in self.population])
+                full = len(self.population) * self.chromosome_size
+                average +=[(1.0*total)/full]
+
             self._run += 1
-            if self._run == 5000:
+            if self._run == limit:
                 self._run = -1 # stop after max iterations..
                 break
             
@@ -200,12 +206,13 @@ class Genetic(object):
                                                                                
 ## MAIN
 if __name__ == '__main__':
-    population_sizes = [5,10,11]
+
+    ## exercise 1a
+    population_sizes = [5,10,12]
     chromosome_sizes = [5,10,20,50]
-    mutation_rates = [0.1,0.15,0.2,0.25]
+    mutation_rates = [0.05,0.1,0.15,0.2,0.3]
 
     mesg = ""
-
     for mutation_rate in mutation_rates:
         mut = "mutation rate %f "%mutation_rate
         for population_size in population_sizes:
@@ -218,6 +225,21 @@ if __name__ == '__main__':
                     print "%s,"%str(genetic),
                 print ""
             print ""
+
+    ## exercise 1b
+    limit=150
+    plt.plot([1 for i in range(limit)], "k:", label="upper bound")
+    for chromosome_size in chromosome_sizes:
+        average=[]
+        genetic = Genetic(10, chromosome_size, 0.15)
+        genetic.run(average=average,limit=limit)
+        plt.plot(average, label="chromosome size = "+str(chromosome_size))
+    plt.title("avg. fitness")
+    plt.ylabel("total set chromatides / all chromatides")
+    plt.legend(loc="lower right")
+    plt.xlabel("cycles")
+    plt.show()
+
 
 
     print "READY."
