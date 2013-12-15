@@ -80,14 +80,14 @@ class Genetic(object):
             # 2. evaluate solutions on problem and assign a fitnes score
             self.evaluate()
 
-#            self.DB_population()     
-#            print ""                 
+            self.DB_population()     
+            print ""                 
 
             # 3. select some solutions for mating
             self.selection()
 
-#            self.DB_population()     
-#            die("FAHRKARTENKONTROLLE")                                         
+            self.DB_population()     
+            die("FAHRKARTENKONTROLLE")                                         
 
             # 4. recombine: create new solutions from selected ones by exchanging structure
             self.recombine()
@@ -102,7 +102,7 @@ class Genetic(object):
 #            print ""  
             if self._run == 150: die("150. generation XXX")    
             
-        print "XXX done"
+        print "EXIT"
 
         ## // while
         return self._run
