@@ -220,23 +220,4 @@ if __name__ == '__main__':
             print ""
 
 
-
-#    population_size = 10
-#    chromosome_size = 10
-#    mutation_rate = 0.02
-# TODO
-
-
-#    population_size = 10
-#    chromosome_size = 20
-#    mutation_rate = 0.02
-# TODO
-
-
-#    population_size = 10
-#    chromosome_size = 50
-#    mutation_rate = 0.02
-# TODO
-
-
     print "READY."
