@@ -26,6 +26,8 @@ import sys # sys.exit()
 
 import matplotlib.pyplot as plt # plotting
 
+import math # exp()
+
 def die(msg=""):
     print "FATAL",
     if 0 < len(str(msg)):
@@ -34,25 +36,45 @@ def die(msg=""):
 
 
 class Problem(object):
-    def __init__(self, chromosome_x=0, chromosome_sigma=1, fitness=0):
-        self._chromosome_x=chromosome_x
-        self._chromosome_sigma=chromosome_sigma
+    def __init__(self, chromosome_x=[], chromosome_sigma=[], fitness=0):
+# TODO check fitness is list, too?
+        self._chromosome_x = chromosome_x
+        self._chromosome_sigma = chromosome_sigma
         self._fitness=fitness
     def chromosome_x(self): return self._chromosome_x
+    def set_chromosome_x(self, chromosome_x): self._chromosome_x = chromosome_x
     def chromosome_sigma(self): return self._chromosome_sigma
+    def set_chromosome_sigma(self, chromosome_sigma): self._chromosome_sigma = chromosome_sigma
     def fitness(self): return self._fitness
-# TODO setter?
+    def set_fitness(self, fitness): self._fitness = fitness
+
 
 class Evolution(object):
     def __init__(self, ndims, noffspring):
-        self.ndims=ndims
-        self.noffspring=noffspring
-        # TODO 
-        pass 
+        self.ndims = ndims
+        self.noffspring  =noffspring
+        self.parent = Problem()
+        self.offspring = []   
+# TODO check factor to proportionality of LR functions
+        self.factdor = 0.5    
+# TODO 
+
 
     def run(self):
 ## 1. initialize parents and evaluate them
-        self.initialize()
+        self.initialization(self.parent)
+
+        ## evaluate uncorrellated mutation with n sigma prime
+        beta = random.gauss(mu=0, sigma=self.LR_overall())
+        chromosome_x = []; chromosome_sigma = []
+        for idx in range(len(self.parent.chromosome_x)):
+            chromosome_sigma += [self.parent.chromosome_sigma()[idx] * math.exp(beta + random.gauss(mu=0, sigma=self.LR_coordinate()))]
+            chromosome_x += [self.parent.chromosome_x()[idx] + random.gauss(mu=0, sigma=chromosome_sigma[idx])]
+        self.parent.set_chromosome_sigma(chromosome_sigma)
+        self.parent.set_chromosome_x(chromosome_x)
+
+        ## compute the fitness
+        self.parent.set_fitness(self.compute_fitness(self.parent.chromosome_x()))
 
 ## 2. create some offspring by perturbing parents with Gaussian noise according to parent's mutation parameters
 # TODO
@@ -67,11 +89,21 @@ class Evolution(object):
 # TODO
 
 
-    def initialize(self, problem):
-        problem.chromosome_x = [1.0 * random.randrange(-5, 10) for i in range(self.ndims)]    
-        problem.chromosome_sigma[idx] = [1.0 for i in range(self.ndims)]
+    def initialization(self, problem):
+        ## initialize the parents chromosome to the values -5 <= x < 11
+        problem.set_chromosome_x( [1.0 * random.randrange(-5, 11) for i in range(self.ndims)] )
+        problem.set_chromosome_sigma( [1.0 for i in range(self.ndims)] )
+
+    def LR_overall(self):
+        return self.factor / math.sqrt(2*self.ndims)
+
+    def LR_coordinate(self):
+        return self.factor / math.sqrt(2 * math.sqrt(self.ndims))
+
     
-    def compute_fitness(self, problem_params):
+
+
+    def compute_fitness(self,chromosome_x):
         fitness=0.0
         for idx in range(self.ndims-1):
             x = problem_params[idx]
