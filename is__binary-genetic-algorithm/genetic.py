@@ -81,10 +81,11 @@ class Genetic(object):
             self.optimal = self.is_done()
 
             self._run += 1
-            if self._run == 10000: break
-#die("I give up") ## avoid infinite loops due to bugs
+            if self._run == 5000:
+                self._run = -1 # stop after max iterations..
+                break
             
-        ## only print the number of runs, it took to compute the result
+        ## DEBUG
 #        self.DB_population()     
 
         ## // while
@@ -116,8 +117,6 @@ class Genetic(object):
                 if rnd_probability < probability:
                     ## we found an item
                     self.new_population[idx] = Person(chromosome=self.population[jdx].chromosome())
-                    idx+=1
-                    cnt=0
                     break
             idx+=1
 
@@ -128,7 +127,7 @@ class Genetic(object):
 
         ## mutation
         for idx_p in range(self.population_size):
-            rate = random.randrange(0,10) / 10.0
+            rate = random.randrange(0,1000) / 1000.0
             if rate < self.mutation_rate:
                 ## flip a bit on mutation rate
                 bit = random.randrange(0,self.chromosome_size)
@@ -201,28 +200,24 @@ class Genetic(object):
                                                                                
 ## MAIN
 if __name__ == '__main__':
-    population_sizes = [5,10,12]
+    population_sizes = [5,10,11]
     chromosome_sizes = [5,10,20,50]
-    mutation_rate = 0.2
+    mutation_rates = [0.1,0.15,0.2,0.25]
 
-    for population_size in population_sizes:
-        print "population size %d:,"%population_size
-        for chromosome_size in chromosome_sizes:
-            print "chromosome size %d:,"%(chromosome_size),
-            for run in range(10):
-                genetic = Genetic(population_size, chromosome_size, mutation_rate)
-                print "%s,"%str(genetic),
+    mesg = ""
+
+    for mutation_rate in mutation_rates:
+        mut = "mutation rate %f "%mutation_rate
+        for population_size in population_sizes:
+            pop = "population size %d "%population_size
+            for chromosome_size in chromosome_sizes:
+                chrom = "chromosome size %d "%(chromosome_size)
+                print "%s:,"%(mut+pop+chrom),
+                for run in range(10):
+                    genetic = Genetic(population_size, chromosome_size, mutation_rate)
+                    print "%s,"%str(genetic),
+                print ""
             print ""
-        print ""
-
-
-    die("STOP")    
-
-#    print "optimal solution"
-#    print "generations: ",genetic.run()
-#    print "genes: "
-
-
 
 
 
