@@ -20,6 +20,7 @@
 # author: Lothar Rubusch
 # email: l.rubusch@gmx.ch
 
+import random # randrange()
 
 import sys # sys.exit()
 
@@ -33,12 +34,12 @@ def die(msg=""):
 
 
 class Problem(object):
-    def __init__(self, problem=0, strategy=1, fitness=0):
-        self._problem=problem
-        self._strategy=strategy
+    def __init__(self, chromosome_x=0, chromosome_sigma=1, fitness=0):
+        self._chromosome_x=chromosome_x
+        self._chromosome_sigma=chromosome_sigma
         self._fitness=fitness
-    def problem(self): return self._problem
-    def strategy(self): return self._strategy
+    def chromosome_x(self): return self._chromosome_x
+    def chromosome_sigma(self): return self._chromosome_sigma
     def fitness(self): return self._fitness
 # TODO setter?
 
@@ -51,20 +52,35 @@ class Evolution(object):
 
     def run(self):
 ## 1. initialize parents and evaluate them
-## 2. create some offspring by perturbing parents with Gaussian noise according to parent's mutation parameters
-## 3. evaluate offspring
-## 4. select new parents from offspring and possibly old parents
-## 5. if good solution not found go to 2
-        # TODO  
-        pass 
+        self.initialize()
 
+## 2. create some offspring by perturbing parents with Gaussian noise according to parent's mutation parameters
+# TODO
+
+## 3. evaluate offspring
+# TODO
+
+## 4. select new parents from offspring and possibly old parents
+# TODO
+
+## 5. if good solution not found go to 2
+# TODO
+
+
+    def initialize(self, problem):
+        problem.chromosome_x = [1.0 * random.randrange(-5, 10) for i in range(self.ndims)]    
+        problem.chromosome_sigma[idx] = [1.0 for i in range(self.ndims)]
+    
     def compute_fitness(self, problem_params):
         fitness=0.0
         for idx in range(self.ndims-1):
             x = problem_params[idx]
             x_next = problem_params[idx+1]
+## TODO check
 #            fitness += ((1 - x)** + 100 * (x_next + x**)** )
             fitness += ((1-x)*(1-x)+100*(x_next+x*x)*(x_next+x*x))
+        return fitness
+
 
     def __str__(self):
         return str("TODO")   
