@@ -3,9 +3,6 @@
 #
 # Assignment05 for Intelligent Systems
 #
-# author: Lothar Rubusch
-# email: l.rubusch@gmx.ch
-#
 #
 # Question 1.
 #
@@ -23,6 +20,10 @@
 # runs), for each of the four problems. There should be one graph with four
 # curves, the x-axis being the generations, and the y-axis the average (best)
 # fitness.
+#
+#
+# author: Lothar Rubusch
+# email: l.rubusch@gmx.ch
 
 
 import random # randrange()
