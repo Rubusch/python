@@ -86,11 +86,12 @@ class Genetic(object):
             # 3. select some solutions for mating
             self.selection()
 
+            # 4. recombine: create new solutions from selected ones by exchanging structure
+            self.recombination()
+
             self.DB_population()     
             die("FAHRKARTENKONTROLLE")                                         
 
-            # 4. recombine: create new solutions from selected ones by exchanging structure
-            self.recombine()
 
             # 5. IF good solution not found: GOTO 2
             self.optimal = self.is_done()
@@ -118,35 +119,27 @@ class Genetic(object):
         for idx in range(self.population_size):
             self.population[idx].set_probability(self.compute_probability(self.population, self.population[idx].fitness()))
 
-        self.new_population = [Person(chromosome=p.chromosome()) for p in self.population]  
-
-#        idx_parent_a, idx_parent_b
+        ## prepare new_population
         idx=0
-        idx_parent_a=-1
-        idx_parent_b=-1
         while idx < self.population_size:
-            rnd_probability = (1.0*random.randrange(1, self.population_size)) / 10
+            # for each position in new_population choose a "likely" individual
             probability = 0.0
             for jdx in range(self.population_size):
+                ## get random criteria
+                rnd_probability = (1.0*random.randrange(1, self.population_size)) / 10
+                ## go through all population items and see by probability if one gots selected,
+                ## only increment the counter if we have an item for new_population
+                ## if not, go through all again
                 probability = self.population[jdx].probability()
                 if rnd_probability < probability:
-#                    print "rnd_probability %f"%rnd_probability  
-                    if -1 == idx_parent_a:
-#                        print "probability a: %f"%probability   
-                        idx_parent_a = jdx
-                    elif jdx != idx_parent_a:
-#                        print "probability b: %f"%probability   
-                        idx_parent_b = jdx
-                        ## we're done
-                        idx = self.population_size
-                    else:
-                        continue
-#                    print ""                                    
+                    ## we found an item
+                    self.new_population += [Person(chromosome=self.population[jdx].chromosome())]
+                    idx+=1
                     break
-            ## increment idx
-#            idx+=1
 
-#            print "XXX idx_parent_a '%d', idx_parent_b '%d'"%(idx_parent_a,idx_parent_b)  
+
+                                        
+##        idx_parent_a, idx_parent_b
 
             
 
@@ -206,10 +199,15 @@ class Genetic(object):
         ## then select some number of genotypes for mating according to probabilities
 # TODO check, get_parents selects randomly, ando not "according to probabilities"     
 #        idx_parent_a, idx_parent_b = self.get_parents()  
-        self.new_population=self.crossover(self.population, self.new_population, idx_parent_a, idx_parent_b)
-        
+                
+#        self.new_population=self.crossover(self.population, self.new_population, idx_parent_a, idx_parent_b)
+                
 
-    def recombine(self):
+    def recombination(self):
+        ## mating
+        self.new_population = self.crossover(self.new_population)
+
+            
         for idx in range(self.population_size):
             for jdx in range(self.chromosome_size):
                 rate = random.randrange(0,10000000)/10000000 * 1.0
@@ -253,24 +251,46 @@ class Genetic(object):
             idx_parent_b = random.randrange(0, self.population_size)
         return idx_parent_a, idx_parent_b
 
-    def crossover(self, population, new_population, idx_parent_a, idx_parent_b):
-        chromosome_parent_a=[ch for ch in population[idx_parent_a].chromosome()]
-        chromosome_parent_b=[ch for ch in population[idx_parent_b].chromosome()]
-        ## 1 point chrossover
-        crossover_point=random.randrange(0,self.chromosome_size)
+    def crossover(self, population):
+        for idx_person in range(1,self.population_size,2):
+            chromosome_a=[]; chromosome_b=[]
+            ## 1 point chrossover
+            crossover_point=random.randrange(0,self.chromosome_size)
+            print "XXX crossover_point %d",crossover_point  
+            print population[idx_person-1].chromosome()  
+            print population[idx_person].chromosome()  
 
-        for idx in range(crossover_point, self.chromosome_size):
-            chromosome_parent_a[idx] = population[idx_parent_b].chromosome()[idx]
-            chromosome_parent_b[idx] = population[idx_parent_a].chromosome()[idx]
+            for idx_chromosome in range(self.chromosome_size):
+                print "%d ",(idx_person-1 if idx_chromosome < crossover_point else idx_person)   
+                chromosome_a += [population[idx_person-1 if idx_chromosome < crossover_point else idx_person].chromosome()[idx_chromosome]]
+                print "%d ",(idx_person if idx_chromosome < crossover_point else idx_person-1)   
+                chromosome_b += [population[idx_person if idx_chromosome < crossover_point else idx_person-1].chromosome()[idx_chromosome]]
+
+            print population[idx_person-1].chromosome()  
+            print population[idx_person].chromosome()  
+            print ""    
+            ## init by generated chromosome
+            population[idx_person-1].set_chromosome(chromosome_a)
+            population[idx_person].set_chromosome(chromosome_b)
+
+            die("XXX")   
+        return population
+
+
+        # chromosome_parent_a=[ch for ch in population[idx_parent_a].chromosome()]
+        # chromosome_parent_b=[ch for ch in population[idx_parent_b].chromosome()]
+        # ## 1 point chrossover
+        # crossover_point=random.randrange(0,self.chromosome_size)
+        # for idx in range(crossover_point, self.chromosome_size):
+        #     chromosome_parent_a[idx] = population[idx_parent_b].chromosome()[idx]
+        #     chromosome_parent_b[idx] = population[idx_parent_a].chromosome()[idx]
             
 #            person   # TODO person new
 # TODO check this...
             
-#            new_population[idx_parent_a] = [Person(chromosome=chromosome_parent_a)]
-            new_population[idx_parent_a].chromosome=chromosome_parent_a
-#            new_population[idx_parent_b] = [Person(chromosome=chromosome_parent_b)]
-            new_population[idx_parent_b].chromosome=chromosome_parent_b
-        return [i for i in population]
+#            new_population[idx_parent_a].chromosome=chromosome_parent_a
+#            new_population[idx_parent_b].chromosome=chromosome_parent_b
+#        return [i for i in population]
 
     def is_optimal(self, population):
         for pop in population:
