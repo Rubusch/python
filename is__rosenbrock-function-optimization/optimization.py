@@ -147,11 +147,7 @@ if __name__ == '__main__':
     noffspring = 20 # lambda value
     limit=5000
     epsilon=10
-    
-#    ndims = 3
-#    noffspring = 2 # lambda value
-#    limit=10
-    
+
     for ndim in ndims:
         dataset = []
 
