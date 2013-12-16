@@ -53,8 +53,6 @@ class Evolution(object):
         self.factor = 0.5    
 
 
-
-
     def run(self, limit=1000):
 ## 1. initialize parents and evaluate them
         self.initialization(self.parent)
@@ -63,7 +61,7 @@ class Evolution(object):
             self.initialization(self.offspring[off])    
 
         ## evaluate uncorrellated mutation with n sigma prime
-        self.evaluate_mutation(self.parent)
+        self.parent = self.evaluate_mutation(self.parent)
 
         ## compute the fitness
         self.parent.fitness = self.compute_fitness(self.parent.chromosome_x)
@@ -72,26 +70,45 @@ class Evolution(object):
 # TODO check copy deepness     
         self.new_parent = self.parent
         while idx < limit:
-            print "%d. round"%idx                                   
-
+            print "\n%d. round"%idx                                   
 # TODO check copy deepness     
-            self.parent = self.new_parent
+
+            self.parent = self.new_parent                             
+# TODO check  
+#            self.parent = Problem(chromosome_x=self.new_parent.chromosome_x, chromosome_sigma=self.new_parent.chromosome_sigma, fitness=self.new_parent.fitness)
+
+
 
 ## 2. create some offspring by perturbing parents with Gaussian noise according to parent's mutation parameters
             for idx_o in range(self.noffspring):
-                self.evaluate_mutation(self.offspring[idx_o])
+                self.offspring[idx_o] = self.evaluate_mutation(self.offspring[idx_o])
 
-            ## compute fitness
+            ## (re)compute fitness for all
+            self.parent.fitness = self.compute_fitness(self.parent.chromosome_x)
             for idx_o in range(self.noffspring):
                 self.offspring[idx_o].fitness = self.compute_fitness(self.offspring[idx_o].chromosome_x)
+
+
 
 ## 3. evaluate offspring
             ## find the minimum fitness in offspring and parent
             fitnesslist = [o.fitness for o in self.offspring] + [self.parent.fitness]
+            print "XXX fitnesslist ",str(fitnesslist)               
+
             idx_min = fitnesslist.index(min(fitnesslist))
+            print "XXX idx_min %d - %d"%(idx_min, fitnesslist[idx_min])                  
+
+
 
 ## 4. select new parents from offspring and possibly old parents
-            self.parent_new = self.parent if idx_min == (len(fitnesslist)-1) else self.offspring[idx_min]
+#            self.parent_new = self.parent if idx_min == (len(fitnesslist)-1) else self.offspring[idx_min]
+            
+            if idx_min == (len(fitnesslist)-1):
+                self.DB_print(self.parent, "parent")                
+                self.parent_new = self.parent
+            else:
+                self.DB_print(self.offspring[idx_min], "offspring")                
+                self.parent_new = self.offspring[idx_min]
 
 ## 5. if good solution not found go to 2
 # TODO
@@ -116,18 +133,20 @@ class Evolution(object):
         problem.chromosome_sigma = [1.0 for i in range(self.ndims)]
 
     def evaluate_mutation(self, element):
-        beta = random.gauss(mu=0, sigma=self.LR_overall())
-
+        beta = random.gauss(mu=0.0, sigma=self.tau_overall())
         chromosome_sigma = [s for s in element.chromosome_sigma]
         chromosome_x = [x for x in element.chromosome_x]
         for idx in range(len(self.parent.chromosome_x)):
-            chromosome_sigma[idx] = self.parent.chromosome_sigma[idx] * math.exp(beta + random.gauss(mu=0, sigma=self.LR_coordinate()))
-            chromosome_x[idx] = self.parent.chromosome_x[idx]  + random.gauss(mu=0, sigma=chromosome_sigma[idx])
+#            chromosome_sigma[idx] = self.parent.chromosome_sigma[idx] * math.exp(beta + random.gauss(mu=0, sigma=self.tau_coordinate()))
+            chromosome_sigma[idx] *= math.exp(beta + random.gauss(mu=0, sigma=self.tau_coordinate()))
+#            chromosome_x[idx] = self.parent.chromosome_x[idx]  + random.gauss(mu=0, sigma=chromosome_sigma[idx])
+            chromosome_x[idx] += random.gauss(mu=0, sigma=chromosome_sigma[idx])
+        return Problem(chromosome_x=chromosome_x, chromosome_sigma=chromosome_sigma, fitness=0.0)
 
-    def LR_overall(self):
+    def tau_overall(self):
         return self.factor / math.sqrt(2*self.ndims)
 
-    def LR_coordinate(self):
+    def tau_coordinate(self):
         return self.factor / math.sqrt(2*math.sqrt(self.ndims))
 
     def compute_fitness(self, chromosome_x):
@@ -148,7 +167,6 @@ class Evolution(object):
         print element.fitness
         print ""
 
-
     def __str__(self):
         return str("TODO")   
 
@@ -157,13 +175,14 @@ class Evolution(object):
 ## MAIN
 if __name__ == '__main__':
     ndims = 5
-    noffspring = 20 # lambda value
-#    noffspring = 3     
-
+#    noffspring = 20 # lambda value
+    noffspring = 2 # lambda value
 
     evolution = Evolution(ndims, noffspring)
     
-    evolution.run(limit=100)   
+#    evolution.run(limit=3000)   
+
+    evolution.run(limit=5)   
     
 #    print evolution  
 
