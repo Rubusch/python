@@ -37,7 +37,6 @@ def die(msg=""):
 
 class Problem(object):
     def __init__(self, chromosome_x=[], chromosome_sigma=[], fitness=0.0):
-# TODO check fitness is list, too?
         self.chromosome_x = chromosome_x
         self.chromosome_sigma = chromosome_sigma
         self.fitness=fitness*1.0
@@ -49,16 +48,16 @@ class Evolution(object):
         self.noffspring = noffspring
         self.parent = Problem()
         self.offspring = [Problem() for p in range(self.noffspring)]
-# TODO check factor to proportionality of LR functions
-        self.factor = 0.5    
+        self.factor = 0.5 ## TODO check if 0.5 is ok, for const factor
+        self.tau=0
+        self.tau_prime=0
+        self._run=0
 
 
-    def run(self, limit=1000):
+    def run(self, epsilon, limit=1000):
 ## 1. initialize parents and evaluate them
         self.initialization(self.parent)
-        for off in range(self.noffspring):
-# TODO check?
-            self.initialization(self.offspring[off])    
+        diagramvalues = []
 
         ## evaluate uncorrellated mutation with n sigma prime
         self.parent = self.evaluate_mutation(self.parent)
@@ -66,65 +65,35 @@ class Evolution(object):
         ## compute the fitness
         self.parent.fitness = self.compute_fitness(self.parent.chromosome_x)
 
-        idx=0
-# TODO check copy deepness     
         self.new_parent = self.parent
-        while idx < limit:
-            print "\n%d. round"%idx                                   
-# TODO check copy deepness     
+        while self._run < limit:
+#            print "\n%d. round"%idx
+            self.parent = self.new_parent
 
-            self.parent = self.new_parent                             
-# TODO check  
-#            self.parent = Problem(chromosome_x=self.new_parent.chromosome_x, chromosome_sigma=self.new_parent.chromosome_sigma, fitness=self.new_parent.fitness)
-
-
+## 5. if good solution not found go to 2
+            if self.parent.fitness <= epsilon: break
+            diagramvalues.append(self.parent.fitness)
 
 ## 2. create some offspring by perturbing parents with Gaussian noise according to parent's mutation parameters
             for idx_o in range(self.noffspring):
-                self.offspring[idx_o] = self.evaluate_mutation(self.offspring[idx_o])
-
-            ## (re)compute fitness for all
-            self.parent.fitness = self.compute_fitness(self.parent.chromosome_x)
-            for idx_o in range(self.noffspring):
+                self.offspring[idx_o] = self.evaluate_mutation(self.parent)
                 self.offspring[idx_o].fitness = self.compute_fitness(self.offspring[idx_o].chromosome_x)
-
-
 
 ## 3. evaluate offspring
             ## find the minimum fitness in offspring and parent
             fitnesslist = [o.fitness for o in self.offspring] + [self.parent.fitness]
-            print "XXX fitnesslist ",str(fitnesslist)               
-
             idx_min = fitnesslist.index(min(fitnesslist))
-            print "XXX idx_min %d - %d"%(idx_min, fitnesslist[idx_min])                  
-
-
 
 ## 4. select new parents from offspring and possibly old parents
-#            self.parent_new = self.parent if idx_min == (len(fitnesslist)-1) else self.offspring[idx_min]
-            
-            if idx_min == (len(fitnesslist)-1):
-                self.DB_print(self.parent, "parent")                
-                self.parent_new = self.parent
-            else:
-                self.DB_print(self.offspring[idx_min], "offspring")                
-                self.parent_new = self.offspring[idx_min]
+            self.new_parent = self.parent if idx_min == (len(fitnesslist)-1) else self.offspring[idx_min]
 
-## 5. if good solution not found go to 2
-# TODO
-
-            ## display normal ???
-# TODO
-            idx+=1
+            self._run+=1
         ## // while
 
                                                                  
-        self.DB_print(self.parent, "parent")                 
-        for db in range(len(self.offspring)):                
-            self.DB_print(self.offspring[db], "offspring")   
-#        die("STOP")                                          
+        self.DB_print(self.parent, "\n%d. round: selected"%self._run)
                                                                  
-
+        return diagramvalues
 
 
     def initialization(self, problem):
@@ -137,17 +106,18 @@ class Evolution(object):
         chromosome_sigma = [s for s in element.chromosome_sigma]
         chromosome_x = [x for x in element.chromosome_x]
         for idx in range(len(self.parent.chromosome_x)):
-#            chromosome_sigma[idx] = self.parent.chromosome_sigma[idx] * math.exp(beta + random.gauss(mu=0, sigma=self.tau_coordinate()))
-            chromosome_sigma[idx] *= math.exp(beta + random.gauss(mu=0, sigma=self.tau_coordinate()))
-#            chromosome_x[idx] = self.parent.chromosome_x[idx]  + random.gauss(mu=0, sigma=chromosome_sigma[idx])
-            chromosome_x[idx] += random.gauss(mu=0, sigma=chromosome_sigma[idx])
-        return Problem(chromosome_x=chromosome_x, chromosome_sigma=chromosome_sigma, fitness=0.0)
+            chromosome_sigma[idx] *= math.exp(beta + random.gauss(mu=0.0, sigma=self.tau_coordinate()))
+            chromosome_x[idx] += random.gauss(mu=0.0, sigma=chromosome_sigma[idx])
+        return Problem(chromosome_x=chromosome_x, chromosome_sigma=chromosome_sigma, fitness=element.fitness)
 
     def tau_overall(self):
-        return self.factor / math.sqrt(2*self.ndims)
+        if self.tau == 0: self.tau = self.factor / math.sqrt(2*self.ndims)
+        return self.tau
 
     def tau_coordinate(self):
-        return self.factor / math.sqrt(2*math.sqrt(self.ndims))
+        if self.tau_prime == 0.0:
+            self.tau_prime = self.factor / math.sqrt(2*math.sqrt(self.ndims))
+        return self.tau_prime
 
     def compute_fitness(self, chromosome_x):
         fitness=0.0
@@ -167,24 +137,66 @@ class Evolution(object):
         print element.fitness
         print ""
 
-    def __str__(self):
-        return str("TODO")   
+
 
 
                                                                                
 ## MAIN
 if __name__ == '__main__':
-    ndims = 5
-#    noffspring = 20 # lambda value
-    noffspring = 2 # lambda value
-
-    evolution = Evolution(ndims, noffspring)
+    ndims = [5,10,20,50]
+    noffspring = 20 # lambda value
+    limit=5000
+    epsilon=10
     
-#    evolution.run(limit=3000)   
-
-    evolution.run(limit=5)   
+#    ndims = 3
+#    noffspring = 2 # lambda value
+#    limit=10
     
-#    print evolution  
+    for ndim in ndims:
+        dataset = []
 
-    # TODO  
+        evolution = Evolution(ndim, noffspring)
+        data = evolution.run(epsilon, limit)
+
+        evolution = Evolution(ndim, noffspring)
+        datb = evolution.run(epsilon, limit)
+
+        evolution = Evolution(ndim, noffspring)
+        datc = evolution.run(epsilon, limit)
+
+        evolution = Evolution(ndim, noffspring)
+        datd = evolution.run(epsilon, limit)
+
+        evolution = Evolution(ndim, noffspring)
+        date = evolution.run(epsilon, limit)
+
+        evolution = Evolution(ndim, noffspring)
+        datf = evolution.run(epsilon, limit)
+
+        evolution = Evolution(ndim, noffspring)
+        datg = evolution.run(epsilon, limit)
+
+        evolution = Evolution(ndim, noffspring)
+        dath = evolution.run(epsilon, limit)
+
+        evolution = Evolution(ndim, noffspring)
+        dati = evolution.run(epsilon, limit)
+
+        evolution = Evolution(ndim, noffspring)
+        datj = evolution.run(epsilon, limit)
+
+        minlen = min(len(data), len(datb), len(datc), len(datd), len(date), len(datf), len(datg), len(dath), len(dati), len(datj))
+
+        for idx in range(minlen):
+            dataset += [sum([data[idx], datb[idx], datc[idx], datd[idx], date[idx], datf[idx], datg[idx], dath[idx], dati[idx], datj[idx]])/minlen]
+        plt.plot(dataset,label="N = %d"%ndim)
+
+#    plt.plot(self.diagramvalues)
+    plt.legend(loc="upper right")
+    plt.title("avg. fitness")
+    plt.ylabel("total fitness")
+    plt.xlabel("cycles")
+    plt.xlim(0,10)
+    plt.show()
+
     print "READY."
