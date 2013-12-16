@@ -31,87 +31,122 @@ import math # exp()
 def die(msg=""):
     print "FATAL",
     if 0 < len(str(msg)):
-        print ":"+str(msg)
+        print ": "+str(msg)
     sys.exit(-1)
 
 
 class Problem(object):
-    def __init__(self, chromosome_x=[], chromosome_sigma=[], fitness=0):
+    def __init__(self, chromosome_x=[], chromosome_sigma=[], fitness=0.0):
 # TODO check fitness is list, too?
-        self._chromosome_x = chromosome_x
-        self._chromosome_sigma = chromosome_sigma
-        self._fitness=fitness
-    def chromosome_x(self): return self._chromosome_x
-    def set_chromosome_x(self, chromosome_x): self._chromosome_x = chromosome_x
-    def chromosome_sigma(self): return self._chromosome_sigma
-    def set_chromosome_sigma(self, chromosome_sigma): self._chromosome_sigma = chromosome_sigma
-    def fitness(self): return self._fitness
-    def set_fitness(self, fitness): self._fitness = fitness
+        self.chromosome_x = chromosome_x
+        self.chromosome_sigma = chromosome_sigma
+        self.fitness=fitness*1.0
 
 
 class Evolution(object):
     def __init__(self, ndims, noffspring):
         self.ndims = ndims
-        self.noffspring  =noffspring
+        self.noffspring = noffspring
         self.parent = Problem()
-        self.offspring = []   
+        self.offspring = [Problem() for p in range(self.noffspring)]
 # TODO check factor to proportionality of LR functions
-        self.factdor = 0.5    
-# TODO 
+        self.factor = 0.5    
 
 
-    def run(self):
+
+
+    def run(self, limit=1000):
 ## 1. initialize parents and evaluate them
         self.initialization(self.parent)
+        for off in range(self.noffspring):
+# TODO check?
+            self.initialization(self.offspring[off])    
 
         ## evaluate uncorrellated mutation with n sigma prime
-        beta = random.gauss(mu=0, sigma=self.LR_overall())
-        chromosome_x = []; chromosome_sigma = []
-        for idx in range(len(self.parent.chromosome_x)):
-            chromosome_sigma += [self.parent.chromosome_sigma()[idx] * math.exp(beta + random.gauss(mu=0, sigma=self.LR_coordinate()))]
-            chromosome_x += [self.parent.chromosome_x()[idx] + random.gauss(mu=0, sigma=chromosome_sigma[idx])]
-        self.parent.set_chromosome_sigma(chromosome_sigma)
-        self.parent.set_chromosome_x(chromosome_x)
+        self.evaluate_mutation(self.parent)
 
         ## compute the fitness
-        self.parent.set_fitness(self.compute_fitness(self.parent.chromosome_x()))
+        self.parent.fitness = self.compute_fitness(self.parent.chromosome_x)
+
+        idx=0
+# TODO check copy deepness     
+        self.new_parent = self.parent
+        while idx < limit:
+            print "%d. round"%idx                                   
+
+# TODO check copy deepness     
+            self.parent = self.new_parent
 
 ## 2. create some offspring by perturbing parents with Gaussian noise according to parent's mutation parameters
-# TODO
+            for idx_o in range(self.noffspring):
+                self.evaluate_mutation(self.offspring[idx_o])
+
+            ## compute fitness
+            for idx_o in range(self.noffspring):
+                self.offspring[idx_o].fitness = self.compute_fitness(self.offspring[idx_o].chromosome_x)
 
 ## 3. evaluate offspring
-# TODO
+            ## find the minimum fitness in offspring and parent
+            fitnesslist = [o.fitness for o in self.offspring] + [self.parent.fitness]
+            idx_min = fitnesslist.index(min(fitnesslist))
 
 ## 4. select new parents from offspring and possibly old parents
-# TODO
+            self.parent_new = self.parent if idx_min == (len(fitnesslist)-1) else self.offspring[idx_min]
 
 ## 5. if good solution not found go to 2
 # TODO
 
+            ## display normal ???
+# TODO
+            idx+=1
+        ## // while
+
+                                                                 
+        self.DB_print(self.parent, "parent")                 
+        for db in range(len(self.offspring)):                
+            self.DB_print(self.offspring[db], "offspring")   
+#        die("STOP")                                          
+                                                                 
+
+
 
     def initialization(self, problem):
         ## initialize the parents chromosome to the values -5 <= x < 11
-        problem.set_chromosome_x( [1.0 * random.randrange(-5, 11) for i in range(self.ndims)] )
-        problem.set_chromosome_sigma( [1.0 for i in range(self.ndims)] )
+        problem.chromosome_x = [1.0 * random.randrange(-5, 11) for i in range(self.ndims)]
+        problem.chromosome_sigma = [1.0 for i in range(self.ndims)]
+
+    def evaluate_mutation(self, element):
+        beta = random.gauss(mu=0, sigma=self.LR_overall())
+
+        chromosome_sigma = [s for s in element.chromosome_sigma]
+        chromosome_x = [x for x in element.chromosome_x]
+        for idx in range(len(self.parent.chromosome_x)):
+            chromosome_sigma[idx] = self.parent.chromosome_sigma[idx] * math.exp(beta + random.gauss(mu=0, sigma=self.LR_coordinate()))
+            chromosome_x[idx] = self.parent.chromosome_x[idx]  + random.gauss(mu=0, sigma=chromosome_sigma[idx])
 
     def LR_overall(self):
         return self.factor / math.sqrt(2*self.ndims)
 
     def LR_coordinate(self):
-        return self.factor / math.sqrt(2 * math.sqrt(self.ndims))
+        return self.factor / math.sqrt(2*math.sqrt(self.ndims))
 
-    
-
-
-    def compute_fitness(self,chromosome_x):
+    def compute_fitness(self, chromosome_x):
         fitness=0.0
         for idx in range(self.ndims-1):
-            x = problem_params[idx]
-            x_next = problem_params[idx+1]
-## TODO check
-#            fitness += ((1 - x)** + 100 * (x_next + x**)** )
-            fitness += ((1-x)*(1-x)+100*(x_next+x*x)*(x_next+x*x))
-        return fitness
+            x = chromosome_x[idx]
+            x_next = chromosome_x[idx+1]
+            fitness += math.pow((1.0-x), 2) + 100.0 * math.pow((x_next + math.pow(x,2)), 2)
+        return fitness*1.0
+
+    def DB_print(self, element, name):
+        print name
+        print "\tchromosome_x:\t\t",
+        print [str(x) for x in element.chromosome_x]
+        print "\tchromosome_sigma:\t",
+        print [str(s) for s in element.chromosome_sigma]
+        print "\tfitness:\t\t",
+        print element.fitness
+        print ""
 
 
     def __str__(self):
@@ -122,10 +157,15 @@ class Evolution(object):
 ## MAIN
 if __name__ == '__main__':
     ndims = 5
-    noffspring = 20
+    noffspring = 20 # lambda value
+#    noffspring = 3     
+
 
     evolution = Evolution(ndims, noffspring)
-    print evolution  
+    
+    evolution.run(limit=100)   
+    
+#    print evolution  
 
     # TODO  
     print "READY."
