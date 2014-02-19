@@ -43,6 +43,18 @@ print res
 print "\n"
 
 
+## if else list comprehension
+code = {} # set up a dict for some of the vals in line
+res = [code[i] if i in code else i  for i in line]
+# replace only matching chars in line, take the rest as is
+
+
+
+## join a list of characters
+line = "".join(['a','b','c'])
+print line
+
+
 ## print list columnwise / formats, etc
 print '%s' % '\n' .join( map( str, lst ))
 
@@ -81,14 +93,14 @@ res = next((i for i in lst if i == "bbb"), -1)
 
 
 ## dictionary
-dicto {'a':[1], 'b':[2,4], 'c':3}
+dic {'a':[1], 'b':[2,4], 'c':3}
 
 ## append elemnts
-dicto.append({'f':"bleble"})
+dic.update({'f':"bleble"})
 
 ## copy dict
 import copy
-dictocopy = copy.deepcopy( dicto )
+diccopy = copy.deepcopy( dic )
 
 
 
