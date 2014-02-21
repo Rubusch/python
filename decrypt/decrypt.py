@@ -10,19 +10,12 @@ import sys   # sys.argv[]
 from os import path   # path.isfile()
 
 
-## args - the filenmae
-def main(argv=sys.argv[1:]):
-    if 0 == len(argv) or not path.isfile(argv[0]):
-        print "usage: %s <path to .txt>" % sys.argv[0]
-        sys.exit(1)
-    filename = argv[0]
+def die(msg):
+    if 0 < len(msg): print msg
+    sys.exit(1)
 
-    ## set up dictionary
-    code = {}
 
-    ## 1. figure out main frequencies, then
-    ## 2. figure out missing letters more and more
-    ## 3. in case there are typos ;)
+def replacer(code):
     ## all lowercase
     code.update({'a':'X'})
     code.update({'b':'T'})
@@ -51,6 +44,46 @@ def main(argv=sys.argv[1:]):
     code.update({'y':'M'}) #?
 #    code.update({'z':''}) # not used
 
+
+def shifter(code, shift):
+    ## exercise 1.2
+    abc = "abcdefghijklmnopqrstuvwxyz"
+    ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+    if shift > len(ABC):
+        print shift,">",len(ABC)   
+        die("shift size too big")
+
+    ## cut of shift amount letters
+    ABC = ABC[shift:] + ABC[:shift]
+
+    ## set up dict
+    for cnt in range(len(abc)):
+        code.update({abc[cnt]:ABC[cnt]})
+
+
+## args - the filenmae
+def main(argv=sys.argv[1:]):
+    if 0 == len(argv) or not path.isfile(argv[0]):
+        die("usage: %s <path to .txt>" % sys.argv[0])
+    filename = argv[0]
+
+    shift=0
+    if 1 < len(argv):
+        shift = int(argv[1])
+
+    ## set up dictionary
+    code = {}
+
+    ## 1. figure out main frequencies, then
+    ## 2. figure out missing letters more and more
+    ## 3. in case there are typos ;)
+
+    ## exercise 1.1
+#    replacer(code)
+
+    ## exercise 1.2
+    shifter(code, shift)
 
     ## read text
     f=open(filename)
