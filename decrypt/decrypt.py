@@ -16,33 +16,62 @@ def die(msg):
 
 
 def replacer(code):
-    ## all lowercase
-    code.update({'a':'X'})
-    code.update({'b':'T'})
-    code.update({'c':'W'})
-    code.update({'d':'D'}) #?
-    code.update({'e':'V'}) #?
-    code.update({'f':'Q'})
-    code.update({'g':'Z'})
-    code.update({'h':'L'}) #?
-    code.update({'i':'S'}) #!
-    code.update({'j':'O'}) #!
-    code.update({'k':'N'})
-    code.update({'l':'B'}) #?
-    code.update({'m':'A'})
-    code.update({'n':'U'})
-    code.update({'o':'G'}) #?
-    code.update({'p':'H'}) #!
-    code.update({'q':'K'})
-    code.update({'r':'E'})
-    code.update({'s':'P'}) #?
-    code.update({'t':'Y'}) #?
-    code.update({'u':'R'}) #?
-    code.update({'v':'C'})
-    code.update({'w':'I'})
-    code.update({'x':'F'}) #!
-    code.update({'y':'M'}) #?
-#    code.update({'z':''}) # not used
+#    ## all lowercase, exercise 1.1
+#    code.update({'a':'X'})
+#    code.update({'b':'T'})
+#    code.update({'c':'W'})
+#    code.update({'d':'D'})
+#    code.update({'e':'V'})
+#    code.update({'f':'Q'})
+#    code.update({'g':'Z'})
+#    code.update({'h':'L'})
+#    code.update({'i':'S'})
+#    code.update({'j':'O'})
+#    code.update({'k':'N'})
+#    code.update({'l':'B'})
+#    code.update({'m':'A'})
+#    code.update({'n':'U'})
+#    code.update({'o':'G'})
+#    code.update({'p':'H'})
+#    code.update({'q':'K'})
+#    code.update({'r':'E'})
+#    code.update({'s':'P'})
+#    code.update({'t':'Y'})
+#    code.update({'u':'R'})
+#    code.update({'v':'C'})
+#    code.update({'w':'I'})
+#    code.update({'x':'F'})
+#    code.update({'y':'M'})
+##    code.update({'z':''}) # not used
+    
+    ## all lowercase, exercise 1.1
+    code.update({'a':'I'})
+#    code.update({'b':''})
+#    code.update({'c':''})
+#    code.update({'d':''})
+    code.update({'e':'Q'})
+    code.update({'f':'F'})
+    code.update({'g':'U'})
+#    code.update({'h':''})
+#    code.update({'i':''})
+    code.update({'j':'N'})
+    code.update({'k':'C'})
+    code.update({'l':'R'})
+#    code.update({'m':''})
+    code.update({'n':'V'})
+#    code.update({'o':''})
+#    code.update({'p':''})
+#    code.update({'q':''})
+    code.update({'r':'D'})
+    code.update({'s':'S'})
+    code.update({'t':'H'}) #?
+#    code.update({'u':''})
+#    code.update({'v':''})
+    code.update({'w':'A'})
+    code.update({'x':'P'})
+    code.update({'y':'E'})
+    code.update({'z':'T'})
+
 
 
 def shifter(code, shift):
@@ -83,7 +112,10 @@ def main(argv=sys.argv[1:]):
 #    replacer(code)
 
     ## exercise 1.2
-    shifter(code, shift)
+#    shifter(code, shift)
+
+    ## exercise 1.11
+    replacer(code)
 
     ## read text
     f=open(filename)
