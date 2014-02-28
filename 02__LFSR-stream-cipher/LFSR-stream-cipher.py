@@ -72,8 +72,10 @@ def initdict():
         alpha2bin.update({c:val})
         bin2alpha.update({"".join(val):c})
 
-## returns ciphertext
-def encrypt(binplaintext):
+
+## returns ciphertext or plaintext - since it is a symmetric cipher and works on
+## mod 2 the theoretic '-' and '+' operations are equal
+def encryptdecrypt(binplaintext):
     m = len(feedback_coefficients)
     m_idx = 0
     binciphertext=[]
@@ -83,10 +85,6 @@ def encrypt(binplaintext):
         m_idx+=1
     return binciphertext
 
-## returns plaintext
-def decrypt(binciphertext):
-    pass
-# TODO  
 
 ## printer function
 def print_alpha(binplaintext):
@@ -99,10 +97,13 @@ def print_alpha(binplaintext):
             print bin2alpha.get("".join(val))
             val=[]
 
+
 ## args - the filenmae
 def main(argv=sys.argv[1:]):
     ## check args
-    plaintext = "ABC"   
+#    plaintext = "ABC"   
+## or
+    plaintext = "TY4"   
     # TODO in case take plaintext as arg
 
     ## init dictionary
@@ -111,7 +112,7 @@ def main(argv=sys.argv[1:]):
     for c in plaintext:
         binplaintext += alpha2bin.get(c)
 
-    binciphertext = encrypt(binplaintext)
+    binciphertext = encryptdecrypt(binplaintext)
 
     print_alpha(binciphertext)  
 
