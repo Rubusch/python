@@ -21,8 +21,8 @@
 
 import sys
 
-IV = ['0' for i in range(80)]
-key = ['0' for i in range(80)]
+IV = ['0' for i in range(80)] # TODO, adjust e.g. by clock
+key = ['0' for i in range(80)] # TODO, adjust e.g. by clock as seed
 A = []
 B = []
 C = []
