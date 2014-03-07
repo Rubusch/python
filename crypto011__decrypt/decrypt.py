@@ -91,7 +91,7 @@ def shifter(code, shift):
         code.update({abc[cnt]:ABC[cnt]})
 
 
-## args - the filenmae
+## args - the filename
 def main(argv=sys.argv[1:]):
     if 0 == len(argv) or not path.isfile(argv[0]):
         die("usage: %s <path to .txt>" % sys.argv[0])
