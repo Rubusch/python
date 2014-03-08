@@ -10,6 +10,33 @@
 
 import sys   # sys.argv[]
 
+
+class FeistelNetwork():
+    def __init__(self):
+        pass
+
+    def _checklength(self, text, length):
+        if length != len(text):
+            die("wrong blocksize passed, %d needed, %d passed"%(length,len(text)))
+
+    def round_xor(self, left, right):
+        ## this step is NOT part of the f-function,
+        ## it applies the encrypted half similar to a 'key' by xor-ing
+        self._checklength(left, 32)
+        self._checklength(right, 32)
+        res = []
+        for idx in range(len(left)):
+            res += str(bin(int(left[idx]) ^ int(right[idx])))[2:]
+        return res
+
+    def round_join_and_switch(self, left, right):
+        ## this step is not part of the f-function,
+        ## it merges both halfs, and twists left and right
+        self._checklength(left,32)
+        self._checklength(right,32)
+        return right + left
+
+
 class FFunction():
     def __init__(self):
         self._ebox = [32, 1, 2, 3, 4, 5,
@@ -153,22 +180,6 @@ class FFunction():
         self._checklength(text,32)
         return [self._pick(text,pos) for pos in self._pbox]
 
-    def round_xor(self, left, right):
-        ## this step is NOT part of the f-function,
-        ## it applies the encrypted half similar to a 'key' by xor-ing
-        self._checklength(left, 32)
-        self._checklength(right, 32)
-        res = []
-        for idx in range(len(left)):
-            res += str(bin(int(left[idx]) ^ int(right[idx])))[2:]
-        return res
-
-    def round_join_and_switch(self, left, right):
-        ## this step is not part of the f-function,
-        ## it merges both halfs, and twists left and right
-        self._checklength(left,32)
-        self._checklength(right,32)
-        return right + left
 
 
 ### utils ###
@@ -218,6 +229,7 @@ def main():
 #    text = [0 for i in range(64)] ## all zeros
     text = [1 for i in range(64)] ## all ones
     ffunc = FFunction()
+    feistel = FeistelNetwork()
 
     print "initial:"
     printx(text)
@@ -240,11 +252,13 @@ def main():
     ## 5. permutation
     right_exp = ffunc.ppermute(right_exp)
 
+
+
     ## 6. merge left and right half
-    text = ffunc.round_xor(left_half, right_exp)
+    text = feistel.round_xor(left_half, right_exp)
 
     ## 7. switch halves
-    text = ffunc.round_join_and_switch(text, right_half)
+    text = feistel.round_join_and_switch(text, right_half)
     # TODO switch left and right half, loop
 
     ## print result
