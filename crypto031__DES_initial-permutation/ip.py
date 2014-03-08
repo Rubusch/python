@@ -5,6 +5,8 @@
 # @email: L.Rubusch@gmx.ch
 # @license: GPLv3
 # @2014-Mar-07
+#
+# initial phase of the DES algorithm, as also final phase
 
 import sys   # sys.argv[]
 
