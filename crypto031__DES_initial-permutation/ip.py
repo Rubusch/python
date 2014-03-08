@@ -37,11 +37,13 @@ class InitialPermutation():
     def _pick(self, text, position):
         return text[position-1]
 
-    def permute(self, text):
+    def initial_permute(self, text):
+        ## Note that both permutations do not increase the security of DES at all
         self._checklength(text)
         return [self._pick(text,pos) for pos in self._initial_permutation]
 
-    def inverse_permute(self, text):
+    def final_permute(self, text):
+        ## Note that both permutations do not increase the security of DES at all
         self._checklength(text)
         return [self._pick(text,pos) for pos in self._final_permutation]
 
@@ -73,12 +75,12 @@ def main():
     printo(text)
 
     ## permute
-    text = ip.permute(text)
+    text = ip.initial_permute(text)
     print "ip:"
     printo(text)
 
     ## reverse
-    text = ip.inverse_permute(text)
+    text = ip.final_permute(text)
     print "ip-rev:"
     printo(text)
 

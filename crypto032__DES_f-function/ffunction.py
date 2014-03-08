@@ -21,6 +21,26 @@ class FFunction():
                       24,25,26,27,28,29,
                       28,29,30,31,32, 1]
 
+        ## S-boxes design criteria:
+        ##
+        ## 1. each S-box has six input bits and four output bits
+        ## 2. no single output bit should be too close to a linear combination
+        ##    of the input bits
+        ## 3. if the lowest and the highest bits of the input are fixed and the
+        ##    four middle bits are varied, each of the possible 4-bit output
+        ##    values must occur exactly once
+        ## 4. if two inputs to an S-box differ in exactly one bit, their outputs
+        ##    must differ in at least two bits
+        ## 5. if two inputs to an S-box differ in the two middle bits, their
+        ##    outputs must differ in at least two bits
+        ## 6. if two inputs to an S-box differ in their first two bits and are
+        ##    identical in their last two bits, the two outputs must be
+        ##    different
+        ## 7. for any nonzero 6-bit difference between inputs, no more than 8 of
+        ##    the 32 pairs of inputs exhibiting that difference may result in
+        ##    the same output difference
+        ## 8. a collision (zero output difference) at the 32-bit output of the
+        ##    eight S-boxes is only possible for three adjacent S-boxes
         self._s1 = [[14, 4,13, 1, 2,15,11, 8, 3,10, 6,12, 5, 9, 0, 7],
                     [ 0,15, 7, 4,14, 2,13, 1,10, 6,12,11, 9, 5, 3, 8],
                     [ 4, 1,14, 8,13, 6, 2,11,15,12, 9, 7, 3,10, 5, 0],
@@ -73,15 +93,6 @@ class FFunction():
     def _pick(self, text, position):
         return text[position-1]
 
-    def split(self, text):
-        self._checklength(text,64)
-        return (text[:32],text[32:])
-
-    def expansion(self, text):
-        self._checklength(text,32)
-        ## expand 32bit to 48bit
-        return [self._pick(text,pos) for pos in self._ebox]
-
     def _sbox(self, text, sbox):
         self._checklength(text, 6)
         row = dec(str(text[0]) + str(text[5]))
@@ -89,7 +100,34 @@ class FFunction():
         val = bin(sbox[row][col] + 16)
         return str(val[3:]).upper()
 
+    def split(self, text):
+        ## in round i it takes the right half R[i-1] of the output of the
+        ## previous round and the current round key k[i] as input; the output of
+        ## the f-function is used as an XOR-mask for encrypting the left half
+        ## input bits L[i-1]
+        self._checklength(text,64)
+        return (text[:32],text[32:])
+
+    def expansion(self, text):
+        ## first, the 32-bit input is expanded to 48 bits by partitioning the
+        ## input into eight 4-bit blocks and by expanding each block to 6 bits
+        self._checklength(text,32)
+        ## expand 32bit to 48bit
+        return [self._pick(text,pos) for pos in self._ebox]
+
+    def roundkey(self, text):
+        ## next, the 48-bit result of the expansion is XORed with the round key
+        ## k[i], and the eight 6-bit blocks are fed into eight different
+        ## substitution boxes, which are often referred to as S-boxes
+        self._checklength(text,48)
+        # TODO, not implemented here, since key generation still missing
+        
+        return text
+
     def sbox(self, text):
+        ## the s-boxes are the core of DES in terms of cryptographic strength;
+        ## they are the only nonlinear element in the algorithm and provide
+        ## confusion
         self._checklength(text,48)
         ret = []
         ret.append( self._sbox(text[ 0: 6], self._s1) )
@@ -107,11 +145,17 @@ class FFunction():
         return result
 
     def ppermute(self, text):
-        ## P permutation
+        ## finally, the 32-bit output is permuted bitwise according to the
+        ## P permutation; unlike the initial IP and its inverse IP-1, the
+        ## permutation P introduces diffusion because the four output bits of
+        ## each S-box are permuted in such a way that they affect several
+        ## different S-boxes in the following round
         self._checklength(text,32)
         return [self._pick(text,pos) for pos in self._pbox]
 
-    def xor(self, left, right):
+    def round_xor(self, left, right):
+        ## this step is NOT part of the f-function,
+        ## it applies the encrypted half similar to a 'key' by xor-ing
         self._checklength(left, 32)
         self._checklength(right, 32)
         res = []
@@ -119,6 +163,12 @@ class FFunction():
             res += str(bin(int(left[idx]) ^ int(right[idx])))[2:]
         return res
 
+    def round_join_and_switch(self, left, right):
+        ## this step is not part of the f-function,
+        ## it merges both halfs, and twists left and right
+        self._checklength(left,32)
+        self._checklength(right,32)
+        return right + left
 
 
 ### utils ###
@@ -165,8 +215,14 @@ def printhexlist(binlist):
 ### main ###
 def main():
     ## init
-    text = [1 for i in range(64)]
+#    text = [0 for i in range(64)] ## all zeros
+    text = [1 for i in range(64)] ## all ones
     ffunc = FFunction()
+
+    print "initial:"
+    printx(text)
+    print "HEX:"
+    printhexlist(text)
 
     ## DES loops the following steps
     ## 1. split
@@ -176,7 +232,7 @@ def main():
     right_exp = ffunc.expansion(right_half)
 
     ## 3. key
-    # TODO key schedule
+    right_exp = ffunc.roundkey(right_exp)
 
     ## 4. s-boxes
     right_exp = ffunc.sbox(right_exp)
@@ -184,14 +240,18 @@ def main():
     ## 5. permutation
     right_exp = ffunc.ppermute(right_exp)
 
-    ## 6. XOR left half to the right half
-    text = ffunc.xor(left_half, right_exp)
+    ## 6. merge left and right half
+    text = ffunc.round_xor(left_half, right_exp)
 
     ## 7. switch halves
+    text = ffunc.round_join_and_switch(text, right_half)
     # TODO switch left and right half, loop
 
-
     ## print result
+    print "\n"
+    print "result:"
+    printx(text)
+    print "HEX:"
     printhexlist(text)
 
 
