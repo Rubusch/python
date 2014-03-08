@@ -187,7 +187,20 @@ def die(msg):
     if 0 < len(msg): print msg
     sys.exit(1)
 
+def dec(binstr):
+    ## generate decimal value from binary string
+    val = 0
+    for idx in reversed(range(len(binstr))):
+        potence = 0
+        if '1' == binstr[idx]:
+            potence = 1
+            for i in range(len(binstr)-1-idx):
+                potence *= 2
+        val += potence
+    return val
+
 def printx(text, cols=8):
+    ## print in columns
     for idx in range(len(text)):
         if 0 == idx%cols:
             if idx != 0:
@@ -198,18 +211,9 @@ def printx(text, cols=8):
             print "%s "%text[idx],
     print "\n"
 
-def dec(string):
-    val = 0
-    for idx in reversed(range(len(string))):
-        potence = 0
-        if '1' == string[idx]:
-            potence = 1
-            for i in range(len(string)-1-idx):
-                potence *= 2
-        val += potence
-    return val
 
 def printhexlist(binlist):
+    ## print binary value list, as hex values
     elem = ""
     vals = []
     for idx in range(len(binlist)):
