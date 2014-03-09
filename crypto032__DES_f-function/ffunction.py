@@ -29,7 +29,7 @@ class FeistelNetwork():
             res += str(bin(int(left[idx]) ^ int(right[idx])))[2:]
         return res
 
-    def round_join_and_switch(self, left, right):
+    def round_merge_and_switch(self, left, right):
         ## this step is not part of the f-function,
         ## it merges both halfs, and twists left and right
         self._checklength(left,32)
@@ -262,7 +262,7 @@ def main():
     text = feistel.round_xor(left_half, right_exp)
 
     ## 7. switch halves
-    text = feistel.round_join_and_switch(text, right_half)
+    text = feistel.round_merge_and_switch(text, right_half)
     # TODO switch left and right half, loop
 
     ## print result
