@@ -214,8 +214,9 @@ def main():
 #    inputkey = [1 for i in range(64)] # all ones -> not useful
     inputkey = [0 for i in range(64)] # all zeros -> not useful
 #    inputkey = range(1,65) # incrementing numbers, DEBUG
-    for idx in range(16): inputkey[idx] = 1 # some ones
-#    inputkey[0] = 1 # a single one
+
+#    for idx in range(16): inputkey[idx] = 1 # some ones
+    inputkey[0] = 1 # a single one at position 0
 
     keyschedule = KeySchedule(inputkey)
 
@@ -227,16 +228,22 @@ def main():
     for idx in range(16):
         print "round %d:"%(1+idx)
 
+        ## encryption
         keyidx = idx
-        print "encrypt [keyidx %.2d]: 0x"%(keyidx),
+        print "encrypt [keyidx %.2d]:"%(keyidx)
         key = keyschedule.get_encrypt_key(idx)
-#        printx(key) # print binary
+#       printx(key,6) # print binary
+
+        print "    0x",
         printhexlist(key) # print hex
 
+        ## decryption
         keyidx = 15 - idx
-        print "decrypt [keyidx %.2d]: 0x"%(keyidx),
+        print "decrypt [keyidx %.2d]: 0x"%(keyidx)
         key = keyschedule.get_decrypt_key(15 - idx)
-#        printx(key) # print binary
+#        printx(key,6) # print binary
+
+        print "    0x",
         printhexlist(key) # print hex
 
         print ""
