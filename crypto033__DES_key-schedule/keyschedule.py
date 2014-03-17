@@ -169,7 +169,7 @@ def die(msg):
     if 0 < len(msg): print msg
     sys.exit(1)
 
-def dec(binstr):
+def bin2dec(binstr):
     ## generate decimal value from binary string
     val = 0
     for idx in reversed(range(len(binstr))):
@@ -199,10 +199,10 @@ def printhexlist(binlist):
     vals = []
     for idx in range(len(binlist)):
         if 0 == idx%4 and idx != 0:
-            vals.append( dec(elem) )
+            vals.append( bin2dec(elem) )
             elem = ""
         elem += str(binlist[idx])
-    vals.append(dec(elem))
+    vals.append(bin2dec(elem))
     res = [str(hex(v)).upper()[2:] for v in vals]
     print "%s"%" ".join(map(str,res))
 

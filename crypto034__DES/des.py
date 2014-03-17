@@ -19,7 +19,7 @@ def die(msg):
     if 0 < len(msg): print msg
     sys.exit(1)
 
-def dec(binstr):
+def bin2dec(binstr):
     ## generate decimal value from binary string
     val = 0
     for idx in reversed(range(len(binstr))):
@@ -50,10 +50,10 @@ def printhexlist(binlist):
     vals = []
     for idx in range(len(binlist)):
         if 0 == idx%4 and idx != 0:
-            vals.append( dec(elem) )
+            vals.append( bin2dec(elem) )
             elem = ""
         elem += str(binlist[idx])
-    vals.append(dec(elem))
+    vals.append(bin2dec(elem))
     res = [str(hex(v)).upper()[2:] for v in vals]
     print "%s"%" ".join(map(str,res))
 
@@ -360,8 +360,8 @@ class FFunction():
 
     def _sbox(self, text, sbox):
         self._checklength(text, 6)
-        row = dec(str(text[0]) + str(text[5]))
-        col = dec(str(text[1]) + str(text[2]) + str(text[3]) + str(text[4]))
+        row = bin2dec(str(text[0]) + str(text[5]))
+        col = bin2dec(str(text[1]) + str(text[2]) + str(text[3]) + str(text[4]))
         val = bin(sbox[row][col] + 16)
         return str(val[3:]).upper()
 
@@ -509,15 +509,18 @@ class DES():
 ### main ###
 def main():
     ## init
-
+    blocksize = 64
+    keysize_with_parity = 64
     ## some raw input key
-    inputkey = [0 for i in range(64)] # all zeros
+    inputkey = [0 for i in range(keysize_with_parity)] # all zeros
     for idx in range(16): inputkey[idx] = 1 # some ones
+
+    ## init the DES
     des = DES(inputkey)
 
     ## some input text
-    text = [0 for i in range(64)] ## all zeros
-#    text[0] = 1 # set one
+    text = [0 for i in range(blocksize)] ## all zeros
+    text[0] = 1 # set one
 
     print "initial:"
     printx(text)
