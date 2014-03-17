@@ -213,10 +213,8 @@ def main():
     ## init
 #    inputkey = [1 for i in range(64)] # all ones -> not useful
     inputkey = [0 for i in range(64)] # all zeros -> not useful
-#    inputkey = range(1,65) # incrementing numbers, DEBUG
-
-#    for idx in range(16): inputkey[idx] = 1 # some ones
-    inputkey[0] = 1 # a single one at position 0
+    for idx in range(32): inputkey[idx] = 1 # some ones
+#    inputkey[0] = 1 # a single 1 at position 0
 
     keyschedule = KeySchedule(inputkey)
 
