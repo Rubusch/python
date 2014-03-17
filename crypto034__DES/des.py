@@ -11,6 +11,10 @@
 # weak against exhaustive key search attacks with just 56-bit keylength;
 # further the origin and specific design of the S-boxes is not fully published,
 # thus there might still be a chance to contain backdoors by designers
+#
+# this implementation is working on strings, which makes it easier readable or
+# better to experience the algorithm, a better implementation would be to code
+# it with hex numbers and bit operations directly
 
 import sys   # sys.exit()
 
