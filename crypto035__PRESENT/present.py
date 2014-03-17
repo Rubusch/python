@@ -48,20 +48,47 @@ def printhexlist(binlist):
     vals = []
     for idx in range(len(binlist)):
         if 0 == idx%4 and idx != 0:
-            vals.append( dec(elem) )
+            vals.append( bin2dec(elem) )
             elem = ""
         elem += str(binlist[idx])
-    vals.append(dec(elem))
+    vals.append(bin2dec(elem))
     res = [str(hex(v)).upper()[2:] for v in vals]
     print "%s"%" ".join(map(str,res))
 
 
 class Present:
     def __init__(self, inputkey):
+        self._sbox = [12, 5, 6, 11, 9, 0, 10, 13, 3, 14, 15, 8, 4, 7, 1, 2]
+
+        self._permutation = [ 0,16,32,48, 1,17,33,49, 2,18,34,50, 3,19,35,51,
+                              4,20,36,52, 5,21,37,53, 6,22,38,54, 7,23,39,55,
+                              8,24,40,56, 9,25,41,57,10,26,42,58,11,27,43,59,
+                             12,28,44,60,13,29,45,61,14,30,46,62,15,31,47,63]
+
+    ## algorithm steps
+    def _addRoundKey(self):
         pass
 
-    def encrypt(self, plaintext):
+    def _sBoxLayer(self):
         pass
+
+    def _pLayer(self):
+        pass
+
+
+    ## key schedule
+    def _keyRegister(self):
+        pass
+
+    def _keyUpdate(self):
+        pass
+
+
+    ## public interface
+    def encrypt(self, plaintext):
+        for i in range(1,32):
+            print "XXX ", plaintext  
+
 
     def decrypt(self, ciphertext):
         pass
@@ -89,6 +116,8 @@ def main():
     printhexlist(text)
 
     text = present.encrypt(text)
+
+    die("STOP")   
 
     ## print result
     print "\n"
