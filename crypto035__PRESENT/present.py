@@ -13,6 +13,10 @@
 #
 # PRESENT exists as PRESENT-80 or -128 with corresponding key length
 # PRESENT is based on a substitution-permutation-network
+#
+# PRESENT algorithm authors
+# Copyright (c) 2008 Christophe Oosterlynck (christophe.oosterlynck@gmail.com)
+#         Philippe Teuwen (philippe.teuwen@nxp.com)
 
 import sys   # sys.argv[]
 
