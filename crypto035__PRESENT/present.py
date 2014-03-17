@@ -57,8 +57,15 @@ def printhexlist(binlist):
 
 
 class Present:
-    def __init__(self):
+    def __init__(self, inputkey):
         pass
+
+    def encrypt(self, plaintext):
+        pass
+
+    def decrypt(self, ciphertext):
+        pass
+
 
 ### main ###
 def main():
@@ -81,7 +88,7 @@ def main():
     printx(text)
     printhexlist(text)
 
-    text = des.encrypt(text)
+    text = present.encrypt(text)
 
     ## print result
     print "\n"
@@ -90,7 +97,7 @@ def main():
     printhexlist(text)
 
     ## decrypt
-    text = des.decrypt(text)
+    text = present.decrypt(text)
 
     ## print result
     print "\n"

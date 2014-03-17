@@ -441,9 +441,9 @@ class DES():
 
         self._feistel = FeistelNetwork()
 
-    def encrypt(self, text):
+    def encrypt(self, plaintext):
         ## initial permutation
-        text = self._ip.initial_permutation(text)
+        text = self._ip.initial_permutation(plaintext)
 
         ## F-function
         for idx in range(16):
@@ -472,9 +472,9 @@ class DES():
         ## revert permutation
         return self._ip.final_permutation(text)
 
-    def decrypt(self, text):
+    def decrypt(self, ciphertext):
         ## initial permutation
-        text = self._ip.initial_permutation(text)
+        text = self._ip.initial_permutation(ciphertext)
 
         ## F-function
         for idx in range(16):
