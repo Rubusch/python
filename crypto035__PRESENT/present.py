@@ -21,77 +21,8 @@ def die(msg):
     if 0 < len(msg): print msg
     sys.exit(1)
 
-def bin2dec(binstr):
-    ## generate decimal value from binary string
-    val = 0
-    for idx in reversed(range(len(binstr))):
-        potence = 0
-        if '1' == binstr[idx]:
-            potence = 1
-            for i in range(len(binstr)-1-idx):
-                potence *= 2
-        val += potence
-    return val
-
-def dec2bin(dec, bits=8):
-    ## generate bin from decimal value, return a list of bits length
-    if dec > 2**bits-1: die("ERROR: dec2bin, dec is too big for number of bits")
-    binlst = []
-    dec = int(dec)
-    for exp in reversed(range(bits)):
-        subt = 2 ** exp
-        if subt <= dec:
-            dec-=subt
-            binlst.append(1)
-        else:
-            binlst.append(0)
-    return binlst
-
-def printx(text, cols=8):
-    ## print in columns
-    for idx in range(len(text)):
-        if 0 == idx%cols:
-            if idx != 0:
-                print ""
-        if int(text[idx]) < 10:
-            print " %s "%text[idx],
-        else:
-            print "%s "%text[idx],
-    print "\n"
-
-def printhexlist(binlist):
-    ## print binary value list, as hex values
-    elem = ""
-    vals = []
-    for idx in range(len(binlist)):
-        if 0 == idx%4 and idx != 0:
-            vals.append( bin2dec(elem) )
-            elem = ""
-        elem += str(binlist[idx])
-    vals.append(bin2dec(elem))
-    res = [str(hex(v)).upper()[2:] for v in vals]
-    print "%s"%" ".join(map(str,res))
-
-
 class Present:
     def __init__(self, inputkey):
-        
-        # self._sbox = [[1,1,0,0], # 12
-        #               [0,1,0,1], #  5
-        #               [0,1,1,0], #  6
-        #               [1,0,1,1], # 11
-        #               [1,0,0,1], #  9
-        #               [0,0,0,0], #  0
-        #               [1,0,1,0], # 10
-        #               [1,1,0,1], # 13
-        #               [0,0,1,1], #  3
-        #               [1,1,1,0], # 14
-        #               [1,1,1,1], # 15
-        #               [1,0,0,0], #  8
-        #               [0,1,0,0], #  4
-        #               [0,1,1,1], #  7
-        #               [0,0,0,1], #  1
-        #               [0,0,1,0]] #  2
         self._sbox = [0xc,0x5,0x6,0xb,0x9,0x0,0xa,0xd,0x3,0xe,0xf,0x8,0x4,0x7,0x1,0x2]
         self._sbox_inv = [self._sbox.index(i) for i in xrange(len(self._sbox))]
 
@@ -117,72 +48,61 @@ class Present:
 
     ## algorithm steps
     def _generateRoundkeys80(self, inputkey):
-
-        print "%#x" % inputkey
-
-#        self._checklength(inputkey, 80)
         key = inputkey
         for idx in xrange(1,32):
             ## cut out first 64 bit as round key
-#            self._roundkeys.append(key[:64]) 
             self._roundkeys.append(key >> 16)
 
             ## left shift by 61 bit
-#            key = key[61:] + key[:61] 
             key = ((key & (2**19-1))<<61) + (key>>19)
 
             ## S(key[0])
-#            key[0:4] = self._sBox(key[0:4]) 
             key = (self._sbox[key >> 76]  << 76) + (key & (2**76-1))
+
             ## key[60:65] XOR roundCounter
-#            key[60:65] = self._xor(key[60:65], dec2bin(idx,5)) 
             key ^= idx << 15
 
-# TODO  
     def _generateRoundkeys128(self, inputkeys):
         self._checklength(inputkey, 128)
         key = inputkey
         for idx in xrange(1,32):
             ## cut out first 64 bit as round key
-#            self._roundkeys.append(key[:64]) 
-            self._roundkeys.append(key >> 64)    
+            self._roundkeys.append(key >> 64)
 
             ## left shift by 61 bit
-#            key = key[61:] + key[:61] 
             key = ((key & (2**67-1))<<61) + (key>>67)
 
             ## S(key[0])
-#            key[0:4] = self._sBox(key[0:4]) 
             key = (self._sbox[key >> 124]  << 124) + (self._sbox[(key>>120) & 0xf] << 120) + (key & (2**120-1))
             ## key[60:65] XOR roundCounter
-#            key[60:65] = self._xor(key[60:65], dec2bin(idx,5)) 
             key ^= idx << 62
 
-
     def _addRoundKey(self, state, key):
-        self._checklength(state, len(key))
-        return [int(state[idx])^int(key[idx]) for idx in range(len(key))]
+        return state ^ key
 
     def _sBoxLayer(self, state):
-        self._checklength(state, 64)
-        for idx in range(16):
-            state[idx*4:idx*4+4] = self._sBox(state[idx*4:idx*4+4])
-        return state
+        ret = 0
+        for idx in xrange(16):
+            ret += self._sbox[(state >> (idx*4)) & 0xf] << (idx*4)
+        return ret
 
-    def sBoxLayer_dec(self, state):
-        
-        pass
+    def _sBoxLayer_dec(self, state):
+        ret = 0
+        for idx in xrange(16):
+            ret += self._sbox_inv[(state >> (idx*4)) & 0xf] << (idx*4)
+        return ret
 
     def _pLayer(self, state):
-        self._checklength(state, 64)
-        ret = [0 for i in range(64)]
-        for idx in range(len(state)):
-            ret[self._permutation[idx]] = state[idx]
+        ret = 0
+        for idx in xrange(64):
+            ret += ((state >> (idx)) & 0x1) << self._permutation[idx]
         return ret
 
     def _pLayer_dec(self, state):
-        
-        pass
+        ret = 0
+        for idx in xrange(64):
+            ret += ((state >> (idx)) & 0x1) << self._permutation_inv[idx]
+        return ret
 
     ## S-box tools
     def _sBox(self, fourbit):
@@ -191,32 +111,31 @@ class Present:
 
     ## public interface
     def encrypt(self, plaintext):
-        self._checklength( plaintext, 64) # check for blocksize
-        state = [i for i in plaintext]
-        for idx in range(31):
+        ## takes plaintext as string - just demonstrated with one block, to
+        ## avoid padding issues
+        ##
+        ## string to number
+        state = int(plaintext.encode('hex'),16) &0xffffffffffffffff
 
-#            key = self._roundkeys[idx]
-#            state = self._addRoundKey(state, key)
-
+        for idx in range(31-1):
+            state = self._addRoundKey(state, self._roundkeys[idx])
             state = self._sBoxLayer(state)
             state = self._pLayer(state)
+        ## last key
+        state = self._addRoundKey(state, self._roundkeys[-1])
         return state
 
     def decrypt(self, ciphertext):
-        self._checklength( ciphertext, 64) # check for blocksize
-        state = [i for i in ciphertext]
-        for idx in reversed(range(31)):
-#            print idx
-
-#            key = self._roundkeys[idx]
-#            state = self._addRoundKey(state, key)
-
+        state = ciphertext
+        for idx in xrange(31-1):
+            state = self._addRoundKey(state, self._roundkeys[-idx-1])
             state = self._pLayer_dec(state)
-
-            die("STOP")   
-
             state = self._sBoxLayer_dec(state)
-        return state
+        state = self._addRoundKey(state, self._roundkeys[0])
+
+        string = "%0*x" % (8,state)
+        ret = string.decode('hex')
+        return ret
 
 ### main ###
 def main():
@@ -224,55 +143,31 @@ def main():
     blocksize = 64
     keysize = 80
     ## some raw input key
-#    inputkey = [0 for i in range(keysize)] # all zeros
     inputkey = 0xbbbb55555555eeeeffff
-
-    
-    # inputkey = [1,0,1,1, 1,0,1,1, 1,0,1,1, 1,0,1,1,
-    #             0,1,0,1, 0,1,0,1, 0,1,0,1, 0,1,0,1,
-    #             0,1,0,1, 0,1,0,1, 0,1,0,1, 0,1,0,1,
-    #             1,1,1,0, 1,1,1,0, 1,1,1,0, 1,1,1,0,
-    #             1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1]
-    # printhexlist(inputkey)  
-    
-#    for idx in range(40): inputkey[idx] = 1 # some ones
-#    inputkey[0] = 1 # just set one 1
     print "initial key:"
-    print "%#x" % inputkey
-#    printhexlist(inputkey) 
+    print "%#x\n" % inputkey
 
     ## init the PRESENT-80
     present = Present(inputkey)
 
-    die("STOP")
-
     ## some input text
-#    text = [0 for i in range(blocksize)] ## all zeros
-#    text[0] = 1 # set one
-    text = 0x8000000000000000
+    text = "Angelina"
 
     print "plaintext:"
-    print "%#x" % text
-#    printx(text)
-#    printhexlist(text)
+    print "%s\n" % text
 
     text = present.encrypt(text)
 
     ## print result
-    print "\n"
     print "encrypted:"
-#    printx(text)
-    printhexlist(text)
+    print "%#x\n" % text
 
     ## decrypt
     text = present.decrypt(text)
 
     ## print result
-    print "\n"
     print "decrypted:"
-    printx(text)
-    printhexlist(text)
-
+    print "%s\n" % text
 
 ### start ###
 if __name__ == '__main__':
