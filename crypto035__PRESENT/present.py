@@ -143,10 +143,7 @@ class Present:
 
 ### main ###
 def main():
-    ## init
-    blocksize = 64
-    keysize = 80
-    ## some raw input key
+    ## init some raw input key
     inputkey = 0xbbbb55555555eeeeffff
     print "initial key:"
     print "%#x\n" % inputkey
@@ -154,24 +151,35 @@ def main():
     ## init the PRESENT-80
     present = Present(inputkey)
 
-    ## some input text
-    text = "Angelina"
-
+    ## init some input text
+    plaintext = "jack and jill went up the hill to fetch a pail of water"
     print "plaintext:"
-    print "%s\n" % text
+    print "%s\n" % plaintext
 
-    text = present.encrypt(text)
+    ciphertext = []
+    blocktext = ""
+    for idx in range(len(plaintext)-1):
+        blocktext += plaintext[idx]
+        if idx%8 == 0:
+            ciphertext.append(present.encrypt(blocktext))
+            blocktext = ""
+    blocktext += plaintext[idx+1]
+    ciphertext.append(present.encrypt(blocktext))
 
     ## print result
     print "encrypted:"
-    print "%#x\n" % text
+    for item in ciphertext:
+        print "%#x"%item,
+    print "\n"
 
     ## decrypt
-    text = present.decrypt(text)
+    decryptedtext = ""
+    for block in ciphertext:
+        decryptedtext += present.decrypt(block)
 
     ## print result
     print "decrypted:"
-    print "%s\n" % text
+    print "%s\n" % decryptedtext
 
 ### start ###
 if __name__ == '__main__':

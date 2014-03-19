@@ -18,6 +18,8 @@
 # key is 80 times '0'
 #
 
+# TODO decryption
+# TODO work with real bit operations
 
 import sys
 

@@ -16,6 +16,9 @@
 # better to experience the algorithm, a better implementation would be to code
 # it with hex numbers and bit operations directly
 
+# TODO implement real bitoperations
+# TODO implement blockwise en/decryption
+
 import sys   # sys.exit()
 
 ### utils ###
