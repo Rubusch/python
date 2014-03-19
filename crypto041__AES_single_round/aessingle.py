@@ -32,6 +32,8 @@ class AES:
 
 ### main ###
 def main():
+    blocksize = 128
+
     ## init some raw input key
     inputkey = 0xffffffffffffffff
     print "initial key:"
@@ -49,7 +51,7 @@ def main():
     blocktext = ""
     for idx in range(len(plaintext)-1):
         blocktext += plaintext[idx]
-        if idx%8 == 0:
+        if idx % (blocksize/8) == 0:
             ciphertext.append(aes.encrypt(blocktext))
             blocktext = ""
     blocktext += plaintext[idx+1]

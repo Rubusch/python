@@ -143,12 +143,14 @@ class Present:
 
 ### main ###
 def main():
+    blocksize = 64
+
     ## init some raw input key
     inputkey = 0xbbbb55555555eeeeffff
     print "initial key:"
     print "%#x\n" % inputkey
 
-    ## init the PRESENT-80
+    ## init the algorithm
     present = Present(inputkey)
 
     ## init some input text
@@ -160,7 +162,7 @@ def main():
     blocktext = ""
     for idx in range(len(plaintext)-1):
         blocktext += plaintext[idx]
-        if idx%8 == 0:
+        if idx % (blocksize/8) == 0:
             ciphertext.append(present.encrypt(blocktext))
             blocktext = ""
     blocktext += plaintext[idx+1]
@@ -169,7 +171,7 @@ def main():
     ## print result
     print "encrypted:"
     for item in ciphertext:
-        print "%#x"%item,
+        print "%#x"%item
     print "\n"
 
     ## decrypt
