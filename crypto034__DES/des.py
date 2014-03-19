@@ -515,13 +515,15 @@ class DES():
 # TODO use this frontend for all further crypto algorithms...     
 # ### main ###
 # def main():
+#     blocksize = 64
+
 #     ## init some raw input key
-#     inputkey = 0xffffffffffffffff
+#     inputkey = 0xbbbb55555555eeeeffff
 #     print "initial key:"
 #     print "%#x\n" % inputkey
 
 #     ## init the algorithm
-#     aes = AES(inputkey)
+#     present = Present(inputkey)
 
 #     ## init some input text
 #     plaintext = "jack and jill went up the hill to fetch a pail of water"
@@ -532,22 +534,22 @@ class DES():
 #     blocktext = ""
 #     for idx in range(len(plaintext)-1):
 #         blocktext += plaintext[idx]
-#         if idx%8 == 0:
-#             ciphertext.append(aes.encrypt(blocktext))
+#         if idx % (blocksize/8) == 0:
+#             ciphertext.append(present.encrypt(blocktext))
 #             blocktext = ""
 #     blocktext += plaintext[idx+1]
-#     ciphertext.append(aes.encrypt(blocktext))
+#     ciphertext.append(present.encrypt(blocktext))
 
 #     ## print result
 #     print "encrypted:"
 #     for item in ciphertext:
-#         print "%#x"%item,
+#         print "%#x"%item
 #     print "\n"
 
 #     ## decrypt
 #     decryptedtext = ""
 #     for block in ciphertext:
-#         decryptedtext += aes.decrypt(block)
+#         decryptedtext += present.decrypt(block)
 
 #     ## print result
 #     print "decrypted:"
