@@ -17,6 +17,16 @@ def die(msg):
     if 0 < len(msg): print msg
     sys.exit(1)
 
+def DEBUG_print_box(box, name):
+    print "DEBUG - print %s:"%name
+    for row in range(16):
+        for col in range(16):
+            print "%#x " % box[row][col],
+        print ""
+    print "/DEBUG"
+
+
+
 
 class AES:
     def __init__(self, inputkey):
@@ -37,26 +47,64 @@ class AES:
                       [0xe1, 0xf8, 0x98, 0x11, 0x69, 0xd9, 0x8e, 0x94, 0x9b, 0x1e, 0x87, 0xe9, 0xce, 0x55, 0x28, 0xdf],
                       [0x8c, 0xa1, 0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0, 0x54, 0xbb, 0x16]]
 
-        self._sbox_inv = []
-        # TODO construct _sbox_inv from _sbox
+#        DEBUG_print_box(self._sbox, "sbox")  
+        self._sbox_inv = self._invert_box(self._sbox)
+#        DEBUG_print_box(self._sbox_inv, "sbox_inv")  
 
     ## utilities
-    def _sbox_set(self, idx, val):
-        ## use for invert the s-box
-        pass
+    def _invert_box(self, box):
+        box_inv = []
+        for val in range(len(box)*len(box[0])):
+            row = 0
+            col = 0
+            for row in range(len(box)):
+                try:
+                    col = box[row].index(val)
+                    break
+                except ValueError:
+                    next
+            ## invert row, col and value
+            val_inv = row
+            val_inv = (val_inv<<4)|col
+            row_inv = val&0xf
+            col_inv = (val<<4)&0xf
+            if 0 == col_inv: box_inv.append([])
+            box_inv[row_inv].append(val_inv)
+        return box_inv
+
+    # def _sbox_set(self, sbox, idx, val):
+    #     col = (idx & 0xf)
+    #     print "x col '%d' - '%#x'"%(col,col) 
+    #     row = (idx >> 4) & 0xf
+    #     print "x row '%d' - '%#x'"%(row,row) 
+    #     sbox[row][col] = val
+
+    #     print "XXX col '%d'" % col 
+    #     print "xxx row '%d'" % row 
+
+    #     ## use for invert the s-box
+        
+
+    #     die("OK")  
+
 
     def _sbox_get(self, idx):
-        print "input: %#x" % idx   
+#        print "input: %#x" % idx   
         col = (idx & 0xf)
-        print "XXX col: %#x"%col  
+#        print "XXX col: %#x"%col  
         row = (idx >> 4) & 0xf
-        print "XXX row: %#x"%row  
+#        print "XXX row: %#x"%row  
         ret = self._sbox[row][col]
-        print "XXX ret: %#x"%ret  
+#        print "XXX ret: %#x"%ret  
+        return ret
 
 
-    def _byte_substitution_layer(self):
-        pass
+    def _byte_substitution_layer(self, state, blocklen):
+         ret = 0x0
+         for idx in range(blocklen):
+             ret = (ret << 8) | (self._sbox_get((state >> 8*(blocklen-idx-1)) & 0xff))
+         return ret
+
 
     def _diffusion_layer__shift_rows(self):
         pass
@@ -71,11 +119,12 @@ class AES:
         blocklen = len(plaintext)
         state = int(plaintext.encode('hex'),16) & 0xffffffffffffffffffffffffffffffff
         
-        print "blocklen: %d" % blocklen   
-        for idx in range(blocklen):
-            print "idx %d" % idx   
-            self._sbox_get((state >> 8*(blocklen-idx-1)) & 0xff)
+#        print state     
+        ret = self._byte_substitution_layer(state, blocklen)
+        print "%#x"%ret  
 
+        
+#        self._sbox_set(0xc9,0)   
         
         die("STOP")     
         
