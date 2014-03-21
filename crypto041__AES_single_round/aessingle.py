@@ -36,10 +36,49 @@ class AES:
                       [0x70, 0x3e, 0xb5, 0x66, 0x48, 0x03, 0xf6, 0x0e, 0x61, 0x35, 0x57, 0xb9, 0x86, 0xc1, 0x1d, 0x9e],
                       [0xe1, 0xf8, 0x98, 0x11, 0x69, 0xd9, 0x8e, 0x94, 0x9b, 0x1e, 0x87, 0xe9, 0xce, 0x55, 0x28, 0xdf],
                       [0x8c, 0xa1, 0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0, 0x54, 0xbb, 0x16]]
+
+        self._sbox_inv = []
+        # TODO construct _sbox_inv from _sbox
+
+    ## utilities
+    def _sbox_set(self, idx, val):
+        ## use for invert the s-box
+        pass
+
+    def _sbox_get(self, idx):
+        print "input: %#x" % idx   
+        col = (idx & 0xf)
+        print "XXX col: %#x"%col  
+        row = (idx >> 4) & 0xf
+        print "XXX row: %#x"%row  
+        ret = self._sbox[row][col]
+        print "XXX ret: %#x"%ret  
+
+
+    def _byte_substitution_layer(self):
+        pass
+
+    def _diffusion_layer__shift_rows(self):
+        pass
+
+    def _diffusion_layer__mix_column(self):
         pass
 
     def encrypt(self, plaintext):
-        pass
+        
+        plaintext = "abc"    
+        
+        blocklen = len(plaintext)
+        state = int(plaintext.encode('hex'),16) & 0xffffffffffffffffffffffffffffffff
+        
+        print "blocklen: %d" % blocklen   
+        for idx in range(blocklen):
+            print "idx %d" % idx   
+            self._sbox_get((state >> 8*(blocklen-idx-1)) & 0xff)
+
+        
+        die("STOP")     
+        
 
     def decrypt(self, ciphertext):
         pass
