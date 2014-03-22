@@ -110,12 +110,7 @@ class AES:
     def _hexlst_append(self, hexlst, val):
         ## appends an 8-bit hex val to a hex list (a number) of such values
         ## and returns it
-        print "append val %#x" % val 
-        print "append hexlst %#x, before" % hexlst 
-        hexlst = ((hexlst << 8)|val)
-        print "append hexlst %#x, after" % hexlst 
-        return hexlst  
-#        return ((hexlst << 8)|val)
+        return ((hexlst << 8)|val)
 
     def _sbox_get(self, idx):
         ## splits an 8-bit hex into two 4-bit, the col and row sbox index
@@ -145,7 +140,7 @@ class AES:
             hexlst = self._hexlst_append(hexlst, self._hexlst_getnth(state, self._shift_rows[idx]))
 #            print "XXX %#x" % val  
 
-        print "XXX %#x"%state  
+        print "XXX %#x"%hexlst  
         die("CCC") 
         return state
 
