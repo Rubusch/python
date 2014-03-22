@@ -34,20 +34,8 @@ class AES:
         self._blocksize = 128
 
         ## key schedule
-        if inputkey > 0xffffffffffffffffffffffffffffffffffffffffffffffff:
-            ## 256 bit - bigger than 192 bit
-            self._rounds = 14
-
-        elif inputkey <= 0xffffffffffffffffffffffffffffffff:
-            ## 128 bit - smaller or equal than 128 bit
-            self._rounds = 10
-        else:
-            ## 192 bit - bigger than 128 bit and smaller than 256 bit
-            self._rounds = 12
-
-        ## TODO
-        self._inputkey = inputkey  
-#        self._init_keys(inputkey)
+        self._rounds = 0
+        self._keys = self._key_schedule(inputkey)
 
         ## S-box
         self._sbox = [[0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67, 0x2b, 0xfe, 0xd7, 0xab, 0x76],
@@ -81,6 +69,27 @@ class AES:
                                            [3,1,1,2]]
         # TODO invert _mix_columns__const_matrix  
 
+    def _key_schedule(self, inputkey):
+        keys = []
+        if inputkey > 0xffffffffffffffffffffffffffffffffffffffffffffffff:
+            ## 256 bit - bigger than 192 bit
+            self._rounds = 14
+
+        elif inputkey <= 0xffffffffffffffffffffffffffffffff:
+            ## 128 bit - smaller or equal than 128 bit
+            self._rounds = 10
+        else:
+            ## 192 bit - bigger than 128 bit and smaller than 256 bit
+            self._rounds = 12
+
+        keys.append(inputkey)   
+        ## TODO
+#        self._inputkey = inputkey  
+#        self._init_keys(inputkey)
+
+        return keys
+
+
     ## utilities
     def _invert_sbox(self, box):
         box_inv = []
@@ -112,6 +121,14 @@ class AES:
         ## and returns it
         return ((hexlst << 8)|val)
 
+    def _lst_XOR(self, lst):
+        ## XORs all lists entries in a list, and returns a result in GF(2^8), so
+        ## an 8-bit value
+        ret = 0x0
+        for item in lst:
+            ret ^= item
+        return (ret&0xff)
+
     def _sbox_get(self, idx):
         ## splits an 8-bit hex into two 4-bit, the col and row sbox index
         col = (idx & 0xf)
@@ -122,7 +139,7 @@ class AES:
     def _add_round_key(self, state):
         ## add a round key
         # TODO
-        return self._inputkey ^ state   
+        return self._keys[0] ^ state   
 
     def _substitution_layer__sub_bytes(self, state):
         ## substitution per 8-bit values
@@ -140,17 +157,37 @@ class AES:
 
     def _diffusion_layer__mix_column(self, state):
         ## major diffusion element on 8-bit values
-        for row in range(len(self._mix_columns__const_matrix)):
-            print "x %d"%row  
-        die("OK")  
-        return state
+        ##
+        ## matrix-matrix-multiplication in GF(2^8) of the state seen as a matrix
+        ## with the constant matrix in a two step approach
+        ##
+        ## C = [const] * B
+        ##
+        ## where B = state, and C = resulting matrix
+        ##
+        ## interesting, w/o the key and other (row shifting) operations, the mix
+        ## column operation for its own would move out the information over the
+        ## rounds, so for decryption actually by decrypting the modified
+        ## left overs of the key addition to a more and more fading information
+        ## content (by the left shifts but GF(2^8) limitations to 8 bit, - only
+        ## by decrypting these leftovers the original text can be reestablished
+        ## again
+        hexlst = 0x0
+        ## row and col refers to the C matrix
+        for col in range(len(self._mix_columns__const_matrix[0])):
+            for row in range(len(self._mix_columns__const_matrix)):
+                ## 1. left shift by factor for each vector value
+                ## 2. XOR the shifted vector results
+                val = 0x0
+                factors = self._mix_columns__const_matrix[row]
+                for idx in range(col*4, col*4+len(factors)):
+                    val ^= 0xff & (self._hexlst_getnth(state, idx) << (factors[idx-col*4]-1))
+                hexlst = self._hexlst_append(hexlst, val)
+        return hexlst
+
 
     def encrypt(self, plaintext):
-        
-        plaintext = "abc"    
-        
         ## init
-#        blocklen = len(plaintext) # TODO rm  
         state = int(plaintext.encode('hex'),16) & 0xffffffffffffffffffffffffffffffff
 
         ## add round key
@@ -159,13 +196,13 @@ class AES:
         for rnd in range(self._rounds):
             print "rnd %d"%rnd   
 
-#            state = self._substitution_layer__sub_bytes(state)
+            state = self._substitution_layer__sub_bytes(state)
 #            print "%#x"%state   
 
-#            state = self._diffusion_layer__shift_rows(state)
+            state = self._diffusion_layer__shift_rows(state)
 #            print "%#x"%state   
 
-            state = self._diffusion_layer__mix_column(state) 
+            state = self._diffusion_layer__mix_column(state)
             print "%#x"%state   
 
 #            state = self._add_round_key(state)
@@ -189,7 +226,8 @@ def main():
     aes = AES(inputkey)
 
     ## init some input text
-    plaintext = "jack and jill went up the hill to fetch a pail of water"
+#    plaintext = "jack and jill went up the hill to fetch a pail of water"
+    plaintext = "abc"   
     print "plaintext:"
     print "%s\n" % plaintext
 
