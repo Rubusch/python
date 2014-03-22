@@ -110,7 +110,12 @@ class AES:
     def _hexlst_append(self, hexlst, val):
         ## appends an 8-bit hex val to a hex list (a number) of such values
         ## and returns it
-        return ((hexlst << 8)|val)
+        print "append val %#x" % val 
+        print "append hexlst %#x, before" % hexlst 
+        hexlst = ((hexlst << 8)|val)
+        print "append hexlst %#x, after" % hexlst 
+        return hexlst  
+#        return ((hexlst << 8)|val)
 
     def _sbox_get(self, idx):
         ## splits an 8-bit hex into two 4-bit, the col and row sbox index
@@ -134,7 +139,14 @@ class AES:
     def _diffusion_layer__shift_rows(self, state):
         # TODO put into matrix, shift rows according to AES shift_rows
         # TODO finde elegant solution...
-        
+        hexlst = 0x0
+        for idx in range(self._blocksize/8):
+#            print self._shift_rows[idx]  
+            hexlst = self._hexlst_append(hexlst, self._hexlst_getnth(state, self._shift_rows[idx]))
+#            print "XXX %#x" % val  
+
+        print "XXX %#x"%state  
+        die("CCC") 
         return state
 
     def _diffusion_layer__mix_column(self, state):
@@ -156,7 +168,7 @@ class AES:
         for rnd in range(self._rounds):
             print "rnd %d"%rnd   
 
-            state = self._substitution_layer__sub_bytes(state)
+#            state = self._substitution_layer__sub_bytes(state)
 #            print "%#x"%state   
 
             state = self._diffusion_layer__shift_rows(state) 
