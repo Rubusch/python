@@ -132,17 +132,11 @@ class AES:
         return hexlst
 
     def _diffusion_layer__shift_rows(self, state):
-        # TODO put into matrix, shift rows according to AES shift_rows
-        # TODO finde elegant solution...
+        ## first operation in the diffusion layer on 8-bit values
         hexlst = 0x0
         for idx in range(self._blocksize/8):
-#            print self._shift_rows[idx]  
             hexlst = self._hexlst_append(hexlst, self._hexlst_getnth(state, self._shift_rows[idx]))
-#            print "XXX %#x" % val  
-
-        print "XXX %#x"%hexlst  
-        die("CCC") 
-        return state
+        return hexlst
 
     def _diffusion_layer__mix_column(self, state):
         ## major diffusion element
