@@ -131,7 +131,6 @@ class AES:
             hexlst = self._hexlst_append(hexlst, self._sbox_get(self._hexlst_getnth(state, idx)))
         return hexlst
 
-
     def _diffusion_layer__shift_rows(self, state):
         # TODO put into matrix, shift rows according to AES shift_rows
         # TODO finde elegant solution...
@@ -158,9 +157,10 @@ class AES:
             print "rnd %d"%rnd   
 
             state = self._substitution_layer__sub_bytes(state)
-            print "%#x"%state   
+#            print "%#x"%state   
 
-#            state = self._diffusion_layer__shift_rows(state) 
+            state = self._diffusion_layer__shift_rows(state) 
+            print "%#x"%state   
 
 #            state = self._diffusion_layer__mix_column() 
 
