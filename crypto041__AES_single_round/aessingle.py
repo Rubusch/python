@@ -139,8 +139,10 @@ class AES:
         return hexlst
 
     def _diffusion_layer__mix_column(self, state):
-        ## major diffusion element
-        
+        ## major diffusion element on 8-bit values
+        for row in range(self._mix_columns__const_matrix):
+            print "x %d"%row  
+        die("OK")  
         return state
 
     def encrypt(self, plaintext):
@@ -160,10 +162,11 @@ class AES:
 #            state = self._substitution_layer__sub_bytes(state)
 #            print "%#x"%state   
 
-            state = self._diffusion_layer__shift_rows(state) 
-            print "%#x"%state   
+#            state = self._diffusion_layer__shift_rows(state)
+#            print "%#x"%state   
 
-#            state = self._diffusion_layer__mix_column() 
+            state = self._diffusion_layer__mix_column(state) 
+            print "%#x"%state   
 
 #            state = self._add_round_key(state)
         die("STOP")
