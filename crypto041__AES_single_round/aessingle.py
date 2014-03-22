@@ -30,6 +30,22 @@ def DEBUG_print_box(box, name):
 
 class AES:
     def __init__(self, inputkey):
+        if inputkey > 0xffffffffffffffffffffffffffffffffffffffffffffffff:
+            ## 256 bit - bigger than 192 bit
+            self._rounds = 14
+
+        elif inputkey <= 0xffffffffffffffffffffffffffffffff:
+            ## 128 bit - smaller or equal than 128 bit
+            self._rounds = 10
+        else:
+            ## 192 bit - bigger than 128 bit and smaller than 256 bit
+            self._rounds = 12
+
+        ## TODO
+        self._inputkey = inputkey  
+#        self._init_keys(inputkey)
+
+
         self._sbox = [[0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67, 0x2b, 0xfe, 0xd7, 0xab, 0x76],
                       [0xca, 0x82, 0xc9, 0x7d, 0xfa, 0x59, 0x47, 0xf0, 0xad, 0xd4, 0xa2, 0xaf, 0x9c, 0xa4, 0x72, 0xc0],
                       [0xb7, 0xfd, 0x93, 0x26, 0x36, 0x3f, 0xf7, 0xcc, 0x34, 0xa5, 0xe5, 0xf1, 0x71, 0xd8, 0x31, 0x15],
@@ -72,32 +88,14 @@ class AES:
             box_inv[row_inv].append(val_inv)
         return box_inv
 
-    # def _sbox_set(self, sbox, idx, val):
-    #     col = (idx & 0xf)
-    #     print "x col '%d' - '%#x'"%(col,col) 
-    #     row = (idx >> 4) & 0xf
-    #     print "x row '%d' - '%#x'"%(row,row) 
-    #     sbox[row][col] = val
-
-    #     print "XXX col '%d'" % col 
-    #     print "xxx row '%d'" % row 
-
-    #     ## use for invert the s-box
-        
-
-    #     die("OK")  
-
-
     def _sbox_get(self, idx):
-#        print "input: %#x" % idx   
         col = (idx & 0xf)
-#        print "XXX col: %#x"%col  
         row = (idx >> 4) & 0xf
-#        print "XXX row: %#x"%row  
-        ret = self._sbox[row][col]
-#        print "XXX ret: %#x"%ret  
-        return ret
+        return self._sbox[row][col]
 
+# TODO apply key schedule, and NOT just _inputkey
+    def _key_addition(self, state):
+        return self._inputkey ^ state
 
     def _byte_substitution_layer(self, state, blocklen):
          ret = 0x0
@@ -105,9 +103,11 @@ class AES:
              ret = (ret << 8) | (self._sbox_get((state >> 8*(blocklen-idx-1)) & 0xff))
          return ret
 
-
-    def _diffusion_layer__shift_rows(self):
-        pass
+    def _diffusion_layer__shift_rows(self, state):
+        # TODO put into matrix, shift rows according to AES shift_rows
+        # TODO finde elegant solution...
+        
+        return state
 
     def _diffusion_layer__mix_column(self):
         pass
@@ -119,14 +119,19 @@ class AES:
         blocklen = len(plaintext)
         state = int(plaintext.encode('hex'),16) & 0xffffffffffffffffffffffffffffffff
         
-#        print state     
-        ret = self._byte_substitution_layer(state, blocklen)
-        print "%#x"%ret  
+        for rnd in range(self._rounds):
+            print "rnd %d"%rnd  
+            state = self._key_addition(state)
 
-        
-#        self._sbox_set(0xc9,0)   
-        
-        die("STOP")     
+            state = self._byte_substitution_layer(state, blocklen)
+#            print "%#x"%state   
+
+            state = self._diffusion_layer__shift_rows(state) 
+
+#            state = self._diffusion_layer__mix_column() 
+
+
+        die("STOP")
         
 
     def decrypt(self, ciphertext):
