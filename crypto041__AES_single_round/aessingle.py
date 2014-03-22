@@ -84,8 +84,7 @@ class AES:
 
         keys.append(inputkey)   
         ## TODO
-#        self._inputkey = inputkey  
-#        self._init_keys(inputkey)
+
 
         return keys
 
