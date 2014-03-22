@@ -140,7 +140,7 @@ class AES:
 
     def _diffusion_layer__mix_column(self, state):
         ## major diffusion element on 8-bit values
-        for row in range(self._mix_columns__const_matrix):
+        for row in range(len(self._mix_columns__const_matrix)):
             print "x %d"%row  
         die("OK")  
         return state
