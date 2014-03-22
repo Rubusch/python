@@ -30,6 +30,10 @@ def DEBUG_print_box(box, name):
 
 class AES:
     def __init__(self, inputkey):
+        ## blocksize
+        self._blocksize = 128
+
+        ## key schedule
         if inputkey > 0xffffffffffffffffffffffffffffffffffffffffffffffff:
             ## 256 bit - bigger than 192 bit
             self._rounds = 14
@@ -45,7 +49,7 @@ class AES:
         self._inputkey = inputkey  
 #        self._init_keys(inputkey)
 
-
+        ## S-box
         self._sbox = [[0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67, 0x2b, 0xfe, 0xd7, 0xab, 0x76],
                       [0xca, 0x82, 0xc9, 0x7d, 0xfa, 0x59, 0x47, 0xf0, 0xad, 0xd4, 0xa2, 0xaf, 0x9c, 0xa4, 0x72, 0xc0],
                       [0xb7, 0xfd, 0x93, 0x26, 0x36, 0x3f, 0xf7, 0xcc, 0x34, 0xa5, 0xe5, 0xf1, 0x71, 0xd8, 0x31, 0x15],
@@ -64,11 +68,21 @@ class AES:
                       [0x8c, 0xa1, 0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0, 0x54, 0xbb, 0x16]]
 
 #        DEBUG_print_box(self._sbox, "sbox")  
-        self._sbox_inv = self._invert_box(self._sbox)
+        self._sbox_inv = self._invert_sbox(self._sbox)
 #        DEBUG_print_box(self._sbox_inv, "sbox_inv")  
 
+        ## diffusion layer
+        self._shift_rows = [0,5,10,15,4,9,14,3,8,13,2,7,12,1,6,11]
+        self._shift_rows_inv = [self._shift_rows.index(idx) for idx in range(len(self._shift_rows))]
+
+        self._mix_columns__const_matrix = [[2,3,1,1],
+                                           [1,2,3,1],
+                                           [1,1,2,3],
+                                           [3,1,1,2]]
+        # TODO invert _mix_columns__const_matrix  
+
     ## utilities
-    def _invert_box(self, box):
+    def _invert_sbox(self, box):
         box_inv = []
         for val in range(len(box)*len(box[0])):
             row = 0
@@ -88,20 +102,51 @@ class AES:
             box_inv[row_inv].append(val_inv)
         return box_inv
 
+    def _hexlst_getnth(self, hexlst, nth):
+        ## return the nth 8-bit number, contained in the hex list (a number)
+        ## where nth is an index, starting with 0
+        return ((hexlst >> (self._blocksize - (nth+1)*8)) & 0xff)
+
+    def _hexlst_append(self, hexlst, val):
+        ## appends an 8-bit hex val to a hex list (a number) of such values
+        ## and returns it
+        return ((hexlst << 8)|val)
+
     def _sbox_get(self, idx):
+        ## splits an 8-bit hex into two 4-bit, the col and row sbox index
         col = (idx & 0xf)
         row = (idx >> 4) & 0xf
         return self._sbox[row][col]
 
 # TODO apply key schedule, and NOT just _inputkey
-    def _key_addition(self, state):
-        return self._inputkey ^ state
+    def _add_round_key(self, state):
+        ## add a round key
+        # TODO
+        return self._inputkey ^ state   
 
-    def _byte_substitution_layer(self, state, blocklen):
-         ret = 0x0
-         for idx in range(blocklen):
-             ret = (ret << 8) | (self._sbox_get((state >> 8*(blocklen-idx-1)) & 0xff))
-         return ret
+    def _substitution_layer__sub_bytes(self, state):
+        ## substitution per 8-bit values
+        print "AAA %#x" % state    
+        hexlst = 0x0
+#        for idx in range(blocklen):
+        for idx in range(self._blocksize/8):
+            print "\tidx '%d'"%idx  
+            hexlst = self._hexlst_append(hexlst, self._hexlst_getnth(state, idx))
+#            hexlst = self._hexlst_append(hexlst, self._sbox_get(self._hexlst_getnth(state, idx)))
+
+            print "\t%#x"%hexlst  
+#            die("CCC")  
+
+        print "BBB %#x" % hexlst   
+        die("CCC")  
+        return hexlst
+# TODO  
+         # ret = 0x0
+         # for idx in range(blocklen):
+         #     ret = (ret << 8) | (self._sbox_get((state >> 8*(blocklen-idx-1)) & 0xff))
+         # return ret
+    
+
 
     def _diffusion_layer__shift_rows(self, state):
         # TODO put into matrix, shift rows according to AES shift_rows
@@ -109,28 +154,33 @@ class AES:
         
         return state
 
-    def _diffusion_layer__mix_column(self):
-        pass
+    def _diffusion_layer__mix_column(self, state):
+        ## major diffusion element
+        
+        return state
 
     def encrypt(self, plaintext):
         
         plaintext = "abc"    
         
-        blocklen = len(plaintext)
+        ## init
+#        blocklen = len(plaintext) # TODO rm  
         state = int(plaintext.encode('hex'),16) & 0xffffffffffffffffffffffffffffffff
+
+        ## add round key
+#        state = self._add_round_key(state)        
         
         for rnd in range(self._rounds):
-            print "rnd %d"%rnd  
-            state = self._key_addition(state)
+            print "rnd %d"%rnd   
 
-            state = self._byte_substitution_layer(state, blocklen)
+            state = self._substitution_layer__sub_bytes(state)
 #            print "%#x"%state   
 
-            state = self._diffusion_layer__shift_rows(state) 
+#            state = self._diffusion_layer__shift_rows(state) 
 
 #            state = self._diffusion_layer__mix_column() 
 
-
+#            state = self._add_round_key(state)
         die("STOP")
         
 
