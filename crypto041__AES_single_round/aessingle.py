@@ -126,26 +126,10 @@ class AES:
 
     def _substitution_layer__sub_bytes(self, state):
         ## substitution per 8-bit values
-        print "AAA %#x" % state    
         hexlst = 0x0
-#        for idx in range(blocklen):
         for idx in range(self._blocksize/8):
-            print "\tidx '%d'"%idx  
-            hexlst = self._hexlst_append(hexlst, self._hexlst_getnth(state, idx))
-#            hexlst = self._hexlst_append(hexlst, self._sbox_get(self._hexlst_getnth(state, idx)))
-
-            print "\t%#x"%hexlst  
-#            die("CCC")  
-
-        print "BBB %#x" % hexlst   
-        die("CCC")  
+            hexlst = self._hexlst_append(hexlst, self._sbox_get(self._hexlst_getnth(state, idx)))
         return hexlst
-# TODO  
-         # ret = 0x0
-         # for idx in range(blocklen):
-         #     ret = (ret << 8) | (self._sbox_get((state >> 8*(blocklen-idx-1)) & 0xff))
-         # return ret
-    
 
 
     def _diffusion_layer__shift_rows(self, state):
@@ -174,7 +158,7 @@ class AES:
             print "rnd %d"%rnd   
 
             state = self._substitution_layer__sub_bytes(state)
-#            print "%#x"%state   
+            print "%#x"%state   
 
 #            state = self._diffusion_layer__shift_rows(state) 
 
