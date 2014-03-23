@@ -68,8 +68,14 @@ class AES:
         ## key schedule
         self._rounds = 0
         self._key_length = 0
-        self._round_coefficient = 0xff  
-#        self._round_coefficient = 0x12  
+
+        # TODO comment RC
+        self._round_coefficient = [  1,  2,  4,  8, 16, 32, 64,128,
+                                    27, 54,108,216,171, 77,154, 47,
+                                    94,188, 99,198,151, 53,106,212,
+                                   179,125,250,239,197,145, 57,114,
+                                   228,211,189,97]
+
         if inputkey > 0xffffffffffffffffffffffffffffffffffffffffffffffff:
             ## 256 bit - bigger than 192 bit
             self._key_length = 256
@@ -87,56 +93,24 @@ class AES:
         ## generate round keys
         self._keys = self._key_schedule(inputkey)
 
-
-    def _key_schedule(self, key):
-        
-        # TODO check, still something's wrong
-        
+    def _key_schedule(self, initialkey):
+        ## generates all needed round keys, depending on the key length
+        last_key = initialkey
         keys = []
-
-        
-        ## test 128 bit key
-        key = 0x11111111222222223333333344444444   
-        
-        print "_key_schedule - key %#x" % key  
         for rnd in range(self._rounds+1):
             ## the first (MSB) 32-bit block is XORed with the last (LSB) one
-            word = 0x0
-            print "a \tidx: %d" % 0  
-            print "a \tself._key_length: %d" % self._key_length  
-            print "a \tself._key_length - 32: %d" % (self._key_length - 32)  
-            print "a \t ---"  
-
-#            print "a \tself._g(key & 0xffffffff): \t\t\t\t\t\t\t\t%s" % bin(self._g(key & 0xffffffff))
-            print "a \tself._g(key & 0xffffffff): \t\t\t\t\t\t\t%#x" % (self._g(key & 0xffffffff))
-#            die("XXX")                           
-
-#            print "a \t((key >> (self._key_length - 32)) & 0xffffffff):\t\t\t\t\t           %s" % bin((key >> (self._key_length - 32)) & 0xffffffff)
-            print "a \t((key >> (self._key_length - 32)) & 0xffffffff):\t\t\t\t%#x" % ((key >> (self._key_length - 32)) & 0xffffffff)
-
-#            print "a \t((key >> (self._key_length - 32)) & 0xffffffff) ^ self._g(key & 0xffffffff): \t\t%s" % bin(((key >> (self._key_length - 32)) & 0xffffffff) ^ self._g(key & 0xffffffff))
-            print "a \t((key >> (self._key_length - 32)) & 0xffffffff) ^ self._g(key & 0xffffffff): \t%#x" % (((key >> (self._key_length - 32)) & 0xffffffff) ^ self._g(key & 0xffffffff))
-
-#            print "a \t((%s >> (%d - 32)) & 0xffffffff) ^ %s" % (bin(key), self._key_length, bin(self._g(key & 0xffffffff)))
-            first_word = ((key >> (self._key_length - 32)) & 0xffffffff) ^ self._g(key & 0xffffffff)
-            word = self._hexlst_append(word, first_word)
-            die ("XXX")   
-
+            word = ((last_key >> (self._key_length - 32)) & 0xffffffff) ^ self._g(last_key & 0xffffffff, rnd)
+            next_key = self._hexlst_append(0x0, word)
             ## for the rest it depends on bitlength
             for idx in range(1, self._key_length/32):
-                print "a \t\tidx %d" % idx  
-                word = self._hexlst_append(word, first_word ^ ((key >> (self._key_length-32 -idx*32)) & 0xffffffff) )
-            keys.append(word)
-            key = word
-
-            die("_key_schedule - for - DONE")  
-        die("_key_schedule - DONE")  
+                word = word ^ ((last_key >> (self._key_length-32 -idx*32)) & 0xffffffff)
+                next_key = self._hexlst_append(next_key, word, 4)
+            keys.append(next_key)
+            last_key = next_key
         return keys
 
-    def _g(self, word):
-        
-        # TODO check
-        
+
+    def _g(self, word, rnd):
         ## input a 32-bit value, in 4 groups of 8-bit each
         ##
         ## the g function rotates its 4 input bytes, performs a byte-wise S-box
@@ -147,37 +121,18 @@ class AES:
         ## the g function has two purposes; first it adds nonlinearity to the
         ## key schedule; second, it removes symmetry in AES; both properties are
         ## necessary to thwart certain block cipher attacks
-        
-#        word = 0x12345678    
-        
-#        print "b\t\t_g(%s == %#x)" % (bin(word), word)  
         val = (word >> 24) & 0xff
-#        print "b\t\t(word >> 24) & 0xff: %#x" % (val)  
         word = ((word << 8) & 0xffffffff) | val
-#        print "b\t\tword: %#x" % (word)  
 
         ## s-box substitution
         hexlst = 0x0
         for idx in range(32/8):
-#            print "b\t\tidx %d" % idx  
-#            print "b\t\tgetnth(%d, %#x): %#x" % (idx, word, self._hexlst_getnth(word, idx, 32))  
-#            print "b\t\tsbox %#x" % (self._sbox_get(self._hexlst_getnth(word, idx, 32)))  
             hexlst = self._hexlst_append(hexlst, self._sbox_get(self._hexlst_getnth(word, idx, 32)))
-#            print "b\t\thexlst: \t\t%#x" % (hexlst)  
-#            die("YYY")  
         word = hexlst
-#        print "b\t\tword: %#x" % word  
 
         ## use round coefficient
-#        print "b\t\t RC:  %s" % bin(self._round_coefficient)  
-#        print "b\t\t xor:    %s" % bin((word >> 24) & 0xff)  
-        val = ((word >> 24) & 0xff) ^ self._round_coefficient
-#        print "b\t\t val: %s == %#x" % (bin(val), val)  
-
+        val = ((word >> 24) & 0xff) ^ self._round_coefficient[rnd]
         word = (word & 0xffffff) | (val << 24)
-#        print "b\t\tword: %#x" % (word)  
-
-#        die("XXX")     
         return word
 
     ## utilities
@@ -206,10 +161,10 @@ class AES:
         ## where nth is an index, starting with 0
         return ((hexlst >> (size - (nth+1)*8)) & 0xff)
 
-    def _hexlst_append(self, hexlst, val):
+    def _hexlst_append(self, hexlst, val, nbytes=1):
         ## appends an 8-bit hex val to a hex list (a number) of such values
         ## and returns it
-        return ((hexlst << 8)|val)
+        return ((hexlst << (8*nbytes))|val)
 
     def _lst_XOR(self, lst):
         ## XORs all lists entries in a list, and returns a result in GF(2^8), so
@@ -270,7 +225,7 @@ class AES:
                 val = 0x0
                 factors = self._mix_columns__const_matrix[row]
                 for idx in range(col*4, col*4+len(factors)):
-                    val ^= 0xff & (self._hexlst_getnth(state, idx) << (factors[idx-col*4]-1), self._blocksize)
+                    val ^= 0xff & (self._hexlst_getnth(state, idx, self._blocksize) << (factors[idx-col*4]-1))
                 hexlst = self._hexlst_append(hexlst, val)
         return hexlst
 
