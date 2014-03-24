@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: iso-8859-1 -*-
-#
-# @author: Lothar Rubusch
-# @email: L.Rubusch@gmx.ch
-# @license: GPLv3
-# @2014-Mar-19
-#
-# AES (american encryption standard)
-# 128-bit block size
-# key lengths of 128 bit, 192 bit or 256 bit
+"""
+@author: Lothar Rubusch
+@email: L.Rubusch@gmx.ch
+@license: GPLv3
+@2014-Mar-19
+
+AES (american encryption standard)
+128-bit block size
+key lengths of 128 bit, 192 bit or 256 bit
+"""
 
 import sys
 
@@ -29,7 +30,7 @@ def DEBUG_print_box(box, name):
 
 
 class AES:
-    def __init__(self, inputkey):
+    def __init__(self, inputkey, keylength):
         ## blocksize
         self._blocksize = 128
 
@@ -69,29 +70,49 @@ class AES:
         self._rounds = 0
         self._key_length = 0
 
-        # TODO comment RC
-        self._round_coefficient = [  1,  2,  4,  8, 16, 32, 64,128,
-                                    27, 54,108,216,171, 77,154, 47,
-                                    94,188, 99,198,151, 53,106,212,
-                                   179,125,250,239,197,145, 57,114,
-                                   228,211,189,97]
+        ## Rcon, source: http://en.wikipedia.org/wiki/Rijndael_key_schedule
+        ## only the first some are actually used!!!
+        self._rcon = [0x8d, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36, 0x6c, 0xd8, 0xab, 0x4d, 0x9a,
+                      0x2f, 0x5e, 0xbc, 0x63, 0xc6, 0x97, 0x35, 0x6a, 0xd4, 0xb3, 0x7d, 0xfa, 0xef, 0xc5, 0x91, 0x39,
+                      0x72, 0xe4, 0xd3, 0xbd, 0x61, 0xc2, 0x9f, 0x25, 0x4a, 0x94, 0x33, 0x66, 0xcc, 0x83, 0x1d, 0x3a,
+                      0x74, 0xe8, 0xcb, 0x8d, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36, 0x6c, 0xd8,
+                      0xab, 0x4d, 0x9a, 0x2f, 0x5e, 0xbc, 0x63, 0xc6, 0x97, 0x35, 0x6a, 0xd4, 0xb3, 0x7d, 0xfa, 0xef,
+                      0xc5, 0x91, 0x39, 0x72, 0xe4, 0xd3, 0xbd, 0x61, 0xc2, 0x9f, 0x25, 0x4a, 0x94, 0x33, 0x66, 0xcc,
+                      0x83, 0x1d, 0x3a, 0x74, 0xe8, 0xcb, 0x8d, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b,
+                      0x36, 0x6c, 0xd8, 0xab, 0x4d, 0x9a, 0x2f, 0x5e, 0xbc, 0x63, 0xc6, 0x97, 0x35, 0x6a, 0xd4, 0xb3,
+                      0x7d, 0xfa, 0xef, 0xc5, 0x91, 0x39, 0x72, 0xe4, 0xd3, 0xbd, 0x61, 0xc2, 0x9f, 0x25, 0x4a, 0x94,
+                      0x33, 0x66, 0xcc, 0x83, 0x1d, 0x3a, 0x74, 0xe8, 0xcb, 0x8d, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20,
+                      0x40, 0x80, 0x1b, 0x36, 0x6c, 0xd8, 0xab, 0x4d, 0x9a, 0x2f, 0x5e, 0xbc, 0x63, 0xc6, 0x97, 0x35,
+                      0x6a, 0xd4, 0xb3, 0x7d, 0xfa, 0xef, 0xc5, 0x91, 0x39, 0x72, 0xe4, 0xd3, 0xbd, 0x61, 0xc2, 0x9f,
+                      0x25, 0x4a, 0x94, 0x33, 0x66, 0xcc, 0x83, 0x1d, 0x3a, 0x74, 0xe8, 0xcb, 0x8d, 0x01, 0x02, 0x04,
+                      0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36, 0x6c, 0xd8, 0xab, 0x4d, 0x9a, 0x2f, 0x5e, 0xbc, 0x63,
+                      0xc6, 0x97, 0x35, 0x6a, 0xd4, 0xb3, 0x7d, 0xfa, 0xef, 0xc5, 0x91, 0x39, 0x72, 0xe4, 0xd3, 0xbd,
+                      0x61, 0xc2, 0x9f, 0x25, 0x4a, 0x94, 0x33, 0x66, 0xcc, 0x83, 0x1d, 0x3a, 0x74, 0xe8, 0xcb, 0x8d]
 
-        if inputkey > 0xffffffffffffffffffffffffffffffffffffffffffffffff:
-            ## 256 bit - bigger than 192 bit
-            self._key_length = 256
-            self._rounds = 14
-
-        elif inputkey <= 0xffffffffffffffffffffffffffffffff:
-            ## 128 bit - smaller or equal than 128 bit
+        if keylength == 128:
             self._key_length = 128
             self._rounds = 10
-        else:
-            ## 192 bit - bigger than 128 bit and smaller than 256 bit
+
+        elif keylength == 192:
             self._key_length = 192
             self._rounds = 12
+            die("TODO 192-bit")   
+
+        elif keylength == 256:
+            self._key_length = 256
+            self._rounds = 14
+            die("TODO 256-bit")   
+
+        else:
+            die("ERROR: keylength not supported")
+            print keylength
 
         ## generate round keys
         self._keys = self._key_schedule(inputkey)
+
+        ## DEBUG keys
+#        for key in self._keys:
+#            print "key: %#x" % key
 
     def _key_schedule(self, initialkey):
         ## generates all needed round keys, depending on the key length
@@ -131,7 +152,7 @@ class AES:
         word = hexlst
 
         ## use round coefficient
-        val = ((word >> 24) & 0xff) ^ self._round_coefficient[rnd]
+        val = ((word >> 24) & 0xff) ^ self._rcon[rnd]
         word = (word & 0xffffff) | (val << 24)
         return word
 
@@ -180,7 +201,6 @@ class AES:
         row = (idx >> 4) & 0xf
         return self._sbox[row][col]
 
-# TODO apply key schedule, and NOT just _inputkey
     def _add_round_key(self, state, rnd):
         ## add a round key
         return self._keys[rnd] ^ state
@@ -200,33 +220,52 @@ class AES:
         return hexlst
 
     def _diffusion_layer__mix_column(self, state):
-        ## major diffusion element on 8-bit values
-        ##
-        ## matrix-matrix-multiplication in GF(2^8) of the state seen as a matrix
-        ## with the constant matrix in a two step approach
-        ##
-        ## C = [const] * B
-        ##
-        ## where B = state, and C = resulting matrix
-        ##
-        ## interesting, w/o the key and other (row shifting) operations, the mix
-        ## column operation for its own would move out the information over the
-        ## rounds, so for decryption actually by decrypting the modified
-        ## left overs of the key addition to a more and more fading information
-        ## content (by the left shifts but GF(2^8) limitations to 8 bit, - only
-        ## by decrypting these leftovers the original text can be reestablished
-        ## again
+        """
+        major diffusion element on 8-bit values
+
+        matrix-matrix-multiplication in GF(2^8) with P(x) = x^8 + x^4 + x^3 + x + 1
+
+        / c0 \      / 2 3 1 1 \     / b0 \
+        |  c1  |    |  1 2 3 1  |   |  b1  |
+        |  c2  | == |  1 1 2 3  | * |  b2  |
+        \ c3 /      \ 3 1 1 2 /     \ b3 /
+
+        where B = state/input, and C = states/output
+
+        Galois Field restrictions:
+        * Addition: XOR operation
+        * Multiplication: leftshift, with modular reduction to P(x)
+
+        in specific:
+        * the factor 1 will multiply by identity, means just take the b-value
+        * the factor 2 is a doubling (leftshift by 1) and modular reduction
+        here named b vector
+        * the factor 3 is a XOR combination of 1 and 2, since 3x = x + 2x,
+        here named bb and b vector
+        """
         hexlst = 0x0
-        ## row and col refers to the C matrix
         for col in range(len(self._mix_columns__const_matrix[0])):
+            b_vec = [0]*4
+            bb_vec = [0]*4
             for row in range(len(self._mix_columns__const_matrix)):
                 ## 1. left shift by factor for each vector value
                 ## 2. XOR the shifted vector results
-                val = 0x0
-                factors = self._mix_columns__const_matrix[row]
-                for idx in range(col*4, col*4+len(factors)):
-                    val ^= 0xff & (self._hexlst_getnth(state, idx, self._blocksize) << (factors[idx-col*4]-1))
-                hexlst = self._hexlst_append(hexlst, val)
+                b_vec[row] = self._hexlst_getnth(state, row*col, self._blocksize)
+
+                ## write doubled b-values into bb-vec,
+                ## GF(2^8), perform modular reduction by mod P(x), which is
+                ## P(x) = x^8 + x^4 + x^3 + x + 1
+                if b_vec[row] & 0x80:
+                    bb_vec[row] = b_vec[row] <<1 ^ 0x11b
+                else:
+                    bb_vec[row] = b_vec[row] <<1
+                ## brief writing of the above
+#                bb_vec[row] = b_vec[row] <<1 ^ 0x11b if b_vec[row] & 0x80 else b_vec[row] <<1
+
+            hexlst = self._hexlst_append(hexlst, (bb_vec[0] ^  b_vec[1] ^ bb_vec[1] ^  b_vec[2] ^  b_vec[3]))
+            hexlst = self._hexlst_append(hexlst, ( b_vec[0] ^ bb_vec[1] ^  b_vec[2] ^ bb_vec[2] ^  b_vec[3]))
+            hexlst = self._hexlst_append(hexlst, ( b_vec[0] ^  b_vec[1] ^ bb_vec[2] ^  b_vec[3] ^ bb_vec[3]))
+            hexlst = self._hexlst_append(hexlst, ( b_vec[0] ^ bb_vec[0] ^  b_vec[1] ^  b_vec[2] ^ bb_vec[3]))
         return hexlst
 
 
@@ -234,25 +273,53 @@ class AES:
         ## init
         state = int(plaintext.encode('hex'),16) & 0xffffffffffffffffffffffffffffffff
 
-        ## add round key
-        state = self._add_round_key(state, 0)
+        # TODO exercise 4.9
+        state = 0xffffffffffffffffffffffffffffffff 
+#        state = 0x000102030405060708090a0b0c0d0e0f 
+        self._keys = []
+        print "initial state : %s" % bin(state)  
+
+        ## TODO one way 128-bit '1' subkey
+        self._keys = [0xffffffffffffffffffffffffffffffff, 0xffffffffffffffffffffffffffffffff]   
+        print "initial key[0]: %s" % bin(self._keys[0])  
         
-        for rnd in range(self._rounds):
-#            print "rnd %d"%rnd   
+
+
+        ## round 0
+#        state = self._add_round_key(state, 0)
+
+        for rnd in range(self._rounds-1):
+            print "rnd %d"%rnd   
 
             state = self._substitution_layer__sub_bytes(state)
-#            print "%#x"%state   
+            print "subsitute: \t\t%#x"%state   
 
             state = self._diffusion_layer__shift_rows(state)
-#            print "%#x"%state   
+            print "shift rows: \t\t%#x"%state   
 
             state = self._diffusion_layer__mix_column(state)
-#            print "%#x"%state   
+            print "mix column: \t\t%#x"%state   
 
-            state = self._add_round_key(state, rnd-1)
+            state = self._add_round_key(state, rnd+1)
+            print "add key: \t\t%#x"%state   
+
+            print "%d. round: \t\t%#x" % (rnd,state)   
+#            print "\t%s" % bin(state)  
+            die("STOP")   
+            
+
+        ## round n
+        state = self._substitution_layer__sub_bytes(state)
+        print "subsitute: \t\t%#x"%state   
+
+        state = self._diffusion_layer__shift_rows(state)
+        print "shift rows: \t\t%#x"%state   
+
+        state = self._add_round_key(state, self._rounds-1)
+        print "add key: \t\t%#x"%state   
 
         return state
-        
+
 
     def decrypt(self, ciphertext):
         pass
@@ -263,17 +330,16 @@ def main():
     blocksize = 128
 
     ## init some raw input key
-#    inputkey = 0xffffffffffffffff
-    inputkey = 0x1  
+#    inputkey = 0x000102030405060708090a0b0c0d0e0f  
+    inputkey = 0xffffffffffffffffffffffffffffffff  
     print "initial key:"
     print "%#x\n" % inputkey
 
     ## init the algorithm
-    aes = AES(inputkey)
+    aes = AES(inputkey, 128)
 
     ## init some input text
     plaintext = "jack and jill went up the hill to fetch a pail of water"
-#    plaintext = "abc"   
     print "plaintext:"
     print "%s\n" % plaintext
 
