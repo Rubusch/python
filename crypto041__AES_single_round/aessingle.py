@@ -9,6 +9,13 @@
 AES (american encryption standard)
 128-bit block size
 key lengths of 128 bit, 192 bit or 256 bit
+
+
+AES example
+
+Key:        000102030405060708090a0b0c0d0e0f
+Plaintext:  00112233445566778899aabbccddeeff
+Ciphertext: 69c4e0d86a7b0430d8cdb78070b4c55a
 """
 
 import sys
@@ -25,7 +32,6 @@ def DEBUG_print_box(box, name):
             print "%#x " % box[row][col],
         print ""
     print "/DEBUG"
-
 
 
 
@@ -66,10 +72,6 @@ class AES:
                                            [3,1,1,2]]
         # TODO invert _mix_columns__const_matrix  
 
-        ## key schedule
-        self._rounds = 0
-        self._key_length = 0
-
         ## Rcon, source: http://en.wikipedia.org/wiki/Rijndael_key_schedule
         ## only the first some are actually used!!!
         self._rcon = [0x8d, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36, 0x6c, 0xd8, 0xab, 0x4d, 0x9a,
@@ -89,17 +91,18 @@ class AES:
                       0xc6, 0x97, 0x35, 0x6a, 0xd4, 0xb3, 0x7d, 0xfa, 0xef, 0xc5, 0x91, 0x39, 0x72, 0xe4, 0xd3, 0xbd,
                       0x61, 0xc2, 0x9f, 0x25, 0x4a, 0x94, 0x33, 0x66, 0xcc, 0x83, 0x1d, 0x3a, 0x74, 0xe8, 0xcb, 0x8d]
 
+        ## key schedule
         if keylength == 128:
-            self._key_length = 128
+            self._keylength = 128
             self._rounds = 10
 
         elif keylength == 192:
-            self._key_length = 192
+            self._keylength = 192
             self._rounds = 12
             die("TODO 192-bit")   
 
         elif keylength == 256:
-            self._key_length = 256
+            self._keylength = 256
             self._rounds = 14
             die("TODO 256-bit")   
 
@@ -110,24 +113,31 @@ class AES:
         ## generate round keys
         self._keys = self._key_schedule(inputkey)
 
-        ## DEBUG keys
-#        for key in self._keys:
-#            print "key: %#x" % key
 
     def _key_schedule(self, initialkey):
         ## generates all needed round keys, depending on the key length
+        print "\tinitialkey %#x" % initialkey  
+
         last_key = initialkey
-        keys = []
-        for rnd in range(self._rounds+1):
+        keys = [last_key]
+        for rnd in range(self._rounds):
             ## the first (MSB) 32-bit block is XORed with the last (LSB) one
-            word = ((last_key >> (self._key_length - 32)) & 0xffffffff) ^ self._g(last_key & 0xffffffff, rnd)
+            word = ((last_key >> (self._keylength - 32)) & 0xffffffff) ^ self._g(last_key & 0xffffffff, rnd)
             next_key = self._hexlst_append(0x0, word)
             ## for the rest it depends on bitlength
-            for idx in range(1, self._key_length/32):
-                word = word ^ ((last_key >> (self._key_length-32 -idx*32)) & 0xffffffff)
+            for idx in range(1, self._keylength/32):
+                word = word ^ ((last_key >> (self._keylength-32 -idx*32)) & 0xffffffff)
                 next_key = self._hexlst_append(next_key, word, 4)
             keys.append(next_key)
             last_key = next_key
+
+
+        ## DEBUG keys
+        for k in range(len(keys)):
+            print "R%d subkey: %#x" % (k,keys[k])
+            
+        die("STOP")   
+        
         return keys
 
 
@@ -225,10 +235,10 @@ class AES:
 
         matrix-matrix-multiplication in GF(2^8) with P(x) = x^8 + x^4 + x^3 + x + 1
 
-        / c0 \      / 2 3 1 1 \     / b0 \
+         / c0 \      / 2 3 1 1 \     / b0 \
         |  c1  |    |  1 2 3 1  |   |  b1  |
         |  c2  | == |  1 1 2 3  | * |  b2  |
-        \ c3 /      \ 3 1 1 2 /     \ b3 /
+         \ c3 /      \ 3 1 1 2 /     \ b3 /
 
         where B = state/input, and C = states/output
 
@@ -273,20 +283,22 @@ class AES:
         ## init
         state = int(plaintext.encode('hex'),16) & 0xffffffffffffffffffffffffffffffff
 
-        # TODO exercise 4.9
-        state = 0xffffffffffffffffffffffffffffffff 
-#        state = 0x000102030405060708090a0b0c0d0e0f 
-        self._keys = []
+        
+        ## DEBUG
+#        state = 0xffffffffffffffffffffffffffffffff 
+        state = 0x00112233445566778899aabbccddeeff
+
+#        self._keys = []
         print "initial state : %s" % bin(state)  
 
         ## TODO one way 128-bit '1' subkey
-        self._keys = [0xffffffffffffffffffffffffffffffff, 0xffffffffffffffffffffffffffffffff]   
-        print "initial key[0]: %s" % bin(self._keys[0])  
+#        self._keys = [0xffffffffffffffffffffffffffffffff, 0xffffffffffffffffffffffffffffffff]   
+#        print "initial key[0]: %s" % bin(self._keys[0])  
         
 
-
         ## round 0
-#        state = self._add_round_key(state, 0)
+        state = self._add_round_key(state, 0)
+        print "add key: \t%#x"%state   
 
         for rnd in range(self._rounds-1):
             print "rnd %d"%rnd   
@@ -304,24 +316,22 @@ class AES:
             print "add key: \t\t%#x"%state   
 
             print "%d. round: \t\t%#x" % (rnd,state)   
-#            print "\t%s" % bin(state)  
-            die("STOP")   
-            
 
         ## round n
         state = self._substitution_layer__sub_bytes(state)
-        print "subsitute: \t\t%#x"%state   
+        print "subsitute: \t%#x"%state   
 
         state = self._diffusion_layer__shift_rows(state)
-        print "shift rows: \t\t%#x"%state   
+        print "shift rows: \t%#x"%state   
 
         state = self._add_round_key(state, self._rounds-1)
-        print "add key: \t\t%#x"%state   
+        print "add key: \t%#x"%state   
 
         return state
 
 
     def decrypt(self, ciphertext):
+        
         pass
 
 
@@ -330,8 +340,8 @@ def main():
     blocksize = 128
 
     ## init some raw input key
-#    inputkey = 0x000102030405060708090a0b0c0d0e0f  
-    inputkey = 0xffffffffffffffffffffffffffffffff  
+    inputkey = 0x000102030405060708090a0b0c0d0e0f
+
     print "initial key:"
     print "%#x\n" % inputkey
 
