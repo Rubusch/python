@@ -70,101 +70,93 @@ class AES:
                                            [1,2,3,1],
                                            [1,1,2,3],
                                            [3,1,1,2]]
-        # TODO invert _mix_columns__const_matrix  
+# TODO invert _mix_columns__const_matrix  
+# TODO use 4-byte groups instead of one single line
 
         ## Rcon, source: http://en.wikipedia.org/wiki/Rijndael_key_schedule
         ## only the first some are actually used!!!
-        self._rcon = [0x8d, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36, 0x6c, 0xd8, 0xab, 0x4d, 0x9a,
-                      0x2f, 0x5e, 0xbc, 0x63, 0xc6, 0x97, 0x35, 0x6a, 0xd4, 0xb3, 0x7d, 0xfa, 0xef, 0xc5, 0x91, 0x39,
-                      0x72, 0xe4, 0xd3, 0xbd, 0x61, 0xc2, 0x9f, 0x25, 0x4a, 0x94, 0x33, 0x66, 0xcc, 0x83, 0x1d, 0x3a,
-                      0x74, 0xe8, 0xcb, 0x8d, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36, 0x6c, 0xd8,
-                      0xab, 0x4d, 0x9a, 0x2f, 0x5e, 0xbc, 0x63, 0xc6, 0x97, 0x35, 0x6a, 0xd4, 0xb3, 0x7d, 0xfa, 0xef,
-                      0xc5, 0x91, 0x39, 0x72, 0xe4, 0xd3, 0xbd, 0x61, 0xc2, 0x9f, 0x25, 0x4a, 0x94, 0x33, 0x66, 0xcc,
-                      0x83, 0x1d, 0x3a, 0x74, 0xe8, 0xcb, 0x8d, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b,
-                      0x36, 0x6c, 0xd8, 0xab, 0x4d, 0x9a, 0x2f, 0x5e, 0xbc, 0x63, 0xc6, 0x97, 0x35, 0x6a, 0xd4, 0xb3,
-                      0x7d, 0xfa, 0xef, 0xc5, 0x91, 0x39, 0x72, 0xe4, 0xd3, 0xbd, 0x61, 0xc2, 0x9f, 0x25, 0x4a, 0x94,
-                      0x33, 0x66, 0xcc, 0x83, 0x1d, 0x3a, 0x74, 0xe8, 0xcb, 0x8d, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20,
-                      0x40, 0x80, 0x1b, 0x36, 0x6c, 0xd8, 0xab, 0x4d, 0x9a, 0x2f, 0x5e, 0xbc, 0x63, 0xc6, 0x97, 0x35,
-                      0x6a, 0xd4, 0xb3, 0x7d, 0xfa, 0xef, 0xc5, 0x91, 0x39, 0x72, 0xe4, 0xd3, 0xbd, 0x61, 0xc2, 0x9f,
-                      0x25, 0x4a, 0x94, 0x33, 0x66, 0xcc, 0x83, 0x1d, 0x3a, 0x74, 0xe8, 0xcb, 0x8d, 0x01, 0x02, 0x04,
-                      0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36, 0x6c, 0xd8, 0xab, 0x4d, 0x9a, 0x2f, 0x5e, 0xbc, 0x63,
-                      0xc6, 0x97, 0x35, 0x6a, 0xd4, 0xb3, 0x7d, 0xfa, 0xef, 0xc5, 0x91, 0x39, 0x72, 0xe4, 0xd3, 0xbd,
-                      0x61, 0xc2, 0x9f, 0x25, 0x4a, 0x94, 0x33, 0x66, 0xcc, 0x83, 0x1d, 0x3a, 0x74, 0xe8, 0xcb, 0x8d]
+        self._rcon = [0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36]
 
         ## key schedule
-        if keylength == 128:
-            self._keylength = 128
-            self._rounds = 10
+        self._keylength = keylength
+        self._rounds = 10
+        if 192 == self._keylength: self._rounds = 12
+        elif 256 == self._keylength: self._rounds = 14
+        self._keys = self._key_schedule(inputkey, self._keylength)
 
-        elif keylength == 192:
-            self._keylength = 192
-            self._rounds = 12
-            die("TODO 192-bit")   
+    def _key_schedule(self, password, keylength):
+        ## init, e.g. keylength 128 and password:
+        ## 0x000102030405060708090a0b0c0d0e0f
+        Nb = 4
+        Nk = keylength / 32
+        Nr = Nk + 6 # rounds keys
+        words = []
+        words = [0] * Nb * (Nr+1)
+        temp = 0x0
 
-        elif keylength == 256:
-            self._keylength = 256
-            self._rounds = 14
-            die("TODO 256-bit")   
+        ## split initial key into four pieces
+        ## 0x00010203 0x04050607 0x08090a0b 0x0c0d0e0f
+        for idx in range(Nk):
+            words[idx] = (password >>(keylength - (idx+1) * 32)) & 0xffffffff
 
-        else:
-            die("ERROR: keylength not supported")
-            print keylength
+        for idx in range(Nk, Nb*(Nr+1)): # round 4. -> 44. (128-bit)
+            words[idx] = 0x0
 
-        ## generate round keys
-        self._keys = self._key_schedule(inputkey)
+            ## init temp to the last quadruple
+            temp = words[idx-1]
 
+            nextword = 0x0
+            if idx % Nk == 0:
+                ## first word block, rotate and substitute
 
-    def _key_schedule(self, initialkey):
-        ## generates all needed round keys, depending on the key length
-        print "\tinitialkey %#x" % initialkey  
+                ## rotate word
+                swap = (temp >>24) & 0xff
+                temp = ((temp <<8) & 0xffffffff)|swap
+                ## temp: 0x0d0e0f0c
 
-        last_key = initialkey
-        keys = [last_key]
-        for rnd in range(self._rounds):
-            ## the first (MSB) 32-bit block is XORed with the last (LSB) one
-            word = ((last_key >> (self._keylength - 32)) & 0xffffffff) ^ self._g(last_key & 0xffffffff, rnd)
-            next_key = self._hexlst_append(0x0, word)
-            ## for the rest it depends on bitlength
-            for idx in range(1, self._keylength/32):
-                word = word ^ ((last_key >> (self._keylength-32 -idx*32)) & 0xffffffff)
-                next_key = self._hexlst_append(next_key, word, 4)
-            keys.append(next_key)
-            last_key = next_key
+                ## s-boxing and r-coefficient
+                for sub in range(4):
+                    ## s-boxing
+                    row = (temp >> (32 - 8*(sub+1) + 4)) & 0xf
+                    col = (temp >> (32 - 8*(sub+1))) & 0xf
+                    ch = self._sbox[row][col]
+                    ## ch: d7
 
+                    ## the 0. char, XOR against round coefficient
+                    if sub == 0: ch ^= self._rcon[idx/Nk -1]
+                    ## ch: d7
 
-        ## DEBUG keys
-        for k in range(len(keys)):
-            print "R%d subkey: %#x" % (k,keys[k])
-            
-        die("STOP")   
+                    ## append new character
+                    nextword = (nextword<<8) | ch
+                    ## swap: d6
+
+                temp = nextword
+                ## temp: 0xd6ab76fe
+
+            elif Nk > 6 and idx % Nk == 4:
+                ## keylength above 128-bit, additional substitutions
+                for sub in range(4):
+                    ## s-boxing
+                    row = (temp >> (32 - 8*(sub+1) + 4)) & 0xf
+                    col = (temp >> (32 - 8*(sub+1))) & 0xf
+                    ch = self._sbox[row][col]
+
+                    ## append new character
+                    nextword = (nextword<<8) | ch
+
+                temp = nextword
+                ## temp: 0xd6ab76fe
+
+            ## assign the preceeding word, XORed against the current temp
+            words[idx] = words[idx-Nk] ^ temp
         
-        return keys
+        # for idx in range(len(words)):
+        #     if idx % 4 == 0: print ""
+        #     print "%x " %words[idx], 
+        # print "\n"
+        # die("XXX")  
 
-
-    def _g(self, word, rnd):
-        ## input a 32-bit value, in 4 groups of 8-bit each
-        ##
-        ## the g function rotates its 4 input bytes, performs a byte-wise S-box
-        ## substitution, and adds a round coefficient RC to it; the round
-        ## coefficient is an element of the Galois field GF(2^8), i.e. an 8-bit
-        ## value
-        ##
-        ## the g function has two purposes; first it adds nonlinearity to the
-        ## key schedule; second, it removes symmetry in AES; both properties are
-        ## necessary to thwart certain block cipher attacks
-        val = (word >> 24) & 0xff
-        word = ((word << 8) & 0xffffffff) | val
-
-        ## s-box substitution
-        hexlst = 0x0
-        for idx in range(32/8):
-            hexlst = self._hexlst_append(hexlst, self._sbox_get(self._hexlst_getnth(word, idx, 32)))
-        word = hexlst
-
-        ## use round coefficient
-        val = ((word >> 24) & 0xff) ^ self._rcon[rnd]
-        word = (word & 0xffffff) | (val << 24)
-        return word
+        return words
 
     ## utilities
     def _invert_sbox(self, box):
@@ -205,6 +197,7 @@ class AES:
             ret ^= item
         return (ret&0xff)
 
+# TODO rm  
     def _sbox_get(self, idx):
         ## splits an 8-bit hex into two 4-bit, the col and row sbox index
         col = (idx & 0xf)
@@ -213,13 +206,57 @@ class AES:
 
     def _add_round_key(self, state, rnd):
         ## add a round key
-        return self._keys[rnd] ^ state
+        key = self._keys[rnd*4]
+        key = key <<32 | self._keys[rnd*4+1]
+        key = key <<32 | self._keys[rnd*4+2]
+        key = key <<32 | self._keys[rnd*4+3]
+
+        
+        # for idx in range(len(self._keys)):
+        #     if idx % 4 == 0: print ""
+        #     print "%x " % self._keys[idx], 
+        # print "\n"
+        
+#        print "key %x" % key
+
+        
+        print "R%d (key = %x)\t= " % (rnd,key), 
+        ret = key ^ state
+        print "%x" % ret 
+        
+#        die("XXX")  
+        
+        return ret
+#        return key ^ state
 
     def _substitution_layer__sub_bytes(self, state):
         ## substitution per 8-bit values
         hexlst = 0x0
         for idx in range(self._blocksize/8):
-            hexlst = self._hexlst_append(hexlst, self._sbox_get(self._hexlst_getnth(state, idx, self._blocksize)))
+            
+            ch = (state >> (self._blocksize - (idx+1)*8)) & 0xff
+#            print "\tch %#x, before" % ch 
+
+            col = idx & 0xf
+            row = (idx >> 4) & 0xf
+#            val = self._sbox[row][col]
+            val = self._sbox[col][row]  
+# XXX
+
+#            print "\tch %#x, after" % val 
+            
+
+#            print "\tbyte %#x" % self._hexlst_getnth(state, idx, self._blocksize)  
+#            val = self._sbox_get(self._hexlst_getnth(state, idx, self._blocksize))
+#            print "\tval %#x" % val  
+
+            hexlst = self._hexlst_append(hexlst, val) 
+            
+#            hexlst = self._hexlst_append(hexlst, self._sbox_get(self._hexlst_getnth(state, idx, self._blocksize)))
+#            print "\tidx",idx 
+#            print "\t%#x" % hexlst 
+#            print "" 
+#        die("AAA")  
         return hexlst
 
     def _diffusion_layer__shift_rows(self, state):
@@ -285,11 +322,14 @@ class AES:
 
         
         ## DEBUG
-#        state = 0xffffffffffffffffffffffffffffffff 
+        state = 0xffffffffffffffffffffffffffffffff 
         state = 0x00112233445566778899aabbccddeeff
+#        state = 0x00000000000000000000000000000000
+        
+
 
 #        self._keys = []
-        print "initial state : %s" % bin(state)  
+#        print "initial state : %s" % bin(state)  
 
         ## TODO one way 128-bit '1' subkey
 #        self._keys = [0xffffffffffffffffffffffffffffffff, 0xffffffffffffffffffffffffffffffff]   
@@ -298,13 +338,14 @@ class AES:
 
         ## round 0
         state = self._add_round_key(state, 0)
-        print "add key: \t%#x"%state   
+        
+# TODO ok    
 
         for rnd in range(self._rounds-1):
-            print "rnd %d"%rnd   
+#            print "rnd %d"%rnd   
 
             state = self._substitution_layer__sub_bytes(state)
-            print "subsitute: \t\t%#x"%state   
+            print "substitute: \t\t%#x"%state   
 
             state = self._diffusion_layer__shift_rows(state)
             print "shift rows: \t\t%#x"%state   
@@ -312,20 +353,25 @@ class AES:
             state = self._diffusion_layer__mix_column(state)
             print "mix column: \t\t%#x"%state   
 
+            die("XXX")
+
+
+
             state = self._add_round_key(state, rnd+1)
             print "add key: \t\t%#x"%state   
 
-            print "%d. round: \t\t%#x" % (rnd,state)   
+#            print "%d. round: \t\t%#x" % (rnd,state)   
+            die("XXX")
 
         ## round n
         state = self._substitution_layer__sub_bytes(state)
-        print "subsitute: \t%#x"%state   
+#        print "substitute: \t%#x"%state   
 
         state = self._diffusion_layer__shift_rows(state)
-        print "shift rows: \t%#x"%state   
+#        print "shift rows: \t%#x"%state   
 
-        state = self._add_round_key(state, self._rounds-1)
-        print "add key: \t%#x"%state   
+        state = self._add_round_key(state, self._rounds)
+#        print "add key: \t%#x"%state   
 
         return state
 
@@ -350,17 +396,21 @@ def main():
 
     ## init some input text
     plaintext = "jack and jill went up the hill to fetch a pail of water"
-    print "plaintext:"
-    print "%s\n" % plaintext
+#    print "plaintext:"
+#    print "%s\n" % plaintext
 
     ciphertext = []
     blocktext = ""
-    for idx in range(len(plaintext)-1):
-        blocktext += plaintext[idx]
-        if idx % (blocksize/8) == 0:
-            ciphertext.append(aes.encrypt(blocktext))
-            blocktext = ""
-    blocktext += plaintext[idx+1]
+# TODO handle blocks..
+    # for idx in range(len(plaintext)-1):
+    #     blocktext += plaintext[idx]
+    #     if idx % (blocksize/8) == 0:
+    #         ciphertext.append(aes.encrypt(blocktext))
+    #         blocktext = ""
+    # blocktext += plaintext[idx+1]
+    # ciphertext.append(aes.encrypt(blocktext))
+
+    blocktext += plaintext[0]
     ciphertext.append(aes.encrypt(blocktext))
 
     ## print result
