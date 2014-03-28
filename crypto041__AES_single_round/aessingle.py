@@ -29,7 +29,7 @@ def DEBUG_print_box(box, name):
     print "DEBUG - print %s:"%name
     for row in range(16):
         for col in range(16):
-            print "%#x " % box[row][col],
+            print "%#.2x " % box[row][col],
         print ""
     print "/DEBUG"
 
@@ -235,15 +235,19 @@ class AES:
         for idx in range(self._blocksize/8):
             
             ch = (state >> (self._blocksize - (idx+1)*8)) & 0xff
-#            print "\tch %#x, before" % ch 
+#            print "\tch %#.2x, before" % ch 
 
-            col = idx & 0xf
-            row = (idx >> 4) & 0xf
-#            val = self._sbox[row][col]
-            val = self._sbox[col][row]  
-# XXX
+# TODO rm, fix sbox function (wrong row col)
+#            col = idx & 0xf
+#            row = (idx >> 4) & 0xf
 
-#            print "\tch %#x, after" % val 
+            col = (idx >> 4) & 0xf
+            row = idx & 0xf
+            val = self._sbox[row][col]
+
+# TODO rm
+#            val = self._sbox[col][row]  
+#            print "\tch %#.2x, after" % val 
             
 
 #            print "\tbyte %#x" % self._hexlst_getnth(state, idx, self._blocksize)  
@@ -290,6 +294,10 @@ class AES:
         * the factor 3 is a XOR combination of 1 and 2, since 3x = x + 2x,
         here named bb and b vector
         """
+# FIXME
+        
+        print "_diffusion_layer__mix_column(self, state)"  
+        
         hexlst = 0x0
         for col in range(len(self._mix_columns__const_matrix[0])):
             b_vec = [0]*4
@@ -310,9 +318,19 @@ class AES:
 #                bb_vec[row] = b_vec[row] <<1 ^ 0x11b if b_vec[row] & 0x80 else b_vec[row] <<1
 
             hexlst = self._hexlst_append(hexlst, (bb_vec[0] ^  b_vec[1] ^ bb_vec[1] ^  b_vec[2] ^  b_vec[3]))
+            print "\tDEBUG: %#x" % hexlst  
+
             hexlst = self._hexlst_append(hexlst, ( b_vec[0] ^ bb_vec[1] ^  b_vec[2] ^ bb_vec[2] ^  b_vec[3]))
+            print "\tDEBUG: %#x" % hexlst  
+
             hexlst = self._hexlst_append(hexlst, ( b_vec[0] ^  b_vec[1] ^ bb_vec[2] ^  b_vec[3] ^ bb_vec[3]))
+            print "\tDEBUG: %#x" % hexlst  
+
             hexlst = self._hexlst_append(hexlst, ( b_vec[0] ^ bb_vec[0] ^  b_vec[1] ^  b_vec[2] ^ bb_vec[3]))
+
+            print "\tDEBUG: %#x" % hexlst  
+            die("XXX")   
+            
         return hexlst
 
 

@@ -50,29 +50,29 @@ def mix_columns(s, Nb=4):
         a = [0] * 4
         b = [0] * 4
 
-        for i in range(4):
-            a[i] = s[i][c]
-            b[i] = s[i][c]<<1 ^ 0x011b if s[i][c]&0x80 else s[i][c]<<1
+        for idx in range(4):
+            a[idx] = s[idx][c]
+            b[idx] = s[idx][c]<<1 ^ 0x011b if s[idx][c]&0x80 else s[idx][c]<<1
             ## explicitly written
             # if s[i][c] & 0x80:
             #     b[i] = s[i][c]<<1 ^ 0x011b
             # else:
             #     b[i] = s[i][c]<<1
 
-        print "a ",a
-        print "b ",b
+        print "a: [%s]"%", ".join("%.2x"%i for i in a)
+        print "b: [%s]"%", ".join("%.2x"%i for i in b)
 
         s[0][c] = b[0] ^ a[1] ^ b[1] ^ a[2] ^ a[3]
-        print "s[0][%d] = b[0] ^ a[1] ^ b[1] ^ a[2] ^ a[3] = %x ^ %x ^ %x ^ %x ^ %x = %x" % (c, b[0], a[1], b[1], a[2], a[3], s[0][c])
+        print "s[0][%d]\t= b[0] ^ a[1] ^ b[1] ^ a[2] ^ a[3]\t= %.2x ^ %.2x ^ %.2x ^ %.2x ^ %.2x\t= %.2x" % (c, b[0], a[1], b[1], a[2], a[3], s[0][c])
 
         s[1][c] = a[0] ^ b[1] ^ a[2] ^ b[2] ^ a[3]
-        print "s[1][%d] = a[0] ^ b[1] ^ a[2] ^ b[2] ^ a[3] = %x ^ %x ^ %x ^ %x ^ %x = %x" % (c, a[0], b[1], a[2], b[2], a[3], s[1][c])
+        print "s[1][%d]\t= a[0] ^ b[1] ^ a[2] ^ b[2] ^ a[3]\t= %.2x ^ %.2x ^ %.2x ^ %.2x ^ %.2x\t= %.2x" % (c, a[0], b[1], a[2], b[2], a[3], s[1][c])
 
         s[2][c] = a[0] ^ a[1] ^ b[2] ^ a[3] ^ b[3]
-        print "s[2][%d] = a[0] ^ a[1] ^ b[2] ^ a[3] ^ b[3] = %x ^ %x ^ %x ^ %x ^ %x = %x" % (c, a[0], a[1], b[2], a[3], b[3], s[2][c])
+        print "s[2][%d]\t= a[0] ^ a[1] ^ b[2] ^ a[3] ^ b[3]\t= %.2x ^ %.2x ^ %.2x ^ %.2x ^ %.2x\t= %.2x" % (c, a[0], a[1], b[2], a[3], b[3], s[2][c])
 
         s[3][c] = a[0] ^ b[0] ^ a[1] ^ a[2] ^ b[3]
-        print "s[3][%d] = a[0] ^ b[0] ^ a[1] ^ a[2] ^ b[3] = %x ^ %x ^ %x ^ %x ^ %x = %x" % (c, a[0], b[0], a[1], a[2], b[3], s[1][c])
+        print "s[3][%d]\t= a[0] ^ b[0] ^ a[1] ^ a[2] ^ b[3]\t= %.2x ^ %.2x ^ %.2x ^ %.2x ^ %.2x\t= %.2x" % (c, a[0], b[0], a[1], a[2], b[3], s[1][c])
 
         print ""
 
@@ -83,18 +83,31 @@ def printstate(s):
         for col in range(4):
             ## dec
             val = s[row][col]
-            if val <= 9: print " 0%d"%(val),
-            else: print " %d"%(val),
+#            if val <= 9: print " 0%d"%(val),
+#            else: print " %d"%(val),
             ## hex
-#            print " %#x"%(s[row][col]),
+            print " %#.2x"%(val),
         print ""
-    print "---"
+    print ""
+
+    print "text [state]:"
+    for idx in range(16):
+        print "%.2x" % s[idx%4][idx//4],
+    print "\n"
+
 
 if __name__ == "__main__":
 
     Nb = 4
-    state = [ [0]*Nb, [0]*Nb, [0]*Nb, [0]*Nb ]
-    for i in range(4*Nb): state[i%4][i/4] = i
+    ## incrementing number state
+#    state = [ [0]*Nb, [0]*Nb, [0]*Nb, [0]*Nb ]
+#    for i in range(4*Nb): state[i%4][i/4] = i
+
+    ## example state
+    state = [[0x63,0x09,0xcd,0xba],
+             [0x53,0x60,0x70,0xca],
+             [0xe0,0xe1,0xb7,0xd0],
+             [0x8c,0x04,0x51,0xe7]]
 
     printstate(state)
 
