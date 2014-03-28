@@ -25,15 +25,9 @@ def die(msg):
     if 0 < len(msg): print msg
     sys.exit(1)
 
-def DEBUG_print_box(box, name):
-    print "DEBUG - print %s:"%name
-    for row in range(16):
-        for col in range(16):
-            print "%#.2x " % box[row][col],
-        print ""
-    print "/DEBUG"
-
-
+def DBG(msg):
+    #print msg
+    pass
 
 class AES:
     def __init__(self, inputkey, keylength):
@@ -58,9 +52,7 @@ class AES:
                       [0xe1, 0xf8, 0x98, 0x11, 0x69, 0xd9, 0x8e, 0x94, 0x9b, 0x1e, 0x87, 0xe9, 0xce, 0x55, 0x28, 0xdf],
                       [0x8c, 0xa1, 0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0, 0x54, 0xbb, 0x16]]
 
-#        DEBUG_print_box(self._sbox, "sbox")  
         self._sbox_inv = self._invert_sbox(self._sbox)
-#        DEBUG_print_box(self._sbox_inv, "sbox_inv")  
 
         ## diffusion layer
         self._shift_rows = [0,5,10,15,4,9,14,3,8,13,2,7,12,1,6,11]
@@ -149,13 +141,6 @@ class AES:
 
             ## assign the preceeding word, XORed against the current temp
             words[idx] = words[idx-Nk] ^ temp
-        
-        # for idx in range(len(words)):
-        #     if idx % 4 == 0: print ""
-        #     print "%x " %words[idx], 
-        # print "\n"
-        # die("XXX")  
-
         return words
 
     ## utilities
@@ -197,70 +182,25 @@ class AES:
             ret ^= item
         return (ret&0xff)
 
-# TODO rm  
-    def _sbox_get(self, idx):
-        ## splits an 8-bit hex into two 4-bit, the col and row sbox index
-        col = (idx & 0xf)
-        row = (idx >> 4) & 0xf
-        return self._sbox[row][col]
-
     def _add_round_key(self, state, rnd):
         ## add a round key
         key = self._keys[rnd*4]
         key = key <<32 | self._keys[rnd*4+1]
         key = key <<32 | self._keys[rnd*4+2]
         key = key <<32 | self._keys[rnd*4+3]
-
-        
-        # for idx in range(len(self._keys)):
-        #     if idx % 4 == 0: print ""
-        #     print "%x " % self._keys[idx], 
-        # print "\n"
-        
-#        print "key %x" % key
-
-        
-        print "R%d (key = %x)\t= " % (rnd,key), 
         ret = key ^ state
-        print "%x" % ret 
-        
-#        die("XXX")  
-        
+        DBG( "R%d (key = %#.32x)\t= %#.32x" % (rnd,key,ret) )
         return ret
-#        return key ^ state
 
     def _substitution_layer__sub_bytes(self, state):
         ## substitution per 8-bit values
         hexlst = 0x0
         for idx in range(self._blocksize/8):
-            
             ch = (state >> (self._blocksize - (idx+1)*8)) & 0xff
-#            print "\tch %#.2x, before" % ch 
-
-# TODO rm, fix sbox function (wrong row col)
-#            col = idx & 0xf
-#            row = (idx >> 4) & 0xf
-
-            col = (idx >> 4) & 0xf
-            row = idx & 0xf
+            row = 0xf & (ch >>4)
+            col = 0xf & ch
             val = self._sbox[row][col]
-
-# TODO rm
-#            val = self._sbox[col][row]  
-#            print "\tch %#.2x, after" % val 
-            
-
-#            print "\tbyte %#x" % self._hexlst_getnth(state, idx, self._blocksize)  
-#            val = self._sbox_get(self._hexlst_getnth(state, idx, self._blocksize))
-#            print "\tval %#x" % val  
-
-            hexlst = self._hexlst_append(hexlst, val) 
-            
-#            hexlst = self._hexlst_append(hexlst, self._sbox_get(self._hexlst_getnth(state, idx, self._blocksize)))
-#            print "\tidx",idx 
-#            print "\t%#x" % hexlst 
-#            print "" 
-#        die("AAA")  
+            hexlst = self._hexlst_append(hexlst, val)
         return hexlst
 
     def _diffusion_layer__shift_rows(self, state):
@@ -271,33 +211,27 @@ class AES:
         return hexlst
 
     def _diffusion_layer__mix_column(self, state):
-        """
-        major diffusion element on 8-bit values
-
-        matrix-matrix-multiplication in GF(2^8) with P(x) = x^8 + x^4 + x^3 + x + 1
-
-         / c0 \      / 2 3 1 1 \     / b0 \
-        |  c1  |    |  1 2 3 1  |   |  b1  |
-        |  c2  | == |  1 1 2 3  | * |  b2  |
-         \ c3 /      \ 3 1 1 2 /     \ b3 /
-
-        where B = state/input, and C = states/output
-
-        Galois Field restrictions:
-        * Addition: XOR operation
-        * Multiplication: leftshift, with modular reduction to P(x)
-
-        in specific:
-        * the factor 1 will multiply by identity, means just take the b-value
-        * the factor 2 is a doubling (leftshift by 1) and modular reduction
-        here named b vector
-        * the factor 3 is a XOR combination of 1 and 2, since 3x = x + 2x,
-        here named bb and b vector
-        """
-# FIXME
-        
-        print "_diffusion_layer__mix_column(self, state)"  
-        
+        ## major diffusion element on 8-bit values
+        ##
+        ## matrix-matrix-multiplication in GF(2^8) with P(x) = x^8 + x^4 + x^3 + x + 1
+        ##
+        ##  / c0 \      / 2 3 1 1 \     / b0 \
+        ## |  c1  |    |  1 2 3 1  |   |  b1  |
+        ## |  c2  | == |  1 1 2 3  | * |  b2  |
+        ##  \ c3 /      \ 3 1 1 2 /     \ b3 /
+        ##
+        ## where B = state/input, and C = states/output
+        ##
+        ## Galois Field restrictions:
+        ## * Addition: XOR operation
+        ## * Multiplication: leftshift, with modular reduction to P(x)
+        ##
+        ## in specific:
+        ## * the factor 1 will multiply by identity, means just take the b-value
+        ## * the factor 2 is a doubling (leftshift by 1) and modular reduction
+        ##   here named b vector
+        ## * the factor 3 is a XOR combination of 1 and 2, since 3x = x + 2x,
+        ##   here named bb and b vector
         hexlst = 0x0
         for col in range(len(self._mix_columns__const_matrix[0])):
             b_vec = [0]*4
@@ -305,32 +239,22 @@ class AES:
             for row in range(len(self._mix_columns__const_matrix)):
                 ## 1. left shift by factor for each vector value
                 ## 2. XOR the shifted vector results
-                b_vec[row] = self._hexlst_getnth(state, row*col, self._blocksize)
+                b_vec[row] = self._hexlst_getnth(state, row+(4*col), self._blocksize)
 
                 ## write doubled b-values into bb-vec,
                 ## GF(2^8), perform modular reduction by mod P(x), which is
                 ## P(x) = x^8 + x^4 + x^3 + x + 1
-                if b_vec[row] & 0x80:
-                    bb_vec[row] = b_vec[row] <<1 ^ 0x11b
-                else:
-                    bb_vec[row] = b_vec[row] <<1
+                ## if b_vec[row] & 0x80:
+                ##     bb_vec[row] = b_vec[row] <<1 ^ 0x11b
+                ## else:
+                ##     bb_vec[row] = b_vec[row] <<1
                 ## brief writing of the above
-#                bb_vec[row] = b_vec[row] <<1 ^ 0x11b if b_vec[row] & 0x80 else b_vec[row] <<1
+                bb_vec[row] = b_vec[row] <<1 ^ 0x11b if b_vec[row] & 0x80 else b_vec[row] <<1
 
             hexlst = self._hexlst_append(hexlst, (bb_vec[0] ^  b_vec[1] ^ bb_vec[1] ^  b_vec[2] ^  b_vec[3]))
-            print "\tDEBUG: %#x" % hexlst  
-
             hexlst = self._hexlst_append(hexlst, ( b_vec[0] ^ bb_vec[1] ^  b_vec[2] ^ bb_vec[2] ^  b_vec[3]))
-            print "\tDEBUG: %#x" % hexlst  
-
             hexlst = self._hexlst_append(hexlst, ( b_vec[0] ^  b_vec[1] ^ bb_vec[2] ^  b_vec[3] ^ bb_vec[3]))
-            print "\tDEBUG: %#x" % hexlst  
-
             hexlst = self._hexlst_append(hexlst, ( b_vec[0] ^ bb_vec[0] ^  b_vec[1] ^  b_vec[2] ^ bb_vec[3]))
-
-            print "\tDEBUG: %#x" % hexlst  
-            die("XXX")   
-            
         return hexlst
 
 
@@ -345,51 +269,35 @@ class AES:
 #        state = 0x00000000000000000000000000000000
         
 
-
-#        self._keys = []
-#        print "initial state : %s" % bin(state)  
-
-        ## TODO one way 128-bit '1' subkey
-#        self._keys = [0xffffffffffffffffffffffffffffffff, 0xffffffffffffffffffffffffffffffff]   
-#        print "initial key[0]: %s" % bin(self._keys[0])  
-        
-
         ## round 0
         state = self._add_round_key(state, 0)
-        
-# TODO ok    
+        DBG( "add key: \t%#.32x"%state )
 
         for rnd in range(self._rounds-1):
-#            print "rnd %d"%rnd   
+            DBG( "rnd %d"%rnd )
 
             state = self._substitution_layer__sub_bytes(state)
-            print "substitute: \t\t%#x"%state   
+            DBG( "substitute: \t\t%#.32x"%state )
 
             state = self._diffusion_layer__shift_rows(state)
-            print "shift rows: \t\t%#x"%state   
+            DBG( "shift rows: \t\t%#.32x"%state )
 
             state = self._diffusion_layer__mix_column(state)
-            print "mix column: \t\t%#x"%state   
-
-            die("XXX")
-
-
+            DBG( "mix column: \t\t%#.32x"%state )
 
             state = self._add_round_key(state, rnd+1)
-            print "add key: \t\t%#x"%state   
-
-#            print "%d. round: \t\t%#x" % (rnd,state)   
-            die("XXX")
+            DBG( "add key: \t\t%#.32x"%state )
+            DBG("")
 
         ## round n
         state = self._substitution_layer__sub_bytes(state)
-#        print "substitute: \t%#x"%state   
+        DBG( "substitute: \t%#.32x"%state )
 
         state = self._diffusion_layer__shift_rows(state)
-#        print "shift rows: \t%#x"%state   
+        DBG( "shift rows: \t%#.32x"%state )
 
         state = self._add_round_key(state, self._rounds)
-#        print "add key: \t%#x"%state   
+        DBG( "add key: \t%#.32x"%state )
 
         return state
 
@@ -406,8 +314,7 @@ def main():
     ## init some raw input key
     inputkey = 0x000102030405060708090a0b0c0d0e0f
 
-    print "initial key:"
-    print "%#x\n" % inputkey
+    print "initial key:\n%#.32x\n" % inputkey
 
     ## init the algorithm
     aes = AES(inputkey, 128)
@@ -434,7 +341,7 @@ def main():
     ## print result
     print "encrypted:"
     for item in ciphertext:
-        print "%#x"%item
+        print "%#.32x"%item
     print "\n"
 
     die("STOP")    
