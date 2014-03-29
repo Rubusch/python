@@ -53,15 +53,11 @@ ln_box = [[0x00,0x00,0x19,0x01,0x32,0x02,0x1a,0xc6,0x4b,0xc7,0x1b,0x68,0x33,0xee
           [0x67,0x4a,0xed,0xde,0xc5,0x31,0xfe,0x18,0x0d,0x63,0x8c,0x80,0xc0,0xf7,0x70,0x07]]
 
 def lookup(table,val):
-#    print "val %#.2x" % val
     row = 0xf & (val >>4)
     col = 0xf & val
-#    print "row %#x, col %#x" % (row, col)
-#    print "table %#x" % table[row][col]  
     return table[row][col]
 
 def gf_mult(vala, valb):
-#    lookup(exp_box, vala)  
     if vala != 0 and valb != 0:
         vala = lookup(ln_box,vala)
         valb = lookup(ln_box,valb)
@@ -73,10 +69,21 @@ def gf_mult(vala, valb):
         return 0x0
 
 if __name__ ==  "__main__":
-    vala = 0x03
-    valb = 0x53
-    res = gf_mult(vala,valb)
-    print "a * b mod P(x) = %#.2x * %#.2x mod P(x) = %#.2x" % (vala,valb,res)
+    arr = [0x02,0x03,0x01,0x01]
+    brr = [0x63,0x53,0xe0,0x8c]
+    crr = []
+    for idx in range(len(arr)):
+        res = gf_mult(arr[idx],brr[idx])
+        print "a * b mod P(x) = %#.2x * %#.2x mod P(x) = %#.2x" % (arr[idx],brr[idx],res)
+        crr.append(res)
+    print ""
+
+    print "final:\n[%s]"%",".join("%#.2x"%i for i in crr)
+    print ""
+
+    ## for mix columns operations
+    print "XORed result:\n%#.2x"%reduce(lambda x,y:x^y, crr)
+    print ""
 
     print "READY.\n"
 

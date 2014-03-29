@@ -48,31 +48,31 @@ def die(msg):
 def mix_columns(s, Nb=4):
     for c in range(4):
         a = [0] * 4
-        b = [0] * 4
+        xaa = [0] * 4
 
         for idx in range(4):
             a[idx] = s[idx][c]
-            b[idx] = s[idx][c]<<1 ^ 0x011b if s[idx][c]&0x80 else s[idx][c]<<1
+            xaa[idx] = s[idx][c]<<1 ^ 0x011b if s[idx][c]&0x80 else s[idx][c]<<1
             ## explicitly written
             # if s[i][c] & 0x80:
-            #     b[i] = s[i][c]<<1 ^ 0x011b
+            #     xaa[i] = s[i][c]<<1 ^ 0x011b
             # else:
-            #     b[i] = s[i][c]<<1
+            #     xaa[i] = s[i][c]<<1
 
         print "a: [%s]"%", ".join("%.2x"%i for i in a)
-        print "b: [%s]"%", ".join("%.2x"%i for i in b)
+        print "xaa: [%s]"%", ".join("%.2x"%i for i in xaa)
 
-        s[0][c] = b[0] ^ a[1] ^ b[1] ^ a[2] ^ a[3]
-        print "s[0][%d]\t= b[0] ^ a[1] ^ b[1] ^ a[2] ^ a[3]\t= %.2x ^ %.2x ^ %.2x ^ %.2x ^ %.2x\t= %.2x" % (c, b[0], a[1], b[1], a[2], a[3], s[0][c])
+        s[0][c] = xaa[0] ^ a[1] ^ xaa[1] ^ a[2] ^ a[3]
+        print "s[0][%d]\t= xaa[0] ^ a[1] ^ xaa[1] ^ a[2] ^ a[3]\t= %.2x ^ %.2x ^ %.2x ^ %.2x ^ %.2x\t= %.2x" % (c, xaa[0], a[1], xaa[1], a[2], a[3], s[0][c])
 
-        s[1][c] = a[0] ^ b[1] ^ a[2] ^ b[2] ^ a[3]
-        print "s[1][%d]\t= a[0] ^ b[1] ^ a[2] ^ b[2] ^ a[3]\t= %.2x ^ %.2x ^ %.2x ^ %.2x ^ %.2x\t= %.2x" % (c, a[0], b[1], a[2], b[2], a[3], s[1][c])
+        s[1][c] = a[0] ^ xaa[1] ^ a[2] ^ xaa[2] ^ a[3]
+        print "s[1][%d]\t= a[0] ^ xaa[1] ^ a[2] ^ xaa[2] ^ a[3]\t= %.2x ^ %.2x ^ %.2x ^ %.2x ^ %.2x\t= %.2x" % (c, a[0], xaa[1], a[2], xaa[2], a[3], s[1][c])
 
-        s[2][c] = a[0] ^ a[1] ^ b[2] ^ a[3] ^ b[3]
-        print "s[2][%d]\t= a[0] ^ a[1] ^ b[2] ^ a[3] ^ b[3]\t= %.2x ^ %.2x ^ %.2x ^ %.2x ^ %.2x\t= %.2x" % (c, a[0], a[1], b[2], a[3], b[3], s[2][c])
+        s[2][c] = a[0] ^ a[1] ^ xaa[2] ^ a[3] ^ xaa[3]
+        print "s[2][%d]\t= a[0] ^ a[1] ^ xaa[2] ^ a[3] ^ xaa[3]\t= %.2x ^ %.2x ^ %.2x ^ %.2x ^ %.2x\t= %.2x" % (c, a[0], a[1], xaa[2], a[3], xaa[3], s[2][c])
 
-        s[3][c] = a[0] ^ b[0] ^ a[1] ^ a[2] ^ b[3]
-        print "s[3][%d]\t= a[0] ^ b[0] ^ a[1] ^ a[2] ^ b[3]\t= %.2x ^ %.2x ^ %.2x ^ %.2x ^ %.2x\t= %.2x" % (c, a[0], b[0], a[1], a[2], b[3], s[1][c])
+        s[3][c] = a[0] ^ xaa[0] ^ a[1] ^ a[2] ^ xaa[3]
+        print "s[3][%d]\t= a[0] ^ xaa[0] ^ a[1] ^ a[2] ^ xaa[3]\t= %.2x ^ %.2x ^ %.2x ^ %.2x ^ %.2x\t= %.2x" % (c, a[0], xaa[0], a[1], a[2], xaa[3], s[1][c])
 
         print ""
 
