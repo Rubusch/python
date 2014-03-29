@@ -6,6 +6,15 @@
 @license: GPLv3
 @2014-Mar-19
 
+the following demonstrates a trick that can be used for encryption and galois
+field multiplication over mod P(x), where P(x) = x^8 + x^4 + x^3 + x + 1; with
+factors of 1 (identity), 2, and 3 - seen as factor 2 and a galois addition of
+identity (1)
+
+since the inverse matrix, as used in AES decryption uses values greater than 3,
+the above procedure is not helpful anymore and a full galois multiplication is
+necessary
+
 sources:
 Book: Understanding Cryptography, Christof Paar, Jan Pelzl (c) Springer 2010
 

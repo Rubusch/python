@@ -6,6 +6,9 @@
 @license: GPLv3
 @2014-Mar-19
 
+implementation of galois field multiplication as shown in wikipedia, needed for
+AES decryption
+
 sources:
 Book: Understanding Cryptography, Christof Paar, Jan Pelzl (c) Springer 2010
 
