@@ -71,7 +71,21 @@ def gf_mult(vala, valb):
     else:
         return 0x0
 
-if __name__ ==  "__main__":
+def main(argv=sys.argv[1:]):
+    if len(argv) == 2:
+        try:
+            vala = int(argv[0],16)
+            valb = int(argv[1],16)
+            res = gf_mult(vala,valb)
+            print "a * b mod P(x) = %#.2x * %#.2x mod P(x) = %#.2x" % (vala,valb,res)
+        except TypeError:
+            die("Wrong input format, type two numbers")
+        except ValueError:
+            die("Wrong input format")
+        return
+
+    ## an example with two value vectors
+    print "Galois Field Multiplication Example"
     arr = [0x02,0x03,0x01,0x01]
     brr = [0x63,0x53,0xe0,0x8c]
     crr = []
@@ -88,5 +102,7 @@ if __name__ ==  "__main__":
     print "XORed result:\n%#.2x"%reduce(lambda x,y:x^y, crr)
     print ""
 
-    print "READY.\n"
 
+if __name__ ==  "__main__":
+    main()
+    print "READY.\n"
