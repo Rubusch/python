@@ -18,21 +18,16 @@ Plaintext:  00112233445566778899aabbccddeeff
 Ciphertext: 69c4e0d86a7b0430d8cdb78070b4c55a
 """
 
-# TODO string hex conversion at encryption
-# TODO string hex conversion at decryption
-# TODO cleanup
-# TODO test 192 bit
-# TODO test 256 bit
-# TODO refactor use of functions
 import sys
 
-### utils ###
+### tools ###
+
 def die(msg):
     if 0 < len(msg): print msg
     sys.exit(1)
 
 def DBG(msg):
-    print msg
+#    print msg
     pass
 
 class AES:
@@ -253,7 +248,6 @@ class AES:
 
             elif Nk > 6 and idx % Nk == 4:
                 ## keylength above 128-bit, additional substitutions
-# TODO TEST                              
                 for sub in range(4):
                     ## s-boxing
                     ch = self._tablelookup(self._sbox, temp, (32-8*(sub+1)))
@@ -499,27 +493,39 @@ class AES:
 
 
 ### main ###
-def main():
+def main(argv=sys.argv[1:]):
+    ## AES has fixed block size of 128 bit
     blocksize = 128
+    inputkey = 0x0
+    plaintext = ""
     keylength = 256
 
-    ## init some raw input key
-    inputkey = 0x000102030405060708090a0b0c0d0e0f
+    if len(argv) > 0:
+        ## offer encryption by command line argument
+        try:
+            keylength = int(argv[0])
+            inputkey = int(argv[1],16)
+            plaintext = argv[2]
+        except:
+            die('usage: either w/o arguments, or as follows\n$ %s <keylength> <inputkey> "<plaintext>"\ne.g.\n$ %s %d %s "%s"'%(sys.argv[0],sys.argv[0],128,"0x000102030405060708090a0b0c0d0e0f","from Disco to Disco.."))
+    else:
+        ## init some raw input key example
+        inputkey = 0x000102030405060708090a0b0c0d0e0f
+        ## init some input text example
+        plaintext = "jack and jill went up the hill to fetch a pail of water"
 
-    print "initial key:\n%#.32x\n" % inputkey
-
-    ## init the algorithm
-    aes = AES(inputkey, keylength)
-
-    ## init some input text
-    plaintext = "jack and jill went up the hill to fetch a pail of water"
+    print "initial key:\n%#.32x, key length %d, block size %d\n" % (inputkey, keylength, blocksize)
 
     print "plaintext:"
     print "%s\n" % plaintext
 
+
+    ## init the algorithm
+    aes = AES(inputkey, keylength)
+
+    ## blocks
     ciphertext = []
     blocktext = ""
-# TODO handle blocks..
     for idx in range(len(plaintext)-1):
         blocktext += plaintext[idx]
         if idx % (blocksize/8) == 0:
