@@ -156,15 +156,20 @@ class AES:
         else:
             return 0x0
 
-    def _tablelookup(self,table,index):
+    def _tablelookup(self,table,index,offset=0):
         ## params:
         ## table = table to look up content
         ## index = a 0xff value, where 0xf0 describes 16 row indexes and 0x0f
         ## 16 column indexes
         ##
         ## returns table value by the provided row and column indexes
-        row = 0xf & (index >>4)
-        col = 0xf & index
+#        row = 0xf & (index >>4)  
+        row = 0xf & (index >>(offset+4))
+#        col = 0xf & index
+        if offset > 0:
+            col = 0xf & (index >> offset)
+        else:
+            col = 0xf & index
         return table[row][col]
 
     def _getnth(self, hexlst, nth, size):
@@ -186,17 +191,6 @@ class AES:
         ## val = a value e.g. as hex number to be appended
         ## nbytes = the number of bytes to be appended, the size of val
         return ((hexlst << (8*nbytes))|val)
-
-  
-# TODO rm
-    # def _xor(self, lst):
-    #     ## XORs all lists entries in a list, and returns a result in GF(2^8), so
-    #     ## an 8-bit value
-    #     ret = 0x0
-    #     for item in lst:
-    #         ret ^= item
-    #     return (ret&0xff)
-  
 
     ## methods
     def _key_schedule(self, password, keylength):
@@ -243,9 +237,10 @@ class AES:
                 ## s-boxing and r-coefficient
                 for sub in range(4):
                     ## s-boxing
-                    row = (temp >> (32 - 8*(sub+1) + 4)) & 0xf
-                    col = (temp >> (32 - 8*(sub+1))) & 0xf
-                    ch = self._sbox[row][col]
+#                    row = (temp >> (32 - 8*(sub+1) + 4)) & 0xf  
+#                    col = (temp >> (32 - 8*(sub+1))) & 0xf  
+#                    ch = self._sbox[row][col]  
+                    ch = self._tablelookup(self._sbox, temp, (32-8*(sub+1)))
                     ## ch: d7
 
                     ## the 0. char, XOR against round coefficient
@@ -262,11 +257,13 @@ class AES:
 
             elif Nk > 6 and idx % Nk == 4:
                 ## keylength above 128-bit, additional substitutions
+# TODO TEST                              
                 for sub in range(4):
                     ## s-boxing
-                    row = (temp >> (32 - 8*(sub+1) + 4)) & 0xf
-                    col = (temp >> (32 - 8*(sub+1))) & 0xf
-                    ch = self._sbox[row][col]
+#                    row = (temp >> (32 - 8*(sub+1) + 4)) & 0xf  
+#                    col = (temp >> (32 - 8*(sub+1))) & 0xf  
+#                    ch = self._sbox[row][col]  
+                    ch = self._tablelookup(self._sbox, temp, (32-8*(sub+1)))
 
                     ## append new character
 #                    nextword = (nextword<<8) | ch  
@@ -287,9 +284,12 @@ class AES:
         ##         value
         ## rnd = current round index
         key = self._keys[rnd*4]
-        key = key <<32 | self._keys[rnd*4+1]
-        key = key <<32 | self._keys[rnd*4+2]
-        key = key <<32 | self._keys[rnd*4+3]
+#        key = key <<32 | self._keys[rnd*4+1]  
+        key = self._append(key, self._keys[rnd*4+1], 4)
+#        key = key <<32 | self._keys[rnd*4+2]  
+        key = self._append(key, self._keys[rnd*4+2], 4)
+#        key = key <<32 | self._keys[rnd*4+3]  
+        key = self._append(key, self._keys[rnd*4+3], 4)
         ret = key ^ state
         DBG( "R%d (key = %#.32x)\t= %#.32x" % (rnd,key,ret) )
         return ret
@@ -305,14 +305,16 @@ class AES:
         hexlst = 0x0
         for idx in range(self._blocksize/8):
 # TODO use functions (append, getnth, etc)   
-            ch = (state >> (self._blocksize - (idx+1)*8)) & 0xff
-
+#            ch = (state >> (self._blocksize - (idx+1)*8)) & 0xff  
+            
+            ch = self._getnth(state, idx, self._blocksize)
             
 #            row = 0xf & (ch >>4)
 #            col = 0xf & ch
 #            val = table[row][col]
+            
             val = self._tablelookup(table, ch)
-
+            
             hexlst = self._append(hexlst, val)
         return hexlst
 
@@ -385,7 +387,6 @@ class AES:
                 ##     bb_vec[row] = b_vec[row] <<1
                 ## brief writing of the above
                 bb_vec[row] = b_vec[row] <<1 ^ 0x11b if b_vec[row] & 0x80 else b_vec[row] <<1
-
             hexlst = self._append(hexlst, (bb_vec[0] ^  b_vec[1] ^ bb_vec[1] ^  b_vec[2] ^  b_vec[3]))
             hexlst = self._append(hexlst, ( b_vec[0] ^ bb_vec[1] ^  b_vec[2] ^ bb_vec[2] ^  b_vec[3]))
             hexlst = self._append(hexlst, ( b_vec[0] ^  b_vec[1] ^ bb_vec[2] ^  b_vec[3] ^ bb_vec[3]))
@@ -418,9 +419,12 @@ class AES:
                     vala = state >>(120 - ((col*4 + ccol)*8)) & 0xff
                     arr.append(self._gfmult(vala, table[row][ccol]))
                 val = reduce(lambda x,y: x^y, arr)
-                res = (res <<8) | val
+#                res = (res <<8) | val  
+                res = self._append(res, val)
         return res
 
+
+    ## public interface
 
     def encrypt(self, plaintext):
         ## init
