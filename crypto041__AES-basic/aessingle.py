@@ -524,7 +524,7 @@ class AES:
 ### main ###
 def main():
     blocksize = 128
-    keylength = 128
+    keylength = 192
 
     ## init some raw input key
     inputkey = 0x000102030405060708090a0b0c0d0e0f
