@@ -141,15 +141,6 @@ class AES:
         self._keys = self._key_schedule(inputkey, self._keylength)
 
     ## utilities
-    def _tablelookup(self,table,index):
-        ## params:
-        ## table = table to look up content
-        ## index = a 0xff value, where 0xf0 describes 16 row indexes and 0x0f
-        ## 16 column indexes
-        row = 0xf & (index >>4)
-        col = 0xf & index
-        return table[row][col]
-
     def _gfmult(self,vala, valb):
         ## Galois Field Multiplication
         ##
@@ -165,7 +156,23 @@ class AES:
         else:
             return 0x0
 
+    def _tablelookup(self,table,index):
+        ## params:
+        ## table = table to look up content
+        ## index = a 0xff value, where 0xf0 describes 16 row indexes and 0x0f
+        ## 16 column indexes
+        ##
+        ## returns table value by the provided row and column indexes
+        row = 0xf & (index >>4)
+        col = 0xf & index
+        return table[row][col]
+
     def _getnth(self, hexlst, nth, size):
+        ## params:
+        ## hexlst = a hex value, which serves as list of byte values
+        ## nth = index of a specific byte in hexlst
+        ## size = the full size of the hexlst
+        ##
         ## return the nth 8-bit number, contained in the hex list (a number)
         ## where nth is an index, starting with 0
         return ((hexlst >> (size - (nth+1)*8)) & 0xff)
@@ -173,6 +180,11 @@ class AES:
     def _append(self, hexlst, val, nbytes=1):
         ## appends an 8-bit hex val to a hex list (a number) of such values
         ## and returns it
+        ##
+        ## params:
+        ## hexlst = a hex value, which serves as list of byte values
+        ## val = a value e.g. as hex number to be appended
+        ## nbytes = the number of bytes to be appended, the size of val
         return ((hexlst << (8*nbytes))|val)
 
   
@@ -294,9 +306,13 @@ class AES:
         for idx in range(self._blocksize/8):
 # TODO use functions (append, getnth, etc)   
             ch = (state >> (self._blocksize - (idx+1)*8)) & 0xff
-            row = 0xf & (ch >>4)
-            col = 0xf & ch
-            val = table[row][col]
+
+            
+#            row = 0xf & (ch >>4)
+#            col = 0xf & ch
+#            val = table[row][col]
+            val = self._tablelookup(table, ch)
+
             hexlst = self._append(hexlst, val)
         return hexlst
 
