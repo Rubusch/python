@@ -140,7 +140,9 @@ class AES:
         elif 256 == self._keylength: self._rounds = 14
         self._keys = self._key_schedule(inputkey, self._keylength)
 
+
     ## utilities
+
     def _gfmult(self,vala, valb):
         ## Galois Field Multiplication
         ##
@@ -163,9 +165,7 @@ class AES:
         ## 16 column indexes
         ##
         ## returns table value by the provided row and column indexes
-#        row = 0xf & (index >>4)  
         row = 0xf & (index >>(offset+4))
-#        col = 0xf & index
         if offset > 0:
             col = 0xf & (index >> offset)
         else:
@@ -237,9 +237,6 @@ class AES:
                 ## s-boxing and r-coefficient
                 for sub in range(4):
                     ## s-boxing
-#                    row = (temp >> (32 - 8*(sub+1) + 4)) & 0xf  
-#                    col = (temp >> (32 - 8*(sub+1))) & 0xf  
-#                    ch = self._sbox[row][col]  
                     ch = self._tablelookup(self._sbox, temp, (32-8*(sub+1)))
                     ## ch: d7
 
@@ -248,7 +245,6 @@ class AES:
                     ## ch: d7
 
                     ## append new character
-#                    nextword = (nextword<<8) | ch  
                     nextword = self._append(nextword, ch)
                     ## swap: d6
 
@@ -260,13 +256,9 @@ class AES:
 # TODO TEST                              
                 for sub in range(4):
                     ## s-boxing
-#                    row = (temp >> (32 - 8*(sub+1) + 4)) & 0xf  
-#                    col = (temp >> (32 - 8*(sub+1))) & 0xf  
-#                    ch = self._sbox[row][col]  
                     ch = self._tablelookup(self._sbox, temp, (32-8*(sub+1)))
 
                     ## append new character
-#                    nextword = (nextword<<8) | ch  
                     nextword = self._append(nextword, ch)
 
                 temp = nextword
@@ -284,11 +276,8 @@ class AES:
         ##         value
         ## rnd = current round index
         key = self._keys[rnd*4]
-#        key = key <<32 | self._keys[rnd*4+1]  
         key = self._append(key, self._keys[rnd*4+1], 4)
-#        key = key <<32 | self._keys[rnd*4+2]  
         key = self._append(key, self._keys[rnd*4+2], 4)
-#        key = key <<32 | self._keys[rnd*4+3]  
         key = self._append(key, self._keys[rnd*4+3], 4)
         ret = key ^ state
         DBG( "R%d (key = %#.32x)\t= %#.32x" % (rnd,key,ret) )
@@ -304,17 +293,8 @@ class AES:
         ##         decryption (self._inv_sbox)
         hexlst = 0x0
         for idx in range(self._blocksize/8):
-# TODO use functions (append, getnth, etc)   
-#            ch = (state >> (self._blocksize - (idx+1)*8)) & 0xff  
-            
             ch = self._getnth(state, idx, self._blocksize)
-            
-#            row = 0xf & (ch >>4)
-#            col = 0xf & ch
-#            val = table[row][col]
-            
             val = self._tablelookup(table, ch)
-            
             hexlst = self._append(hexlst, val)
         return hexlst
 
@@ -381,12 +361,15 @@ class AES:
                 ## write doubled b-values into bb-vec,
                 ## GF(2^8), perform modular reduction by mod P(x), which is
                 ## P(x) = x^8 + x^4 + x^3 + x + 1
+                ##
                 ## if b_vec[row] & 0x80:
                 ##     bb_vec[row] = b_vec[row] <<1 ^ 0x11b
                 ## else:
                 ##     bb_vec[row] = b_vec[row] <<1
-                ## brief writing of the above
+                ##
+                ## brief implementation of the above
                 bb_vec[row] = b_vec[row] <<1 ^ 0x11b if b_vec[row] & 0x80 else b_vec[row] <<1
+                ##
             hexlst = self._append(hexlst, (bb_vec[0] ^  b_vec[1] ^ bb_vec[1] ^  b_vec[2] ^  b_vec[3]))
             hexlst = self._append(hexlst, ( b_vec[0] ^ bb_vec[1] ^  b_vec[2] ^ bb_vec[2] ^  b_vec[3]))
             hexlst = self._append(hexlst, ( b_vec[0] ^  b_vec[1] ^ bb_vec[2] ^  b_vec[3] ^ bb_vec[3]))
@@ -419,23 +402,25 @@ class AES:
                     vala = state >>(120 - ((col*4 + ccol)*8)) & 0xff
                     arr.append(self._gfmult(vala, table[row][ccol]))
                 val = reduce(lambda x,y: x^y, arr)
-#                res = (res <<8) | val  
                 res = self._append(res, val)
         return res
 
 
     ## public interface
 
-    def encrypt(self, plaintext):
-        ## init
-        state = int(plaintext.encode('hex'),16) & 0xffffffffffffffffffffffffffffffff
+    def encrypt(self, plaintext, ishex=False):
+        ## params
+        ## plaintext = the plaintext as string or as hex number
+        ## ishex = if the plaintext was a hex number (True)
+#        print plaintext   
 
+        ## init
+        if ishex: state = plaintext
+        else: state = int(plaintext.encode('hex'),16) & 0xffffffffffffffffffffffffffffffff
+#        else: state = int(plaintext.encode('hex'),32) & 0xffffffffffffffffffffffffffffffff 
+        DBG( "ENCRYPTION\n\nplaintext: \t%#.32x"%state ) 
         
-        ## DEBUG
-        state = 0xffffffffffffffffffffffffffffffff 
-        state = 0x00112233445566778899aabbccddeeff
-#        state = 0x00000000000000000000000000000000
-        
+#        die ("XXX")  
 
         ## round 0
         state = self._add_round_key(state, 0)
@@ -450,10 +435,11 @@ class AES:
             state = self._diffusion_layer__shift_rows(state, self._shift_rows)
             DBG( "shift rows: \t\t%#.32x"%state )
 
-            ## alternatively apply this implementation
+            ## alternative implementation
 #            state = self._diffusion_layer__mix_column_TRICK(state)
             ## more generic implementation
             state = self._diffusion_layer__mix_column(state, self._mix_columns__const_matrix)
+            ##
             DBG( "mix column: \t\t%#.32x"%state )
 
             state = self._add_round_key(state, rnd+1)
@@ -470,24 +456,26 @@ class AES:
         state = self._add_round_key(state, self._rounds)
         DBG( "add key: \t%#.32x"%state )
 
-#        die("encrypt STOP")    
         return state
 
 
-    def decrypt(self, ciphertext):
-        
-        state = ciphertext  
-#        state = 0x00112233445566778899aabbccddeeff
-        print "DECRYPTION\n\ninput: %#.32x" % state
+    def decrypt(self, ciphertext, ashex=False):
+        ## params:
+        ## ciphertext = the ciphertext as hex number
+        ## ashex = shall the output be a hex number, or a string?
+
+        state = ciphertext
+#        state = 0x00112233445566778899aabbccddeeff   
+        DBG("DECRYPTION\n\ninput: %#.32x" % state)
 
         ## round n
         state = self._add_round_key(state, self._rounds)
         DBG( "add key: \t%#.32x"%state )
 
-        state = self._diffusion_layer__shift_rows(state, self._inv_shift_rows) # ok   
+        state = self._diffusion_layer__shift_rows(state, self._inv_shift_rows)
         DBG( "shift rows: \t%#.32x"%state )
 
-        state = self._substitution_layer__sub_bytes(state, self._inv_sbox) # ok   
+        state = self._substitution_layer__sub_bytes(state, self._inv_sbox)
         DBG( "substitute: \t%#.32x"%state )
 
         for rnd in range(self._rounds-2,-1,-1):
@@ -496,7 +484,7 @@ class AES:
             state = self._add_round_key(state, rnd+1)
             DBG( "add key: \t\t%#.32x"%state )
 
-            state = self._diffusion_layer__mix_column(state, self._mix_columns__inv_const_matrix) # ok   
+            state = self._diffusion_layer__mix_column(state, self._mix_columns__inv_const_matrix)
             DBG( "mix column: \t\t%#.32x"%state )
 
             state = self._diffusion_layer__shift_rows(state, self._inv_shift_rows)
@@ -510,16 +498,33 @@ class AES:
         state = self._add_round_key(state, 0)
         DBG( "add key: \t%#.32x"%state )
 
+        DBG( "\nfinal result: %#.32x\n" % state )
+
+        if ashex: return state
+        ## convert to string
+        
+# FIXME, how to convert 0x96747 back into 'abc'
+#        for ...
+#        string = "%0*x"%(16,state)   
+# TODO
+#        either split by groups of 2 (8 bit), then cut off the leading \x00, or find a better way e.g. via lambda function?
+
+#        ret = string.decode('hex')  
+
+#        ''.join([chr(int(''.join(c), 16)) for c in zip(txt[0::2],txt[1::2])])
+        
+        data = "%x"%state
+        return ''.join(chr(int(data[i:i+2], 16)) for i in range(0, len(data), 2))
+#        ret = ''.join(chr(int(data[i:i+2], 16)) for i in range(0, len(data), 2))
+#        return ret
 
 
-        print "\nresult: %#.32x" % state
-        die("decrypt STOP")    
-        return state
 
 
 ### main ###
 def main():
     blocksize = 128
+    keylength = 128
 
     ## init some raw input key
     inputkey = 0x000102030405060708090a0b0c0d0e0f
@@ -527,26 +532,39 @@ def main():
     print "initial key:\n%#.32x\n" % inputkey
 
     ## init the algorithm
-    aes = AES(inputkey, 128)
+    aes = AES(inputkey, keylength)
 
     ## init some input text
     plaintext = "jack and jill went up the hill to fetch a pail of water"
-#    print "plaintext:"
-#    print "%s\n" % plaintext
+
+    print "plaintext:"
+    print "%s\n" % plaintext
 
     ciphertext = []
     blocktext = ""
 # TODO handle blocks..
-    # for idx in range(len(plaintext)-1):
-    #     blocktext += plaintext[idx]
-    #     if idx % (blocksize/8) == 0:
-    #         ciphertext.append(aes.encrypt(blocktext))
-    #         blocktext = ""
-    # blocktext += plaintext[idx+1]
-    # ciphertext.append(aes.encrypt(blocktext))
-
-    blocktext += plaintext[0]
+    for idx in range(len(plaintext)-1):
+        blocktext += plaintext[idx]
+        if idx % (blocksize/8) == 0:
+            ciphertext.append(aes.encrypt(blocktext))
+            blocktext = ""
+    blocktext += plaintext[idx+1]
     ciphertext.append(aes.encrypt(blocktext))
+
+    
+#    print blocktext[0]  
+#    die("AAA")  
+    
+
+#    blocktext += plaintext[0]
+#    ciphertext.append(aes.encrypt(blocktext))
+    
+## DEBUG
+#    state = 0xffffffffffffffffffffffffffffffff 
+#    state = 0x00112233445566778899aabbccddeeff 
+#        state = 0x00000000000000000000000000000000
+#    ciphertext.append(aes.encrypt(state, ishex=True))
+    
 
     ## print result
     print "encrypted:"
