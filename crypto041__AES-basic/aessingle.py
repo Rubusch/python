@@ -412,23 +412,17 @@ class AES:
         ## params
         ## plaintext = the plaintext as string or as hex number
         ## ishex = if the plaintext was a hex number (True)
-#        print plaintext   
 
         ## init
         if ishex: state = plaintext
         else: state = int(plaintext.encode('hex'),16) & 0xffffffffffffffffffffffffffffffff
-#        else: state = int(plaintext.encode('hex'),32) & 0xffffffffffffffffffffffffffffffff 
-        DBG( "ENCRYPTION\n\nplaintext: \t%#.32x"%state ) 
-        
-#        die ("XXX")  
+        DBG( "\n\nENCRYPTION\n\nplaintext: \t%#.32x"%state )
 
         ## round 0
         state = self._add_round_key(state, 0)
-        DBG( "add key: \t%#.32x"%state )
+        DBG( "add key: \t%#.32x\n"%state )
 
         for rnd in range(self._rounds-1):
-            DBG( "rnd %d"%rnd )
-
             state = self._substitution_layer__sub_bytes(state, self._sbox)
             DBG( "substitute: \t\t%#.32x"%state )
 
@@ -443,8 +437,7 @@ class AES:
             DBG( "mix column: \t\t%#.32x"%state )
 
             state = self._add_round_key(state, rnd+1)
-            DBG( "add key: \t\t%#.32x"%state )
-            DBG("")
+            DBG( "add key: \t\t%#.32x\n"%state )
 
         ## round n
         state = self._substitution_layer__sub_bytes(state, self._sbox)
@@ -454,7 +447,7 @@ class AES:
         DBG( "shift rows: \t%#.32x"%state )
 
         state = self._add_round_key(state, self._rounds)
-        DBG( "add key: \t%#.32x"%state )
+        DBG( "add key: \t%#.32x\n"%state )
 
         return state
 
@@ -465,8 +458,8 @@ class AES:
         ## ashex = shall the output be a hex number, or a string?
 
         state = ciphertext
-#        state = 0x00112233445566778899aabbccddeeff   
-        DBG("DECRYPTION\n\ninput: %#.32x" % state)
+
+        DBG("\n\nDECRYPTION\n\ninput: %#.32x" % state)
 
         ## round n
         state = self._add_round_key(state, self._rounds)
@@ -476,11 +469,9 @@ class AES:
         DBG( "shift rows: \t%#.32x"%state )
 
         state = self._substitution_layer__sub_bytes(state, self._inv_sbox)
-        DBG( "substitute: \t%#.32x"%state )
+        DBG( "substitute: \t%#.32x\n"%state )
 
         for rnd in range(self._rounds-2,-1,-1):
-            DBG( "rnd %d"%rnd )
-
             state = self._add_round_key(state, rnd+1)
             DBG( "add key: \t\t%#.32x"%state )
 
@@ -502,29 +493,15 @@ class AES:
 
         if ashex: return state
         ## convert to string
-        
-# FIXME, how to convert 0x96747 back into 'abc'
-#        for ...
-#        string = "%0*x"%(16,state)   
-# TODO
-#        either split by groups of 2 (8 bit), then cut off the leading \x00, or find a better way e.g. via lambda function?
-
-#        ret = string.decode('hex')  
-
-#        ''.join([chr(int(''.join(c), 16)) for c in zip(txt[0::2],txt[1::2])])
-        
         data = "%x"%state
         return ''.join(chr(int(data[i:i+2], 16)) for i in range(0, len(data), 2))
-#        ret = ''.join(chr(int(data[i:i+2], 16)) for i in range(0, len(data), 2))
-#        return ret
-
 
 
 
 ### main ###
 def main():
     blocksize = 128
-    keylength = 192
+    keylength = 256
 
     ## init some raw input key
     inputkey = 0x000102030405060708090a0b0c0d0e0f
@@ -550,21 +527,6 @@ def main():
             blocktext = ""
     blocktext += plaintext[idx+1]
     ciphertext.append(aes.encrypt(blocktext))
-
-    
-#    print blocktext[0]  
-#    die("AAA")  
-    
-
-#    blocktext += plaintext[0]
-#    ciphertext.append(aes.encrypt(blocktext))
-    
-## DEBUG
-#    state = 0xffffffffffffffffffffffffffffffff 
-#    state = 0x00112233445566778899aabbccddeeff 
-#        state = 0x00000000000000000000000000000000
-#    ciphertext.append(aes.encrypt(state, ishex=True))
-    
 
     ## print result
     print "encrypted:"
