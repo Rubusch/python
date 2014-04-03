@@ -18,6 +18,12 @@ Plaintext:  00112233445566778899aabbccddeeff
 Ciphertext: 69c4e0d86a7b0430d8cdb78070b4c55a
 """
 
+# TODO string hex conversion at encryption
+# TODO string hex conversion at decryption
+# TODO cleanup
+# TODO test 192 bit
+# TODO test 256 bit
+# TODO refactor use of functions
 import sys
 
 ### utils ###
@@ -121,9 +127,6 @@ class AES:
                                                [0x09,0x0e,0x0b,0x0d],
                                                [0x0d,0x09,0x0e,0x0b],
                                                [0x0b,0x0d,0x09,0x0e]]
-
-# TODO invert _mix_columns__const_matrix  
-# TODO use 4-byte groups instead of one single line
 
         ## Rcon, source: http://en.wikipedia.org/wiki/Rijndael_key_schedule
         ## only the first some are actually used!!!
