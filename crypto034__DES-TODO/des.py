@@ -16,8 +16,13 @@
 # better to experience the algorithm, a better implementation would be to code
 # it with hex numbers and bit operations directly
 
-# TODO implement real bitoperations
+# TODO implement hexadecimal bit operations
 # TODO implement blockwise en/decryption
+# TODO change frontend
+# TODO command line encryption
+# TODO DBG()
+# TODO clean up
+# TODO refacture functions
 
 import sys   # sys.exit()
 
@@ -25,6 +30,10 @@ import sys   # sys.exit()
 def die(msg):
     if 0 < len(msg): print msg
     sys.exit(1)
+
+def DBG(msg):
+    print msg
+    pass
 
 def bin2dec(binstr):
     ## generate decimal value from binary string
@@ -38,6 +47,7 @@ def bin2dec(binstr):
         val += potence
     return val
 
+# TODO refac
 def printx(text, cols=8):
     ## print in columns
     for idx in range(len(text)):
@@ -50,7 +60,7 @@ def printx(text, cols=8):
             print "%s "%text[idx],
     print "\n"
 
-
+# TODO refac
 def printhexlist(binlist):
     ## print binary value list, as hex values
     elem = ""
@@ -68,6 +78,7 @@ def printhexlist(binlist):
 class InitialPermutation():
     def __init__(self):
         self._blocksize = 64
+# TODO hex numbers  
         self._initial_permutation=[58,50,42,34,26,18,10, 2,
                                    60,52,44,36,28,20,12, 4,
                                    62,54,46,38,30,22,14, 6,
@@ -76,7 +87,7 @@ class InitialPermutation():
                                    59,51,43,35,27,19,11, 3,
                                    61,53,45,37,29,21,13, 5,
                                    63,55,47,39,31,23,15, 7]
-
+# TODO hex numbers  
         self._final_permutation  =[40, 8,48,16,56,24,64,32,
                                    39, 7,47,15,55,23,63,31,
                                    38, 6,46,14,54,22,62,30,
@@ -95,8 +106,16 @@ class InitialPermutation():
 
     def initial_permutation(self, text):
         ## Note that both permutations do not increase the security of DES at all
-        self._checklength(text)
-        return [self._pick(text,pos) for pos in self._initial_permutation]
+
+#        self._checklength(text)  
+#        return [self._pick(text,pos) for pos in self._initial_permutation]
+
+        binlst = 0b0
+        for pos in self._initial_permutation:
+            val = (text >> (64 - ((pos-1)+1))) & 0b1
+            binlst = (binlst <<1) | val
+        return binlst
+
 
     def final_permutation(self, text):
         ## Note that both permutations do not increase the security of DES at all
@@ -104,8 +123,8 @@ class InitialPermutation():
         return [self._pick(text,pos) for pos in self._final_permutation]
 
 class FeistelNetwork():
-    def __init__(self):
-        pass
+#    def __init__(self):
+#        pass
 
     def _checklength(self, text, length):
         if length != len(text):
@@ -134,9 +153,11 @@ class KeySchedule():
         ## the key schedule derives 16 round keys k[i], each consisting of
         ## 48 bits, from original 56-bit key; another term for round key is
         ## subkey
-        self._checklength(inputkey, 64)
+# TODO rm  
+#        self._checklength(inputkey, 64) 
         self._rawinputkey = inputkey
 
+# TODO hex values  
         self._pc1 = [57,49,41,33,25,17, 9, 1,
                      58,50,42,34,26,18,10, 2,
                      59,51,43,35,27,19,11, 3,
@@ -144,7 +165,7 @@ class KeySchedule():
                      31,23,15, 7,62,54,46,38,
                      30,22,14, 6,61,53,45,37,
                      29,21,13, 5,28,20,12, 4]
-
+# TODO hex values  
         self._pc2 = [14,17,11,24, 1, 5, 3,28,
                      15, 6,21,10,23,19,12, 4,
                      26, 8,16, 7,27,20,13, 2,
@@ -159,19 +180,19 @@ class KeySchedule():
                 self._shiftrules.append(1)
             else:
                 self._shiftrules.append(2)
-#        print "init shiftrules: %s"%", ".join(map(str,self._shiftrules))
-        # shift order, DEBUG
+        DBG("init shiftrules: %s"%", ".join(map(str,self._shiftrules)))
 
         ## initial 1. PC-1 permutation, once at beginning (stripping last 8-bit)
         self._inputkey = self.pc1_permutation(self._rawinputkey)
-#        printx(self._inputkey) # input key, DEBUG
 
-    def _checklength(self, text, length):
-        if length != len(text):
-            die("wrong blocksize passed, %d needed, %d passed"%(length,len(text)))
-
-    def _pick(self, text, position):
-        return text[position-1]
+# TODO rm
+#    def _checklength(self, text, length):
+#        if length != len(text):
+#            die("wrong blocksize passed, %d needed, %d passed"%(length,len(text)))
+#
+# TODO rm   
+#    def _pick(self, text, position):
+#        return text[position-1]
 
     def pc1_permutation(self, key):
         ## initial key permutation PC-1
@@ -179,8 +200,17 @@ class KeySchedule():
         ## bit, i.e. the parity bits are stripped in the initial PC-1
         ## permutation; again the parity bits certainly do not increase the key
         ## space! returns 56 bits
-        self._checklength(key,64)
-        return [self._pick(key,pos) for pos in self._pc1]
+# TODO rm
+#        self._checklength(key,64)   
+#        return [self._pick(key,pos) for pos in self._pc1]   
+#        DBG("key w/ parity  %s"%bin(key))   
+        binlst = 0x0
+        for pos in self._pc1:
+            ## table entries start with 1, so reduce by 1
+            val = (key >> (64 - ((pos-1)+1))) & 0b1 # TODO getnth_binary
+            binlst = (binlst <<1)|val # TODO append binary
+#        DBG("key w/o parity %s"%bin(binlst))  
+        return binlst
 
     def split(self, key):
         ## the resulting 56-bit key is split into two halves C[0] and D[0], and
@@ -219,7 +249,6 @@ class KeySchedule():
         self._checklength(key,56)
         ## permute
         return [self._pick(key,pos) for pos in self._pc2]
-
 
     def get_encrypt_key(self, roundidx):
 #        print "\tencrypt"
@@ -282,6 +311,7 @@ class KeySchedule():
 
 class FFunction():
     def __init__(self, inputkey):
+# TODO hex values  
         self._ebox = [32, 1, 2, 3, 4, 5,
                        4, 5, 6, 7, 8, 9,
                        8, 9,10,11,12,13,
@@ -311,6 +341,7 @@ class FFunction():
         ##    the same output difference
         ## 8. a collision (zero output difference) at the 32-bit output of the
         ##    eight S-boxes is only possible for three adjacent S-boxes
+# TODO hex values   
         self._s1 = [[14, 4,13, 1, 2,15,11, 8, 3,10, 6,12, 5, 9, 0, 7],
                     [ 0,15, 7, 4,14, 2,13, 1,10, 6,12,11, 9, 5, 3, 8],
                     [ 4, 1,14, 8,13, 6, 2,11,15,12, 9, 7, 3,10, 5, 0],
@@ -448,15 +479,75 @@ class DES():
 
         self._feistel = FeistelNetwork()
 
-    def encrypt(self, plaintext):
+# TODO user  
+    @staticmethod
+    def _tablelookup(table, index, offset=0):
+        ## params:
+        ## table = table to look up content
+        ## index = a 0xff value, where 0xf0 describes 16 row indexes and 0x0f
+        ## 16 column indexes
+        ##
+        ## returns table value by the provided row and column indexes
+        row = 0xf & (index >>(offset+4))
+        if offset > 0:
+            col = 0xf & (index >> offset)
+        else:
+            col = 0xf & index
+        return table[row][col]
+
+# TODO user  
+    @staticmethod
+    def _getnth(hexlst, nth, size):
+        ## params:
+        ## hexlst = a hex value, which serves as list of byte values
+        ## nth = index of a specific byte in hexlst
+        ## size = the full size of the hexlst in bytes
+        ##
+        ## return the nth 8-bit number, contained in the hex list (a number)
+        ## where nth is an index, starting with 0
+        return ((hexlst >> (size - (nth+1)*8)) & 0xff)
+
+# TODO user  
+    @staticmethod
+    def _append(hexlst, val, nbytes=1):
+        ## appends an 8-bit hex val to a hex list (a number) of such values
+        ## and returns it
+        ##
+        ## params:
+        ## hexlst = a hex value, which serves as list of byte values
+        ## val = a value e.g. as hex number to be appended
+        ## nbytes = the number of bytes to be appended, the size of val
+        return ((hexlst << (8*nbytes))|val)
+
+
+    def encrypt(self, plaintext, ishex=False):
+        ## params
+        ## plaintext = the plaintext as string or as hex number
+        ## ishex = if the plaintext was a hex number (True)
+
+        ## init
+        if ishex: state = plaintext
+        else: state = int(plaintext.encode('hex'),16) & 0xffffffffffffffff
+        DBG( "\n\nENCRYPTION\n\nplaintext: \t%#s"%bin(state) )
+
         ## initial permutation
-        text = self._ip.initial_permutation(plaintext)
+        state = self._ip.initial_permutation(state)
+
+
+        
+        die("OK")  
+        
+
 
         ## F-function
         for idx in range(16):
             ## DES loops the following steps
             ## 1. split
-            left_half, right_half = self._ffunc.split(text)
+            left_half, right_half = self._ffunc.split(state)
+
+        
+            die("BBB")  
+        
 
             ## 2. expansion permutation E
             right_exp = self._ffunc.expansion(right_half)
@@ -471,13 +562,13 @@ class DES():
             right_exp = self._ffunc.ppermute(right_exp)
 
             ## 6. merge left and right half
-            text = self._feistel.round_xor(left_half, right_exp)
+            state = self._feistel.round_xor(left_half, right_exp)
 
             ## 7. switch halves
-            text = self._feistel.round_merge_and_switch(text, right_half)
+            state = self._feistel.round_merge_and_switch(state, right_half)
 
         ## revert permutation
-        return self._ip.final_permutation(text)
+        return self._ip.final_permutation(state)
 
     def decrypt(self, ciphertext):
         ## initial permutation
@@ -512,85 +603,73 @@ class DES():
         ## revert permutation
         return self._ip.final_permutation(text)
 
-# TODO use this frontend for all further crypto algorithms...     
-# ### main ###
-# def main():
-#     blocksize = 64
-
-#     ## init some raw input key
-#     inputkey = 0xbbbb55555555eeeeffff
-#     print "initial key:"
-#     print "%#x\n" % inputkey
-
-#     ## init the algorithm
-#     present = Present(inputkey)
-
-#     ## init some input text
-#     plaintext = "jack and jill went up the hill to fetch a pail of water"
-#     print "plaintext:"
-#     print "%s\n" % plaintext
-
-#     ciphertext = []
-#     blocktext = ""
-#     for idx in range(len(plaintext)-1):
-#         blocktext += plaintext[idx]
-#         if idx % (blocksize/8) == 0:
-#             ciphertext.append(present.encrypt(blocktext))
-#             blocktext = ""
-#     blocktext += plaintext[idx+1]
-#     ciphertext.append(present.encrypt(blocktext))
-
-#     ## print result
-#     print "encrypted:"
-#     for item in ciphertext:
-#         print "%#x"%item
-#     print "\n"
-
-#     ## decrypt
-#     decryptedtext = ""
-#     for block in ciphertext:
-#         decryptedtext += present.decrypt(block)
-
-#     ## print result
-#     print "decrypted:"
-#     print "%s\n" % decryptedtext
 
 ### main ###
-def main():
-    ## init
-    blocksize = 64
+def main(argv=sys.argv[1:]):
+    blocksize = 64 # TODO use   
     keysize_with_parity = 64
-    ## some raw input key
-    inputkey = [0 for i in range(keysize_with_parity)] # all zeros
-    for idx in range(16): inputkey[idx] = 1 # some ones
+    inputkey = 0xffffffffffffffff   
+    plaintext = ""
+# TODO use  
+    keylength = 256
 
-    ## init the DES
+    if len(argv) > 0:
+        ## offer encryption by command line argument
+        try:
+            inputkey = int(argv[0],16)
+            plaintext = argv[1]
+        except:
+            die('usage: either w/o arguments, or as follows\n$ %s <inputkey> "<plaintext>"\ne.g.\n$ %s %s "%s"'%(sys.argv[0],sys.argv[0],"0x000102030405060708090a0b0c0d0e0f","from Disco to Disco.."))
+    else:
+        ## init some raw input key example
+        inputkey = 0x000102030405060708090a0b0c0d0e0f
+        ## init some input text example
+        plaintext = "jack and jill went up the hill to fetch a pail of water"
+    
+# TODO rm
+#    inputkey = 0xffffffffffffffff   
+    inputkey =  0x0000000000000080  
+    plaintext = "Angelina"      
+    
+
+    print "initial key:\n%#.32x, key length %d, block size %d\n" % (inputkey, keylength, blocksize)
+
+    print "plaintext:"
+    print "%s\n" % plaintext
+
+    ## init the algorithm
     des = DES(inputkey)
 
     ## some input text
-    text = [0 for i in range(blocksize)] ## all zeros
-    text[0] = 1 # set one
-
-    print "initial:"
-    printx(text)
-    printhexlist(text)
-
-    text = des.encrypt(text)
+    ## blocks
+    ciphertext = []
+    blocktext = ""
+    for idx in range(len(plaintext)-1):
+        blocktext += plaintext[idx]
+        if idx % (blocksize/8) == 0:
+            
+            ciphertext.append(des.encrypt(blocktext))
+            
+            die("AAA")  
+            
+            blocktext = ""
+    blocktext += plaintext[idx+1]
+    ciphertext.append(des.encrypt(blocktext))
 
     ## print result
-    print "\n"
     print "encrypted:"
-    printx(text)
-    printhexlist(text)
+    for item in ciphertext:
+        print "%#.32x"%item
+    print "\n"
 
     ## decrypt
-    text = des.decrypt(text)
+    decryptedtext = ""
+    for block in ciphertext:
+        decryptedtext += des.decrypt(block)
 
     ## print result
-    print "\n"
     print "decrypted:"
-    printx(text)
-    printhexlist(text)
+    print "%s\n" % decryptedtext
 
 
 ### start ###
