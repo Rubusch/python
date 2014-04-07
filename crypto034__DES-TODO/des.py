@@ -408,15 +408,23 @@ class FFunction():
         ## previous round and the current round key k[i] as input; the output of
         ## the f-function is used as an XOR-mask for encrypting the left half
         ## input bits L[i-1]
-        self._checklength(text,64)
-        return (text[:32],text[32:])
+#        self._checklength(text,64)  
+        left = (text>>32) & 0xffffffff
+        right = text & 0xffffffff
+        return (left, right)
+#        return (text[:32],text[32:])  
 
     def expansion(self, text):
         ## first, the 32-bit input is expanded to 48 bits by partitioning the
         ## input into eight 4-bit blocks and by expanding each block to 6 bits
-        self._checklength(text,32)
+#        self._checklength(text,32)  
         ## expand 32bit to 48bit
-        return [self._pick(text,pos) for pos in self._ebox]
+
+        # TODO
+        
+        die("XXX")  
+        
+        return [self._pick(text,pos) for pos in self._ebox]  
 
     def encryptkey(self, text, roundidx):
         ## next, the 48-bit result of the expansion is XORed with the round key
@@ -533,24 +541,22 @@ class DES():
         ## initial permutation
         state = self._ip.initial_permutation(state)
 
-
-        
-        die("OK")  
-        
-
-
         ## F-function
         for idx in range(16):
             ## DES loops the following steps
             ## 1. split
             left_half, right_half = self._ffunc.split(state)
 
+
+
+            ## 2. expansion permutation E
+            right_exp = self._ffunc.expansion(right_half)
+
+
         
             die("BBB")  
         
 
-            ## 2. expansion permutation E
-            right_exp = self._ffunc.expansion(right_half)
 
             ## 3. key
             right_exp = self._ffunc.encryptkey(right_exp,idx)
