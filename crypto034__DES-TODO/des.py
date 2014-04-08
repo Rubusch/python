@@ -35,6 +35,22 @@ def DBG(msg):
     print msg
     pass
 
+def binstr(val, nbits):
+#    print "val    %s"%bin(val)  
+#    print "nbits  %s"%bin(nbits)  
+    mask = 0x1 << nbits
+#    print "mask = %s"%bin(mask)  
+    ## add a mask to obtain leading 0s
+    val += mask
+#    print "val %s"%bin(val)  
+
+    ## remove the 1 from the mask and return as string w/ leading 0s
+#    print "bin(val)[:2] %s"%bin(val)[:2]  
+#    print "bin(val)[3:] %s"%bin(val)[3:]  
+    res = bin(val)[:2] + bin(val)[3:]
+#    print "%s" % res  
+    return res
+
 def bin2dec(binstr):
     ## generate decimal value from binary string
     val = 0
@@ -438,11 +454,25 @@ class FFunction():
 #        return text[position-1]
 
     def _sbox(self, text, sbox):
-        self._checklength(text, 6)
-        row = bin2dec(str(text[0]) + str(text[5]))
-        col = bin2dec(str(text[1]) + str(text[2]) + str(text[3]) + str(text[4]))
-        val = bin(sbox[row][col] + 16)
-        return str(val[3:]).upper()
+        ## text has 6 bit
+#        self._checklength(text, 6)  
+#        row = bin2dec(str(text[0]) + str(text[5]))
+        val_first = (text >> 5) & 0x1
+#        print "val_first %s"%bin(val_first) 
+        val_last = text & 0x1
+#        print "val_last  %s"%bin(val_last) 
+        row = DES._append(val_first, val_last)
+#        print "row (bin) %s"%bin(row)  
+#        print "row %s"%binstr(row,2)  
+#        col = bin2dec(str(text[1]) + str(text[2]) + str(text[3]) + str(text[4]))
+        col = (text >> 1) & 0xf
+#        print "col %s"%binstr(col,2)  
+        ## 
+# TODO why +16?
+#        val = bin(sbox[row][col] + 16) # +16 only to keep the leading 0s, then val[3:] to cut of '0x1' again   
+        return sbox[row][col]
+#        print "val %s"%binstr(val,4)  
+#        return str(val[3:]).upper()  
 
     def split(self, text):
         ## in round i it takes the right half R[i-1] of the output of the
@@ -508,12 +538,20 @@ class FFunction():
         ## the s-boxes are the core of DES in terms of cryptographic strength;
         ## they are the only nonlinear element in the algorithm and provide
         ## confusion
-
-        die("XXX")   
-
-        self._checklength(text,48)
+#        self._checklength(text,48)  
         ret = []
-        ret.append( self._sbox(text[ 0: 6], self._s1) )
+
+        sub = (text >> (48 - 6)) & 0x3f  
+        ret.append( self._sbox(sub, self._s1) )
+#        ret.append( self._sbox(text[ 0: 6], self._s1) )
+
+        
+        die("XXX") 
+        
+
+        
+        die("CCC")   
+        
         ret.append( self._sbox(text[ 6:12], self._s2) )
         ret.append( self._sbox(text[12:18], self._s3) )
         ret.append( self._sbox(text[18:24], self._s4) )
