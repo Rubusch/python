@@ -340,7 +340,7 @@ class KeySchedule():
         key = self._inputkey
         for idx in range(roundidx+1):
             ## 2. split
-            left, right = self.split(key)
+            left, right = self.split(key) ## TODO splitkey()   
 #            printx(left,7)
 #            printx(right,7)
 
@@ -479,6 +479,7 @@ class FFunction():
         ## previous round and the current round key k[i] as input; the output of
         ## the f-function is used as an XOR-mask for encrypting the left half
         ## input bits L[i-1]
+        ## takes 64-bit text, and splits into two 32-bit pieces
 
 #        self._checklength(text,64)  
         left = (text>>32) & 0xffffffff
@@ -539,32 +540,49 @@ class FFunction():
         ## they are the only nonlinear element in the algorithm and provide
         ## confusion
 #        self._checklength(text,48)  
-        ret = []  
+#        ret = []  
 # TODO _append() ?? 
-        sub = (text >> (48 - 6)) & 0x3f  
-        ret.append( self._sbox(sub, self._s1) )
+
+        bitlst = 0x0
 #        ret.append( self._sbox(text[ 0: 6], self._s1) )
+#        ret.append( self._sbox(sub, self._s1) )
+        sub = (text >> (48 - 6)) & 0x3f
+        bitlst = DES._append(bitlst, self._sbox(sub, self._s1), 6)
 
-        
-        die("XXX") 
-        
+#        ret.append( self._sbox(text[ 6:12], self._s2) )
+        sub = (text >> (48 - 12)) & 0x3f
+        bitlst = DES._append(bitlst, self._sbox(sub, self._s1), 6)
 
+#        ret.append( self._sbox(text[12:18], self._s3) )
+        sub = (text >> (48 - 18)) & 0x3f
+        bitlst = DES._append(bitlst, self._sbox(sub, self._s1), 6)
 
-        
-        die("CCC")   
-        
-        ret.append( self._sbox(text[ 6:12], self._s2) )
-        ret.append( self._sbox(text[12:18], self._s3) )
-        ret.append( self._sbox(text[18:24], self._s4) )
-        ret.append( self._sbox(text[24:30], self._s5) )
-        ret.append( self._sbox(text[30:36], self._s6) )
-        ret.append( self._sbox(text[36:42], self._s7) )
-        ret.append( self._sbox(text[42:48], self._s8) )
-        result = []
-        for elem in ret:
-            for char in elem:
-                result.append(char)
-        return result
+#        ret.append( self._sbox(text[18:24], self._s4) )
+        sub = (text >> (48 - 24)) & 0x3f
+        bitlst = DES._append(bitlst, self._sbox(sub, self._s1), 6)
+
+#        ret.append( self._sbox(text[24:30], self._s5) )
+        sub = (text >> (48 - 30)) & 0x3f
+        bitlst = DES._append(bitlst, self._sbox(sub, self._s1), 6)
+
+#        ret.append( self._sbox(text[30:36], self._s6) )
+        sub = (text >> (48 - 36)) & 0x3f
+        bitlst = DES._append(bitlst, self._sbox(sub, self._s1), 6)
+
+#        ret.append( self._sbox(text[36:42], self._s7) )
+        sub = (text >> (48 - 42)) & 0x3f
+        bitlst = DES._append(bitlst, self._sbox(sub, self._s1), 6)
+
+#        ret.append( self._sbox(text[42:48], self._s8) )
+        sub = text & 0x3f
+        bitlst = DES._append(bitlst, self._sbox(sub, self._s1), 6)
+
+        return bitlst
+#        result = []  
+#        for elem in ret:  
+#            for char in elem:  
+#                result.append(char)  
+#        return result  
 
     def ppermute(self, text):
         ## finally, the 32-bit output is permuted bitwise according to the
@@ -625,15 +643,6 @@ class DES():
     @staticmethod
 #    def _append(hexlst, val, nbytes=1):  
     def _append(bitlst, val, nbits=1):
-#        ## appends an 8-bit hex val to a hex list (a number) of such values  
-#        ## and returns it  
-#        ##  
-#        ## params:  
-#        ## hexlst = a hex value, which serves as list of byte values  
-#        ## val = a value e.g. as hex number to be appended  
-#        ## nbytes = the number of bytes to be appended, the size of val  
-#        return ((hexlst << (8*nbytes))|val)  
-        
         ## appends a bit to a bit list (a number) of such values and returns it
         ##
         ## params:
@@ -661,17 +670,32 @@ class DES():
             ## DES loops the following steps
             ## 1. split
             left_half, right_half = self._ffunc.split(state)
+            DBG("1. split")
+            DBG("\tleft half  %s"%binstr(left_half, 32))
+            DBG("\tright_half %s"%binstr(right_half, 32))
 
-            ## 2. expansion permutation E
+            ## 2. expansion permutation
             right_exp = self._ffunc.expansion(right_half)
+            DBG("2. expansion permutation")
+            DBG("\tright_exp  %s"%binstr(right_exp, 32))
 
-            ## 3. key
+            ## 3. apply key
             right_exp = self._ffunc.encryptkey(right_exp,idx)
+            DBG("3. apply key")
+            DBG("\tright_exp  %s"%binstr(right_exp, 32))
 
             ## 4. s-boxes
             right_exp = self._ffunc.sbox(right_exp)
+            DBG("4. s-box substitution")
+            DBG("\tright_exp  %s"%binstr(right_exp, 32))
 
 
+        
+            die("XXX") 
+        
+        
+            die("CCC")   
+        
 
         
             die("BBB")  
