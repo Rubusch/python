@@ -313,10 +313,6 @@ class KeySchedule():
             DBG("key schedule: \trndkey: %s"%bin(roundkey))
 #            printx(roundkey)
 
-        
-            die("DDD")  
-        
-
         return roundkey
 
 
@@ -637,12 +633,15 @@ class DES():
             ## 3. key
             right_exp = self._ffunc.encryptkey(right_exp,idx)
 
+            ## 4. s-boxes
+            right_exp = self._ffunc.sbox(right_exp)
+
+
+            die("XXX")   
         
             die("BBB")  
         
 
-            ## 4. s-boxes
-            right_exp = self._ffunc.sbox(right_exp)
 
             ## 5. permutation
             right_exp = self._ffunc.ppermute(right_exp)
