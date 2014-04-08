@@ -302,31 +302,31 @@ class KeySchedule():
             ## 2. split
             left, right = self.splitkey(key)
             DBG("key schedule: 2. split")
-            DBG("key schedule: \tleft:   %s"%bin(left))
-            DBG("key schedule: \tright:  %s"%bin(right))
+            DBG("key schedule: \tleft:   %s"%binstr(left, 28))
+            DBG("key schedule: \tright:  %s"%binstr(right, 28))
 #            printx(left,7) 
 #            printx(right,7) 
 
             ## 3. shift left
             left = self.shift_left(left,idx)
             DBG("key schedule: 3. shift left")
-            DBG("key schedule: \tleft:   %s"%bin(left))
+            DBG("key schedule: \tleft:   %s"%binstr(left, 28))
 #            printx(left,7) 
             right = self.shift_left(right,idx)
-            DBG("key schedule: \tright:  %s"%bin(right))
+            DBG("key schedule: \tright:  %s"%binstr(right, 28))
 #            printx(right,7) 
 
             ## 4. merge keys
 #            key = left+right
             key = DES._append(left, right, 28)
             DBG("key schedule: 4. merge keys")
-            DBG("key schedule: \tmerged: %s"%bin(key))
+            DBG("key schedule: \tmerged: %s"%binstr(key, 56))
 #            printx(key)
 
             ## 5. PC-2 permutation
             roundkey = self.pc2_permutation(key)
             DBG("key schedule: 5. PC-2 permutation")
-            DBG("key schedule: \trndkey: %s"%bin(roundkey))
+            DBG("key schedule: \trndkey: %s"%binstr(roundkey, 48)) # TODO check 56 or 48 bit?
 #            printx(roundkey)
 
         return roundkey
@@ -539,8 +539,8 @@ class FFunction():
         ## they are the only nonlinear element in the algorithm and provide
         ## confusion
 #        self._checklength(text,48)  
-        ret = []
-
+        ret = []  
+# TODO _append() ?? 
         sub = (text >> (48 - 6)) & 0x3f  
         ret.append( self._sbox(sub, self._s1) )
 #        ret.append( self._sbox(text[ 0: 6], self._s1) )
@@ -651,7 +651,7 @@ class DES():
         ## init
         if ishex: state = plaintext
         else: state = int(plaintext.encode('hex'),16) & 0xffffffffffffffff
-        DBG( "\n\nENCRYPTION\n\nplaintext: \t%#s"%bin(state) )
+        DBG( "\n\nENCRYPTION\n\nplaintext: \t%#s"%binstr(state, 64) )
 
         ## initial permutation
         state = self._ip.initial_permutation(state)
