@@ -482,16 +482,9 @@ class FFunction():
         ## next, the 48-bit result of the expansion is XORed with the round key
         ## k[i], and the eight 6-bit blocks are fed into eight different
         ## substitution boxes, which are often referred to as S-boxes
-
 #        self._checklength(text,48)  
 #        key = self._keyschedule.get_encrypt_key(roundidx)  
-        print "A %#.12x"%text  
         text ^= self._keyschedule.get_encrypt_key(roundidx)
-        print "B %#.12x"%text  
-        
-        die("CCC")  
-        
-
         return text
 
 #        self._checklength(key,48)  
@@ -515,6 +508,9 @@ class FFunction():
         ## the s-boxes are the core of DES in terms of cryptographic strength;
         ## they are the only nonlinear element in the algorithm and provide
         ## confusion
+
+        die("XXX")   
+
         self._checklength(text,48)
         ret = []
         ret.append( self._sbox(text[ 0: 6], self._s1) )
@@ -637,7 +633,7 @@ class DES():
             right_exp = self._ffunc.sbox(right_exp)
 
 
-            die("XXX")   
+
         
             die("BBB")  
         
