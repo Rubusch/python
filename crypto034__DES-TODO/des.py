@@ -184,6 +184,7 @@ class KeySchedule():
 
         ## initial 1. PC-1 permutation, once at beginning (stripping last 8-bit)
         self._inputkey = self.pc1_permutation(self._rawinputkey)
+        DBG("key schedule: 1. PC-1 permutation, stripping parity")
 
 # TODO rm
 #    def _checklength(self, text, length):
@@ -212,20 +213,33 @@ class KeySchedule():
 #        DBG("key w/o parity %s"%bin(binlst))  
         return binlst
 
-    def split(self, key):
+#    def split(self, key):
+    def splitkey(self, key):  
         ## the resulting 56-bit key is split into two halves C[0] and D[0], and
         ## the actual key schedule starts
-        return key[:28], key[28:]
+        leftkey = (key >> 28) & 0xfffffff
+        rightkey = key & 0xfffffff
+        return leftkey, rightkey
+#        return key[:28], key[28:]  
 
     def shift_left(self, key, roundidx):
-        ## the two 28-bit halves are cyclically shifted, i.e. rotated, left by
+        ## the two 28-bit halves are cyclically shifted left, i.e. rotated, by
         ## one or two bit positions depending on the round i according to the
-        ## rules; note that the rotation takes only place within either the left
-        ## or the right half; the total number of rotations sum up to 28
-        ## both halves are merged in this step
-        self._checklength(key,28)
+        ## rules;
+        ## note that the rotation takes only place within either the left or the
+        ## right half; the total number of rotations sum up to 28 both halves
+        ## are merged in this step
+#        self._checklength(key,28) 
+#        print "A \t\t%s"%bin(key)  
         shifter = self._shiftrules[roundidx]
-        return key[shifter:] + key[:shifter]
+#        print "shifter %d"%shifter  
+        ret = (key << shifter) & 0xfffffff
+        mask = 0x0
+        for sh in range(shifter): mask = (mask<<1) | 0x1
+        ret |= (key >> (28-shifter)) & mask
+#        print "B \t\t%s"%bin(ret)  
+        return ret
+#        return key[shifter:] + key[:shifter]  
 
     def shift_right(self, key, roundidx):
         ## same as left shift, but used for decryption; in decryption round 1,
@@ -246,36 +260,62 @@ class KeySchedule():
         ## bitwise again with PC-2, which stands for "permutation choice 2"
         ## PC-2 permutes the 56 input bits coming from C[i] and D[i] and ignores
         ## 8 of them; each bit is used in approximately 14 of the 16 round keys
-        self._checklength(key,56)
+#        self._checklength(key,56)  
         ## permute
-        return [self._pick(key,pos) for pos in self._pc2]
+        bitlst = 0x0
+        for pos in self._pc2:
+            ## key has 56 bit
+            bitlst = DES._append(bitlst, DES._getnth(key, (pos-1), 56))
+            ## bitlst has 48 bit
+#        print "X %s"%bin(bitlst)  
+        return bitlst
+#        return [self._pick(key,pos) for pos in self._pc2]
 
     def get_encrypt_key(self, roundidx):
-#        print "\tencrypt"
-        ## generate keys for encryption
+        ## generate a specific key for encryption
+# TODO improve by generating all keys once, and putting them into a list - or explain why this was not done, but a repeted iteration
+        ## the roundkey length is 56 bit
         ##
         ## iterate for each key until the roundidx is reached (easier to
         ## understand decryption afterwards)
+
+        DBG( "key schedule: \tencrypt" )
+        ## 1. PC-1 permutation, and cutting off parity bits - done by??
         key = self._inputkey
         for idx in range(roundidx+1):
             ## 2. split
-            left, right = self.split(key)
-#            printx(left,7)
-#            printx(right,7)
+            left, right = self.splitkey(key)
+            DBG("key schedule: 2. split")
+            DBG("key schedule: \tleft:   %s"%bin(left))
+            DBG("key schedule: \tright:  %s"%bin(right))
+#            printx(left,7) 
+#            printx(right,7) 
 
             ## 3. shift left
             left = self.shift_left(left,idx)
-#            printx(left,7)
+            DBG("key schedule: 3. shift left")
+            DBG("key schedule: \tleft:   %s"%bin(left))
+#            printx(left,7) 
             right = self.shift_left(right,idx)
-#            printx(right,7)
+            DBG("key schedule: \tright:  %s"%bin(right))
+#            printx(right,7) 
 
             ## 4. merge keys
-            key = left+right
+#            key = left+right
+            key = DES._append(left, right, 28)
+            DBG("key schedule: 4. merge keys")
+            DBG("key schedule: \tmerged: %s"%bin(key))
 #            printx(key)
 
             ## 5. PC-2 permutation
             roundkey = self.pc2_permutation(key)
+            DBG("key schedule: 5. PC-2 permutation")
+            DBG("key schedule: \trndkey: %s"%bin(roundkey))
 #            printx(roundkey)
+
+        
+            die("DDD")  
+        
 
         return roundkey
 
@@ -312,6 +352,9 @@ class KeySchedule():
 class FFunction():
     def __init__(self, inputkey):
 # TODO hex values  
+        ## the e-box as other boxes as well, historically starts by one as first
+        ## index; for a better understanding, this is kept throughtout the im-
+        ## plemenetation
         self._ebox = [32, 1, 2, 3, 4, 5,
                        4, 5, 6, 7, 8, 9,
                        8, 9,10,11,12,13,
@@ -393,8 +436,10 @@ class FFunction():
         if length != len(text):
             die("wrong blocksize passed, %d needed, %d passed"%(length,len(text)))
 
-    def _pick(self, text, position):
-        return text[position-1]
+            
+# TODO rm, refac!!
+#    def _pick(self, text, position):
+#        return text[position-1]
 
     def _sbox(self, text, sbox):
         self._checklength(text, 6)
@@ -408,6 +453,7 @@ class FFunction():
         ## previous round and the current round key k[i] as input; the output of
         ## the f-function is used as an XOR-mask for encrypting the left half
         ## input bits L[i-1]
+
 #        self._checklength(text,64)  
         left = (text>>32) & 0xffffffff
         right = text & 0xffffffff
@@ -415,28 +461,48 @@ class FFunction():
 #        return (text[:32],text[32:])  
 
     def expansion(self, text):
+# TODO generic DES._permute(text, table), for 
+# expansion(), pc2_permutation(), etc.   
         ## first, the 32-bit input is expanded to 48 bits by partitioning the
         ## input into eight 4-bit blocks and by expanding each block to 6 bits
-#        self._checklength(text,32)  
         ## expand 32bit to 48bit
-
-        # TODO
         
-        die("XXX")  
-        
-        return [self._pick(text,pos) for pos in self._ebox]  
+#        self._checklength(text,32)  
+        # TODO _getnth(hexlst, nth, size) 
+#        DES._getnth(text, pos) for pos in self._ebox) 
+#        DES._append(hexlst, val, nbytes=1) 
+#        print "A %#.8x"%text 
+#        print "len ebox %d"%(len(self._ebox)/4)  
+        bitlst = 0x0
+        for pos in self._ebox:
+            ## text has 32 bit
+            bitlst = DES._append(bitlst, DES._getnth(text, (pos-1), 32))
+        return bitlst
+#        print "B %#.12x"%bitlst 
+#        return [text[pos-1] for pos in self._ebox]  
+#        return [self._pick(text,pos) for pos in self._ebox]   
 
     def encryptkey(self, text, roundidx):
         ## next, the 48-bit result of the expansion is XORed with the round key
         ## k[i], and the eight 6-bit blocks are fed into eight different
         ## substitution boxes, which are often referred to as S-boxes
-        self._checklength(text,48)
-        key = self._keyschedule.get_encrypt_key(roundidx)
-        self._checklength(key,48)
-        ret = []
-        for idx in range(48):
-            ret.append(int(text[idx]) ^ int(key[idx]))
-        return ret
+
+#        self._checklength(text,48)  
+#        key = self._keyschedule.get_encrypt_key(roundidx)  
+        print "A %#.12x"%text  
+        text ^= self._keyschedule.get_encrypt_key(roundidx)
+        print "B %#.12x"%text  
+        
+        die("CCC")  
+        
+
+        return text
+
+#        self._checklength(key,48)  
+#        ret = []
+#        for idx in range(48):
+#            ret.append(int(text[idx]) ^ int(key[idx]))
+#        return ret
 
     def decryptkey(self, text, roundidx):
         ## same for decryption
@@ -503,30 +569,48 @@ class DES():
             col = 0xf & index
         return table[row][col]
 
-# TODO user  
+# TODO use  
     @staticmethod
-    def _getnth(hexlst, nth, size):
+#    def _getnth(hexlst, nth, size):
+    def _getnth(bitlst, nth, size):
         ## params:
-        ## hexlst = a hex value, which serves as list of byte values
-        ## nth = index of a specific byte in hexlst
-        ## size = the full size of the hexlst in bytes
+#        ## hexlst = a hex value, which serves as list of byte values  
+#        ## nth = index of a specific byte in hexlst  
+#        ## size = the full size of the hexlst in bytes  
+#        ##
+#        ## return the nth 8-bit number, contained in the hex list (a number)
+        
+        ## bitlst = a number, which serves as list of bit values
+        ## nth = index of a specific bit in bitlst
+        ## size = the full size of the bitlst in bits
         ##
-        ## return the nth 8-bit number, contained in the hex list (a number)
+        ## return the nth bit, contained in the bit list (a number)
         ## where nth is an index, starting with 0
-        return ((hexlst >> (size - (nth+1)*8)) & 0xff)
+# TODO rm, DES is bit based!
+#        return ((hexlst >> (size - (nth+1)*8)) & 0xff)  
+        return ((bitlst >> (size - (nth+1))) & 0x1)
 
-# TODO user  
+# TODO use  
     @staticmethod
-    def _append(hexlst, val, nbytes=1):
-        ## appends an 8-bit hex val to a hex list (a number) of such values
-        ## and returns it
+#    def _append(hexlst, val, nbytes=1):  
+    def _append(bitlst, val, nbits=1):
+#        ## appends an 8-bit hex val to a hex list (a number) of such values  
+#        ## and returns it  
+#        ##  
+#        ## params:  
+#        ## hexlst = a hex value, which serves as list of byte values  
+#        ## val = a value e.g. as hex number to be appended  
+#        ## nbytes = the number of bytes to be appended, the size of val  
+#        return ((hexlst << (8*nbytes))|val)  
+        
+        ## appends a bit to a bit list (a number) of such values and returns it
         ##
         ## params:
-        ## hexlst = a hex value, which serves as list of byte values
-        ## val = a value e.g. as hex number to be appended
-        ## nbytes = the number of bytes to be appended, the size of val
-        return ((hexlst << (8*nbytes))|val)
-
+        ## bitlst = a bit number, which serves as list of bit values
+        ## val = a binary number to be appended
+        ## nbits = the size of val
+        ##         DES is a bit based algorithm, so the atomic unit is in bits
+        return ((bitlst << nbits)|val)
 
     def encrypt(self, plaintext, ishex=False):
         ## params
@@ -547,19 +631,15 @@ class DES():
             ## 1. split
             left_half, right_half = self._ffunc.split(state)
 
-
-
             ## 2. expansion permutation E
             right_exp = self._ffunc.expansion(right_half)
 
+            ## 3. key
+            right_exp = self._ffunc.encryptkey(right_exp,idx)
 
         
             die("BBB")  
         
-
-
-            ## 3. key
-            right_exp = self._ffunc.encryptkey(right_exp,idx)
 
             ## 4. s-boxes
             right_exp = self._ffunc.sbox(right_exp)
