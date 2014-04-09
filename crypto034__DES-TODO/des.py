@@ -166,7 +166,7 @@ class KeySchedule():
         ## bit, i.e. the parity bits are stripped in the initial PC-1
         ## permutation; again the parity bits certainly do not increase the key
         ## space! returns 56 bits
-        stripped_initkey = DES._map_by_table(inputkey, self._pc1, 64)  
+        stripped_initkey = DES._map_by_table(inputkey, self._pc1, 64)
         DBG("key schedule: 1. PC-1 permutation, stripping parity")
         DBG("key schedule: key      %s"%binstr(stripped_initkey, 56))
 
@@ -178,6 +178,7 @@ class KeySchedule():
         DBG( "key schedule" )
         keys = []
         key = stripped_initkey
+# TODO check if index is correct (some table entry might start with 1 instead of 0)
 #        for idx in range(roundiddx+1):
         for idx in range(16):
             ## 2. split
@@ -591,37 +592,37 @@ class DES():
         else: state = int(plaintext.encode('hex'),16) & 0xffffffffffffffff
         DBG( "\n\nENCRYPTION\n\nplaintext: \t%#s"%binstr(state, 64) )
 
-        ## initial permutation
+        ## 1. initial permutation
         ## Note that both permutations do not increase the security of DES at all
         ## takes 64-bit input, result is
         state = DES._map_by_table(state, self._ip._initial_permutation, 64)
-        DBG("0. initial permutation")
+        DBG("1. initial permutation")
         DBG("\tstate      %s"%(binstr(state, 64)))
 
         ## F-function
         for idx in range(16):
             ## DES loops the following steps
-            ## 1. split
+            ## 2. split
             left_half, right_half = self._ffunc.split(state)
-            DBG("1. split")
+            DBG("2. split")
             DBG("\tstate      %s %s"%(binstr(left_half, 32), binstr(right_half, 32)))
 
-            ## 2. expansion permutation
+            ## 3. expansion permutation
             right_exp = self._ffunc.expansion(right_half)
-            DBG("2. expansion permutation")
+            DBG("3. expansion permutation")
             DBG("\tstate      %s %s"%(binstr(left_half, 32), binstr(right_exp, 48)))
 
-            ## 3. apply key
+            ## 4. apply key
             right_exp = self._ffunc.encryptkey(right_exp,idx)
-            DBG("3. apply key")
+            DBG("4. apply key")
             DBG("\tstate      %s %s"%(binstr(left_half, 32), binstr(right_exp, 48)))
 
-            ## 4. s-boxes
+            ## 5. s-boxes
             right_exp = self._ffunc.sbox(right_exp)
-            DBG("4. s-box substitution")
+            DBG("5. s-box substitution")
             DBG("\tstate      %s %s"%(binstr(left_half, 32), binstr(right_exp, 32)))
 
-            ## 5. permutation
+            ## 6. permutation
             ## finally, the 32-bit output is permuted bitwise according to the
             ## P permutation; unlike the initial IP and its inverse IP-1, the
             ## permutation P introduces diffusion because the four output bits of
@@ -629,50 +630,59 @@ class DES():
             ## different S-boxes in the following round
             ## takes a 32-bit input, result is 32-bit
             right_exp = self._map_by_table(right_exp, self._ffunc._pbox, 32)
-            DBG("5. permutation")
+            DBG("6. permutation")
             DBG("\tstate      %s %s"%(binstr(left_half, 32), binstr(right_exp, 32)))
 
-            ## 6. xor left and right half
+            ## 7. xor left and right half
             left_half ^= right_exp
-            DBG("6. xor left and right half")
+            DBG("7. xor left and right half")
             DBG("\tstate      %s %s"%(binstr(left_half, 32), binstr(right_exp, 32)))
 
-            ## 7. merge and switch halves
+            ## 8. merge and switch halves
             state = DES._append(right_exp, left_half, 32)
-            DBG("7. merge and switch halves")
+            DBG("8. merge and switch halves")
             DBG("\tstate      %s"%binstr(state, 64))
 
         ## revert permutation
         ## Note that both permutations do not increase the security of DES at all
         state = DES._map_by_table(state, self._ip._final_permutation, 64)
-        DBG("8. final permutation")
+        DBG("9. final permutation")
         DBG("\tstate      %s"%binstr(state, 64))
         return state
 
 
     def decrypt(self, ciphertext):
-        ## initial permutation
+        ## 1. initial permutation
         ## Note that both permutations do not increase the security of DES at all
         ## takes 64-bit input, result is
-        text = DES._map_by_table(ciphertext, self._ip._initial_permutation, 64)
+        state = DES._map_by_table(ciphertext, self._ip._initial_permutation, 64)
+        DBG("1. initial permutation")
+        DBG("\tstate      %s"%(binstr(state, 64)))
 
         ## F-function
         for idx in range(16):
             ## DES loops the following steps
-            ## 1. split
+            ## 2. split
             ## in decryption, left and right halves are twisted!!!
-            right_half, left_half = self._ffunc.split(text)
+            right_half, left_half = self._ffunc.split(state)
+            DBG("2. split")
+            DBG("\tstate      %s %s"%(binstr(left_half, 32), binstr(right_half, 32)))
 
-            ## 2. expansion permutation E
+            ## 3. expansion permutation E
             right_exp = self._ffunc.expansion(right_half)
 
-            ## 3. key
+        
+            die("BBB")  
+        
+
+
+            ## 4. key
             right_exp = self._ffunc.decryptkey(right_exp,idx)
 
-            ## 4. s-boxes
+            ## 5. s-boxes
             right_exp = self._ffunc.sbox(right_exp)
 
-            ## 5. permutation
+            ## 6. permutation
             ## finally, the 32-bit output is permuted bitwise according to the
             ## P permutation; unlike the initial IP and its inverse IP-1, the
             ## permutation P introduces diffusion because the four output bits of
@@ -682,21 +692,19 @@ class DES():
             right_exp = self._map_by_table(right_exp, self._ffunc._pbox, 32)
 
 
-            ## 6. merge left and right half
-#            text = self._feistel.round_xor(left_half, right_exp)
+            ## 7. merge left and right half
+#            state = self._feistel.round_xor(left_half, right_exp)
 # TODO   
 
-            ## 7. switch halves
+            ## 8. switch halves
             ## in decryption, left and right halves are twisted!!!
-#            text = self._feistel.round_merge_and_switch( right_half, text)
+#            state = self._feistel.round_merge_and_switch( right_half, state)
 # TODO   
 
-        ## revert permutation
+        ## 9. revert permutation
         ## Note that both permutations do not increase the security of DES at all
-        state = DES._map_by_table(text, self._ip._final_permutation, 64)  
+        state = DES._map_by_table(state, self._ip._final_permutation, 64)  
         return state  
-# TODO rm
-#        return self._ip.final_permutation(text)
 
 
 ### main ###
@@ -742,11 +750,7 @@ def main(argv=sys.argv[1:]):
     for idx in range(len(plaintext)-1):
         blocktext += plaintext[idx]
         if idx % (blocksize/8) == 0:
-
             ciphertext.append(des.encrypt(blocktext))
-            
-            die("AAA")  
-            
             blocktext = ""
     blocktext += plaintext[idx+1]
     ciphertext.append(des.encrypt(blocktext))
@@ -754,13 +758,17 @@ def main(argv=sys.argv[1:]):
     ## print result
     print "encrypted:"
     for item in ciphertext:
-        print "%#.32x"%item
+        print "%s"%binstr(item, 64)
     print "\n"
 
     ## decrypt
     decryptedtext = ""
     for block in ciphertext:
         decryptedtext += des.decrypt(block)
+
+            
+        die("AAA")  
+            
 
     ## print result
     print "decrypted:"
