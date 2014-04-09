@@ -480,14 +480,22 @@ class FFunction():
         return text
 
     def decryptkey(self, text, roundidx):
-        ## same for decryption
-        self._checklength(text,48)
-        key = self._keyschedule.get_decrypt_key(roundidx)
-        self._checklength(key,48)
-        ret = []
-        for idx in range(48):
-            ret.append(int(text[idx]) ^ int(key[idx]))
-        return ret
+        
+        die("XXX")  
+        
+        text ^= self._keyschedule.get_decrypt_key(roundidx)  
+        return text
+
+        
+# TODO check   
+#        ## same for decryption
+#        self._checklength(text,48)
+#        key = self._keyschedule.get_decrypt_key(roundidx)
+#        self._checklength(key,48)
+#        ret = []
+#        for idx in range(48):
+#            ret.append(int(text[idx]) ^ int(key[idx]))
+#        return ret
 
     def sbox(self, text):
         ## the s-boxes are the core of DES in terms of cryptographic strength;
@@ -666,18 +674,24 @@ class DES():
             ## in decryption, left and right halves are twisted!!!
             right_half, left_half = self._ffunc.split(state)
             DBG("2. split")
+# TODO check sizes
             DBG("\tstate      %s %s"%(binstr(left_half, 32), binstr(right_half, 32)))
 
-            ## 3. expansion permutation E
+            ## 3. expansion permutation
             right_exp = self._ffunc.expansion(right_half)
+            DBG("3. expansion permutation")
+# TODO check sizes
+            DBG("\tstate      %s %s"%(binstr(left_half, 32), binstr(right_exp, 48)))
+
+            ## 4. key
+            right_exp = self._ffunc.decryptkey(right_exp,idx)
+            DBG("4. key")
+            DBG("\tstate      %s %s"%(binstr(left_half, 32), binstr(right_exp, 48)))  
 
         
             die("BBB")  
         
 
-
-            ## 4. key
-            right_exp = self._ffunc.decryptkey(right_exp,idx)
 
             ## 5. s-boxes
             right_exp = self._ffunc.sbox(right_exp)
