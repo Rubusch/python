@@ -247,15 +247,14 @@ class KeySchedule():
         ## right half; the total number of rotations sum up to 28 both halves
         ## are merged in this step
         shifter = self._shiftrules[roundidx]
-        ret = (key << shifter) & 0xfffffff
+        ret = (key <<shifter) & 0xfffffff
         mask = 0x0
         for sh in range(shifter): mask = (mask<<1) | 0x1
-        ret |= (key >> (28-shifter)) & mask
+        ret |= (key >>(28-shifter)) & mask
         return ret
 
 #    def shift_right(self, key, roundidx):
     def _shiftright(self, key, roundidx):
-# TODO   
         ## same as left shift, but used for decryption; in decryption round 1,
         ## subkey 16 is needed; in round 2 subkey 15
         ## in decryption round 1 the key is not rotated
@@ -263,15 +262,34 @@ class KeySchedule():
         ## one bit
         ## in the other rounds, 3,4,5,6,7,8,10,11,12,13,14 and 15 the two halves
         ## are rotated right by two bits
-
-        
-        die("XXX")   
-
-#        self._checklength(key,28)
+# TODO size?
+        ## special for decryption, and key generation
         if 0 == roundidx: return key
         shifter = self._shiftrules[roundidx]
-        keylen = len(key)
-        return key[(keylen-shifter):] + key[:(keylen-shifter)]
+
+        ret = 0x0
+        for bit in range(shifter):
+            ret = DES._append((key & 0x1), 1)   
+            key >>= 1
+        ret |= key
+        
+        DBG("XXX %s"%tostring(ret, 28))  
+        
+        die("XXX")   
+        
+#        keylen = len(key)
+#        return key[(keylen-shifter):] + key[:(keylen-shifter)]
+
+        
+        die("CCC") 
+        
+        return ret
+#        self._checklength(key,28)
+#        if 0 == roundidx: return key
+#        shifter = self._shiftrules[roundidx]
+#        keylen = len(key)
+#        return key[(keylen-shifter):] + key[:(keylen-shifter)]
+
 
     def pc2_permutation(self, key):
         ## to derive the 48-bit round keys k[i], the two halves are permuted
