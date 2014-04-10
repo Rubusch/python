@@ -659,15 +659,12 @@ class DES():
             ## 4. key
             right_exp = self._ffunc.decryptkey(right_exp,idx)
             DBG("4. key")
-            DBG("\tstate      %s %s"%(tostring(left_half, 32), tostring(right_exp, 48)))  
-
-        
-            die("BBB")  
-        
-
+            DBG("\tstate      %s %s"%(tostring(left_half, 32), tostring(right_exp, 48)))
 
             ## 5. s-boxes
             right_exp = self._ffunc.sbox(right_exp)
+            DBG("5. s-box substitution")
+            DBG("\tstate      %s %s"%(tostring(left_half, 32), tostring(right_exp, 32)))
 
             ## 6. permutation
             ## finally, the 32-bit output is permuted bitwise according to the
@@ -677,21 +674,42 @@ class DES():
             ## different S-boxes in the following round
             ## takes a 32-bit input, result is 32-bit
             right_exp = self._map_by_table(right_exp, self._ffunc._pbox, 32)
+            DBG("6. permutation")
+            DBG("\tstate      %s %s"%(tostring(left_half, 32), tostring(right_exp, 32)))
 
-
-            ## 7. merge left and right half
-#            state = self._feistel.round_xor(left_half, right_exp)
-# TODO   
+            ## 7. xor left and right half
+            left_half ^= right_exp
+            DBG("7. xor left and right half")
+            DBG("\tstate      %s %s"%(tostring(left_half, 32), tostring(right_exp, 32)))
 
             ## 8. switch halves
             ## in decryption, left and right halves are twisted!!!
+            state = DES._append(right_exp, left_half, 32)
+            DBG("8. merge and switch halves")
+            DBG("\tstate      %s"%tostring(state, 64))
+
+
+        ## revert permutation
+        ## Note that both permutations do not increase the security of DES at all
+        state = DES._map_by_table(state, self._ip._final_permutation, 64)
+        DBG("9. final permutation")
+        DBG("\tstate      %s"%tostring(state, 64))
+
+        ## convert to string
+        text = "%x"%state
+        return ''.join(chr(int(text[i:i+2], 16)) for i in range(0, len(text), 2))
+        
+#            die("BBB")  
+        
+
+
 #            state = self._feistel.round_merge_and_switch( right_half, state)
 # TODO   
 
         ## 9. revert permutation
         ## Note that both permutations do not increase the security of DES at all
-        state = DES._map_by_table(state, self._ip._final_permutation, 64)  
-        return state  
+#        state = DES._map_by_table(state, self._ip._final_permutation, 64)  
+#        return state  
 
 
 ### main ###
@@ -753,11 +771,8 @@ def main(argv=sys.argv[1:]):
     for block in ciphertext:
         decryptedtext += des.decrypt(block)
 
-            
-        die("AAA")  
-            
-
     ## print result
+# FIXME     
     print "decrypted:"
     print "%s\n" % decryptedtext
 
