@@ -20,7 +20,6 @@
 # TODO implement blockwise en/decryption
 # TODO change frontend
 # TODO command line encryption
-# TODO DBG()
 # TODO clean up
 # TODO refacture functions
 
@@ -35,60 +34,19 @@ def DBG(msg):
     print msg
     pass
 
+DBG_PRINT_HEX = False
 def tostring(val, nbits):
     ## binary representation
     mask = 0x1 << nbits
     val += mask
 
-    ## remove the 1 from the mask and return as string w/ leading 0s
-    res = bin(val)[:2] + bin(val)[3:]
-
-    ## hexadecimal representation
-# TODO   
-#    res = "%#.x"%val
+    if DBG_PRINT_HEX:
+        ## hexadecimal representation
+        res = ("%#.x"%val)[:2] + ("%#.x"%val)[3:]
+    else:
+        ## remove the 1 from the mask and return as string w/ leading 0s
+        res = bin(val)[:2] + bin(val)[3:]
     return res
-
-
-# TODO rm  
-#def bin2dec(tostring):
-#    ## generate decimal value from binary string
-#    val = 0
-#    for idx in reversed(range(len(tostring))):
-#        potence = 0
-#        if '1' == tostring[idx]:
-#            potence = 1
-#            for i in range(len(tostring)-1-idx):
-#                potence *= 2
-#        val += potence
-#    return val
-#
-# TODO rm  
-#def printx(text, cols=8):
-#    ## print in columns
-#    for idx in range(len(text)):
-#        if 0 == idx%cols:
-#            if idx != 0:
-#                print ""
-#        if int(text[idx]) < 10:
-#            print " %s "%text[idx],
-#        else:
-#            print "%s "%text[idx],
-#    print "\n"
-#
-## TODO rm  
-#def printhexlist(binlist):
-#    ## print binary value list, as hex values
-#    elem = ""
-#    vals = []
-#    for idx in range(len(binlist)):
-#        if 0 == idx%4 and idx != 0:
-#            vals.append( bin2dec(elem) )
-#            elem = ""
-#        elem += str(binlist[idx])
-#    vals.append(bin2dec(elem))
-#    res = [str(hex(v)).upper()[2:] for v in vals]
-#    print "%s"%" ".join(map(str,res))
-#
 
 class InitialPermutation():
     def __init__(self):
@@ -112,24 +70,13 @@ class InitialPermutation():
                                    34, 2,42,10,50,18,58,26,
                                    33, 1,41, 9,49,17,57,25]
 
-    def _checklength(self, text):
-        if self._blocksize != len(text):
-            die("wrong blocksize passed, %d needed, %d passed"%(self._blocksize, len(text)))
-
-#class FeistelNetwork():
-#    def _checklength(self, text, length):
-#        if length != len(text):
-#            die("wrong blocksize passed, %d needed, %d passed"%(length,len(text)))
+# TODO rm  
+#    def _checklength(self, text):
+#        if self._blocksize != len(text):
+#            die("wrong blocksize passed, %d needed, %d passed"%(self._blocksize, len(text)))
 
 class KeySchedule():
     def __init__(self, inputkey):
-# TODO rm  
-#        ## the key schedule derives 16 round keys k[i], each consisting of
-#        ## 48 bits, from original 56-bit key; another term for round key is
-#        ## subkey
-## TODO rm  
-##        self._checklength(inputkey, 64) 
-##        self._rawinputkey = inputkey
 
 # TODO hex values  
         self._pc1 = [57,49,41,33,25,17, 9, 1,
@@ -161,10 +108,17 @@ class KeySchedule():
         ## the key schedule derives 16 round keys k[i], each consisting of
         ## 48 bits, from original 56-bit key; another term for round key is
         ## subkey
-        self._encryptkeys = self._key_expansion(inputkey)
+        self._encryptkeys = self._encrypt_key_expansion(inputkey)
 
-    def _key_expansion(self, inputkey):
-        DBG("key schedule: key expansion")
+        ## decryption keys are the same as encyrption keys, but also can be gene-
+        ## rated by using a right shift instead of a left shift, so here is pre-
+        ## sented how to generate them freshly, instead of accessing the already
+        ## generated keys with the corresponding reverted index which of course
+        ## would be the efficient way how to do it
+        self._decryptkeys = self._decrypt_key_expansion(inputkey)
+
+    def _encrypt_key_expansion(self, inputkey):
+        DBG("key schedule: encryption key expansion")
         DBG("key schedule: init key %s"%tostring(inputkey, 64))
         ## initial 1. PC-1 permutation, once at beginning (stripping last 8-bit)
         ##
@@ -184,8 +138,7 @@ class KeySchedule():
         DBG( "key schedule" )
         keys = []
         key = stripped_initkey
-# TODO check if index is correct (some table entry might start with 1 instead of 0)
-#        for idx in range(roundiddx+1):
+
         for idx in range(16):
             ## 2. split
             left, right = self._splitkey(key)
@@ -211,38 +164,73 @@ class KeySchedule():
             keys.append(roundkey)
         return keys
 
+    def _decrypt_key_expansion(self, inputkey):
+        ## 
+        DBG("key schedule: decryption key expansion")
+        DBG("key schedule: init key %s"%tostring(inputkey, 64))
 
-# TODO rm
-#    def _checklength(self, text, length):
-#        if length != len(text):
-#            die("wrong blocksize passed, %d needed, %d passed"%(length,len(text)))
-#
-# TODO rm   
-#    def _pick(self, text, position):
-#        return text[position-1]
+# TODO check stripping
+        stripped_initkey = DES._map_by_table(inputkey, self._pc1, 64)
+        DBG("key schedule: 1. PC-1 permutation, stripping parity")
+        DBG("key schedule: key      %s"%tostring(stripped_initkey, 56))
 
-# TODO rm   
-#    def pc1_permutation(self, key):
-#        ## initial key permutation PC-1
-#        ## the 64-bit key is first reduced to 56 bits by ignoring every eighth
-#        ## bit, i.e. the parity bits are stripped in the initial PC-1
-#        ## permutation; again the parity bits certainly do not increase the key
-#        ## space! returns 56 bits
-## TODO rm
-##        self._checklength(key,64)   
-##        return [self._pick(key,pos) for pos in self._pc1]   
-##        DBG("key w/ parity  %s"%bin(key))   
-#        
-#        binlst = 0x0
-#        for pos in self._pc1:
-#            ## table entries start with 1, so reduce by 1
+        DBG( "key schedule" )
+        keys = []
+        key = stripped_initkey
+
+        for idx in range(16):
+            ## 2. split
+            left, right = self._splitkey(key)
+            DBG("key schedule: 2. split")
+            DBG("key schedule: key       %s %s"%(tostring(left, 28), tostring(right, 28)))
+
+            ## 3. shift right
+            left = self._shiftright(left, idx) # TODO implementation
+            right = self._shiftright(right, idx) 
+            DBG("key schedule: 3. shift left")
+            DBG("key schedule: key       %s %s"%(tostring(left, 28), tostring(right, 28)))
+
+            ## 4. merge keys
+            key = DES._append(left, right, 28)
+            DBG("key schedule: 4. merge keys")
+            DBG("key schedule: key       %s"%(tostring(key, 56)))
+
+            ## 5. PC-2 permutation
+            roundkey = self.pc2_permutation(key)
+            DBG("key schedule: 5. PC-2 permutation")
+            DBG("key schedule: rnd key   %s"%(tostring(roundkey, 48)))
+
+            keys.append(roundkey)
+        return keys
+
+        
+        ## generate keys for decryption, by the property
+        ## C[0] == C[16] and D[0] == D[16]
+        ## the first key for decryption is the last key for encryption
+#        key = self._inputkey 
+#        for idx in range(roundidx+1): 
+#            ## 2. split 
+#            left, right = self._splitkey(key) 
+# 
+# 
+#            ## 3. shift right
+#            left = self._shiftright(left,idx)
+#            right = self._shiftright(right,idx)
 #
-#            val = (key >> (64 - ((pos-1)+1))) & 0b1 # TODO getnth_binary
-#            binlst = (binlst <<1)|val # TODO append binary
-##        DBG("key w/o parity %s"%bin(binlst))  
-#        return binlst
 #
-#    def split(self, key):
+#            ## 4. merge keys
+#            key = left+right
+#
+#
+#            ## 5. PC-2 permutation
+#            roundkey = self.pc2_permutation(key)
+#
+#
+#        return roundkey
+        
+        # TODO
+        return keys
+
     def _splitkey(self, key):  
         ## the resulting 56-bit key is split into two halves C[0] and D[0], and
         ## the actual key schedule starts
@@ -275,7 +263,11 @@ class KeySchedule():
         ## one bit
         ## in the other rounds, 3,4,5,6,7,8,10,11,12,13,14 and 15 the two halves
         ## are rotated right by two bits
-        self._checklength(key,28)
+
+        
+        die("XXX")   
+
+#        self._checklength(key,28)
         if 0 == roundidx: return key
         shifter = self._shiftrules[roundidx]
         keylen = len(key)
@@ -300,69 +292,36 @@ class KeySchedule():
         ## understand decryption afterwards)
         return self._encryptkeys[roundidx]
 
-# TODO rm
-#        DBG( "key schedule" )
-#        key = self._inputkey  
+    def get_decrypt_key(self, roundidx):
+        return self._decryptkeys[roundidx]
+    
+##        print "\tdecrypt"
+#        ## generate keys for decryption, by the property
+#        ## C[0] == C[16] and D[0] == D[16]
+#        ## the first key for decryption is the last key for encryption
+#        key = self._inputkey
 #        for idx in range(roundidx+1):
 #            ## 2. split
 #            left, right = self._splitkey(key)
-#            DBG("key schedule: 2. split")
-#            DBG("key schedule: key       %s %s"%(tostring(left, 28), tostring(right, 28)))
-#            
-##            DBG("key schedule: \tleft:   %s"%tostring(left, 28)) 
-##            DBG("key schedule: \tright:  %s"%tostring(right, 28)) 
+##            printx(left,7)
+##            printx(right,7)
 #
-#            ## 3. shift left
-#            left = self._shiftleft(left,idx)
-##            DBG("key schedule: \tleft:   %s"%tostring(left, 28)) 
-#            right = self._shiftleft(right,idx)
-#            DBG("key schedule: 3. shift left")
-#            DBG("key schedule: key       %s %s"%(tostring(left, 28), tostring(right, 28)))
-##            DBG("key schedule: \tright:  %s"%tostring(right, 28)) 
+#            ## 3. shift right
+#            left = self._shiftright(left,idx)
+##            printx(left,7)
+#            right = self._shiftright(right,idx)
+##            printx(right,7)
 #
 #            ## 4. merge keys
-#            key = DES._append(left, right, 28)
-#            DBG("key schedule: 4. merge keys")
-#            DBG("key schedule: key       %s"%(tostring(key, 56)))
-##            DBG("key schedule: \tmerged: %s"%tostring(key, 56))  
+#            key = left+right
+##            printx(key)
 #
 #            ## 5. PC-2 permutation
 #            roundkey = self.pc2_permutation(key)
-#            DBG("key schedule: 5. PC-2 permutation")
-#            DBG("key schedule: rnd key   %s"%(tostring(roundkey, 48)))
-##            DBG("key schedule: \trndkey: %s"%tostring(roundkey, 48)) # TODO check 56 or 48 bit?
+##            printx(roundkey)
 #
 #        return roundkey
- 
-
-    def get_decrypt_key(self, roundidx):
-#        print "\tdecrypt"
-        ## generate keys for decryption, by the property
-        ## C[0] == C[16] and D[0] == D[16]
-        ## the first key for decryption is the last key for encryption
-        key = self._inputkey
-        for idx in range(roundidx+1):
-            ## 2. split
-            left, right = self._splitkey(key)
-#            printx(left,7)
-#            printx(right,7)
-
-            ## 3. shift right
-            left = self._shiftright(left,idx)
-#            printx(left,7)
-            right = self._shiftright(right,idx)
-#            printx(right,7)
-
-            ## 4. merge keys
-            key = left+right
-#            printx(key)
-
-            ## 5. PC-2 permutation
-            roundkey = self.pc2_permutation(key)
-#            printx(roundkey)
-
-        return roundkey
-
+#
 
 class FFunction():
     def __init__(self, inputkey):
@@ -486,10 +445,7 @@ class FFunction():
         return text
 
     def decryptkey(self, text, roundidx):
-        
-        die("XXX")  
-        
-        text ^= self._keyschedule.get_decrypt_key(roundidx)  
+        text ^= self._keyschedule.get_decrypt_key(roundidx)
         return text
 
         
