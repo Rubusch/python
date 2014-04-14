@@ -574,8 +574,6 @@ class DES():
         DBG("1. initial permutation")
         DBG("\tstate      %s"%(tostring(state, 64)))
 
-        print "AAA\t%s"%tostring(plaintext,64)    
-
         ## F-function
         for idx in range(16):
             ## DES loops the following steps
@@ -584,15 +582,17 @@ class DES():
             DBG("2. split")
             DBG("\tstate      %s %s"%(tostring(left_half, 32), tostring(right_half, 32)))
 
-
-            print "BBB\t%s"%tostring(state,64)    
-            die("XXX")   
-
+            print "AAA\t%s"%tostring(plaintext,64)    
 
             ## 3. expansion permutation
             right_exp = self._ffunc.expansion(right_half)
             DBG("3. expansion permutation")
             DBG("\tstate      %s %s"%(tostring(left_half, 32), tostring(right_exp, 48)))
+
+            
+            print "BBB\t%s"%tostring(state,64)    
+            die("XXX")   
+            
 
             ## 4. apply key
             right_exp = self._ffunc.encryptkey(right_exp,idx)
