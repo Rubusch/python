@@ -567,18 +567,14 @@ class DES():
         else: state = int(plaintext.encode('hex'),16) & 0xffffffffffffffff
         DBG( "\n\nENCRYPTION\n\nplaintext: \t%#s"%tostring(state, 64) )
 
-        print "AAA\t%s"%tostring(plaintext,64)    
-
         ## 1. initial permutation
         ## Note that both permutations do not increase the security of DES at all
         ## takes 64-bit input, result is
-        state = DES._map_by_table(state, self._ip._initial_permutation, 64)
+        state = DES._map_by_table(state, self._ip._initial_permutation, 64) # ok   
         DBG("1. initial permutation")
         DBG("\tstate      %s"%(tostring(state, 64)))
 
-        print "BBB\t%s"%tostring(state,64)    
-        die("XXX")   
-
+        print "AAA\t%s"%tostring(plaintext,64)    
 
         ## F-function
         for idx in range(16):
@@ -587,6 +583,11 @@ class DES():
             left_half, right_half = self._ffunc.split(state)
             DBG("2. split")
             DBG("\tstate      %s %s"%(tostring(left_half, 32), tostring(right_half, 32)))
+
+
+            print "BBB\t%s"%tostring(state,64)    
+            die("XXX")   
+
 
             ## 3. expansion permutation
             right_exp = self._ffunc.expansion(right_half)
