@@ -125,9 +125,19 @@ class KeySchedule():
         ## generated keys with the corresponding reverted index which of course
         ## would be the efficient way how to do it
         self._decryptkeys = self._decrypt_key_expansion(inputkey)
+#        die("AAA")  
+        
+        for i in range(len(self._encryptkeys)):  
+            print "ek[%d]\t%s"%(i, tostring(self._encryptkeys[i], 48))  
+        print ""
+        for i in range(len(self._decryptkeys)):  
+            print "dk[%d]\t%s"%(i, tostring(self._decryptkeys[i], 48))  
+
+#        die("PRE")  
+        
 
     def _encrypt_key_expansion(self, inputkey):
-        DBG("key schedule: encryption key expansion")
+        DBG("\nkey schedule: encryption key expansion")
         DBG("key schedule: init key %s"%tostring(inputkey, 64))
         ## initial 1. PC-1 permutation, once at beginning (stripping last 8-bit)
         ##
@@ -174,10 +184,9 @@ class KeySchedule():
         return keys
 
     def _decrypt_key_expansion(self, inputkey):
-        DBG("key schedule: decryption key expansion")
+        DBG("\nkey schedule: decryption key expansion")
         DBG("key schedule: init key %s"%tostring(inputkey, 64))
 
-# TODO check stripping
         stripped_initkey = DES._map_by_table(inputkey, self._pc1, 64)
         DBG("key schedule: 1. PC-1 permutation, stripping parity")
         DBG("key schedule: key      %s"%tostring(stripped_initkey, 56))
@@ -191,12 +200,15 @@ class KeySchedule():
             left, right = self._splitkey(key)
             DBG("key schedule: 2. split")
             DBG("key schedule: key       %s %s"%(tostring(left, 28), tostring(right, 28)))
+# TODO check value
 
             ## 3. shift right
-            left = self._shiftright(left, idx) # TODO implementation
-            right = self._shiftright(right, idx) 
-            DBG("key schedule: 3. shift left")
+            left = self._shiftright(left, idx) # FIXME implementation  
+            right = self._shiftright(right, idx) # FIXME  
+            DBG("key schedule: 3. shift right")
             DBG("key schedule: key       %s %s"%(tostring(left, 28), tostring(right, 28)))
+
+#            die("XXX")  
 
             ## 4. merge keys
             key = DES._append(left, right, 28)
@@ -274,9 +286,9 @@ class KeySchedule():
 # TODO size?
         
 #        key = 0x8000000
-        key = 0xf0f0f0f
-        DBG("X key     %s"%tostring(key, 28))  
-        roundidx = 1
+#        key = 0xf0f0f0f
+#        DBG("X key     %s"%tostring(key, 28))  
+#        roundidx = 1
         
 
         ## special for decryption, and key generation
@@ -582,7 +594,7 @@ class DES():
             DBG("2. split")
             DBG("\tstate      %s %s"%(tostring(left_half, 32), tostring(right_half, 32)))
 
-            print "AAA\t%s"%tostring(plaintext,64)    
+#            print "AAA\t%s"%tostring(plaintext,64)    
 
             ## 3. expansion permutation
             right_exp = self._ffunc.expansion(right_half)
@@ -590,8 +602,8 @@ class DES():
             DBG("\tstate      %s %s"%(tostring(left_half, 32), tostring(right_exp, 48)))
 
             
-            print "BBB\t%s"%tostring(state,64)    
-            die("XXX")   
+#            print "BBB\t%s"%tostring(state,64)    
+#            die("BBB")
             
 
             ## 4. apply key
@@ -726,7 +738,7 @@ def main(argv=sys.argv[1:]):
             die('usage: either w/o arguments, or as follows\n$ %s <inputkey> "<plaintext>"\ne.g.\n$ %s %s "%s"'%(sys.argv[0],sys.argv[0],"0x000102030405060708090a0b0c0d0e0f","from Disco to Disco.."))
     else:
         ## init some raw input key example
-        inputkey = 0x000102030405060708090a0b0c0d0e0f
+        inputkey = 0x0001020304050607 #08090a0b0c0d0e0f
         ## init some input text example
         plaintext = "jack and jill went up the hill to fetch a pail of water"
     
@@ -734,9 +746,9 @@ def main(argv=sys.argv[1:]):
 #    inputkey = 0xffffffffffffffff   
 #    inputkey =  0x0000000000000080  
 
-#    plaintext = "Angelina"      
-    inputkey =  0x0000000000000001  
-    plaintext = 0x0000000000000001  
+    plaintext = "Angelina"      
+    inputkey =  0x0000000000000002  
+#    plaintext = 0x0000000000000001  
 
     
 
@@ -748,21 +760,21 @@ def main(argv=sys.argv[1:]):
     ## init the algorithm
     des = DES(inputkey)
 
-    print "XXX %s"%tostring( des.encrypt(plaintext,ishex=True), 64)    
-    die("STOP")   
+#    print "XXX %s"%tostring( des.encrypt(plaintext,ishex=True), 64)    
+#    die("STOP")   
 
     ## some input text
     ## blocks
 # TODO uncomment                
-#    ciphertext = []
-#    blocktext = ""
-#    for idx in range(len(plaintext)-1):
-#        blocktext += plaintext[idx]
-#        if idx % (blocksize/8) == 0:
-#            ciphertext.append(des.encrypt(blocktext))
-#            blocktext = ""
-#    blocktext += plaintext[idx+1]
-#    ciphertext.append(des.encrypt(blocktext))
+    ciphertext = []
+    blocktext = ""
+    for idx in range(len(plaintext)-1):
+        blocktext += plaintext[idx]
+        if idx % (blocksize/8) == 0:
+            ciphertext.append(des.encrypt(blocktext))
+            blocktext = ""
+    blocktext += plaintext[idx+1]
+    ciphertext.append(des.encrypt(blocktext))
 
     ## print result
     print "encrypted:"
