@@ -125,16 +125,12 @@ class KeySchedule():
         ## generated keys with the corresponding reverted index which of course
         ## would be the efficient way how to do it
         self._decryptkeys = self._decrypt_key_expansion(inputkey)
-#        die("AAA")  
-        
-        for i in range(len(self._encryptkeys)):  
-            print "ek[%d]\t%s"%(i, tostring(self._encryptkeys[i], 48))  
-        print ""
-        for i in range(len(self._decryptkeys)):  
-            print "dk[%d]\t%s"%(i, tostring(self._decryptkeys[i], 48))  
 
-#        die("PRE")  
-        
+#        for i in range(len(self._encryptkeys)):  
+#            print "ek[%d]\t%s"%(i, tostring(self._encryptkeys[i], 48))  
+#        print ""
+#        for i in range(len(self._decryptkeys)):  
+#            print "dk[%d]\t%s"%(i, tostring(self._decryptkeys[i], 48))  
 
     def _encrypt_key_expansion(self, inputkey):
         DBG("\nkey schedule: encryption key expansion")
@@ -573,6 +569,9 @@ class DES():
         ## params
         ## plaintext = the plaintext as string or as hex number
         ## ishex = if the plaintext was a hex number (True)
+        
+        if len(plaintext) == 0: die("ERROR plaintext was empty")    
+        
 
         ## init
         if ishex: state = plaintext
@@ -746,9 +745,10 @@ def main(argv=sys.argv[1:]):
 #    inputkey = 0xffffffffffffffff   
 #    inputkey =  0x0000000000000080  
 
-    plaintext = "Angelina"      
-    inputkey =  0x0000000000000002  
+        plaintext = "Angelina"      
+        inputkey =  0x0000000000000002  
 #    plaintext = 0x0000000000000001  
+        plaintext = "A"  
 
     
 
@@ -766,6 +766,8 @@ def main(argv=sys.argv[1:]):
     ## some input text
     ## blocks
 # TODO uncomment                
+    idx = 0  
+# FIXME: is idx globally defined in other codes?
     ciphertext = []
     blocktext = ""
     for idx in range(len(plaintext)-1):
@@ -773,7 +775,7 @@ def main(argv=sys.argv[1:]):
         if idx % (blocksize/8) == 0:
             ciphertext.append(des.encrypt(blocktext))
             blocktext = ""
-    blocktext += plaintext[idx+1]
+#    blocktext += plaintext[idx+1] # TODO what if there is only block 0?
     ciphertext.append(des.encrypt(blocktext))
 
     ## print result
