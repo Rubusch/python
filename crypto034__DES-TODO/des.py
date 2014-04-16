@@ -514,25 +514,25 @@ class FFunction():
         binlst = DES._append(binlst, self._sbox(sub, self._s1), 4)
 
         sub = (text >> (48 - 12)) & 0x3f
-        binlst = DES._append(binlst, self._sbox(sub, self._s1), 4)
+        binlst = DES._append(binlst, self._sbox(sub, self._s2), 4)
 
         sub = (text >> (48 - 18)) & 0x3f
-        binlst = DES._append(binlst, self._sbox(sub, self._s1), 4)
+        binlst = DES._append(binlst, self._sbox(sub, self._s3), 4)
 
         sub = (text >> (48 - 24)) & 0x3f
-        binlst = DES._append(binlst, self._sbox(sub, self._s1), 4)
+        binlst = DES._append(binlst, self._sbox(sub, self._s4), 4)
 
         sub = (text >> (48 - 30)) & 0x3f
-        binlst = DES._append(binlst, self._sbox(sub, self._s1), 4)
+        binlst = DES._append(binlst, self._sbox(sub, self._s5), 4)
 
         sub = (text >> (48 - 36)) & 0x3f
-        binlst = DES._append(binlst, self._sbox(sub, self._s1), 4)
+        binlst = DES._append(binlst, self._sbox(sub, self._s6), 4)
 
         sub = (text >> (48 - 42)) & 0x3f
-        binlst = DES._append(binlst, self._sbox(sub, self._s1), 4)
+        binlst = DES._append(binlst, self._sbox(sub, self._s7), 4)
 
         sub = text & 0x3f
-        binlst = DES._append(binlst, self._sbox(sub, self._s1), 4)
+        binlst = DES._append(binlst, self._sbox(sub, self._s8), 4)
 
         return binlst
 
@@ -636,7 +636,6 @@ class DES():
             ## 5. s-boxes
             right_exp = self._ffunc.sbox(right_exp)
             DBG("5. s-box substitution")
-# FIXME: everything is mapped against only the first S-box! 
             DBG("\tstate      %s %s"%(tostring(left_half, 32), tostring(right_exp, 32)))
 
             ## 6. permutation
@@ -661,7 +660,7 @@ class DES():
             DBG("\tstate      %s"%tostring(state, 64))
 
             
-            die("AAA")    
+#            die("AAA")    
             
 
 
@@ -774,7 +773,7 @@ def main(argv=sys.argv[1:]):
 #    inputkey = 0xffffffffffffffff   
 #    inputkey =  0x0000000000000080  
 
-#        plaintext = "Angelina"      
+        plaintext = "Angelina"      
         
         inputkey =  0x0000000000000002  
         plaintext = 0x8000000000000000  
@@ -800,17 +799,17 @@ def main(argv=sys.argv[1:]):
 ###    
 #    idx = 0  
 ## FIXME: is idx globally defined in other codes?
-#    ciphertext = []
-#    blocktext = ""
-#    for idx in range(len(plaintext)-1):
-#        blocktext += plaintext[idx]
-#        if idx % (blocksize/8) == 0:
-#            ciphertext.append(des.encrypt(blocktext))
-#            blocktext = ""
-##            
-#    blocktext += plaintext[idx+1] # TODO what if there is only block 0?
-##    
-#    ciphertext.append(des.encrypt(blocktext))
+    ciphertext = []
+    blocktext = ""
+    for idx in range(len(plaintext)-1):
+        blocktext += plaintext[idx]
+        if idx % (blocksize/8) == 0:
+            ciphertext.append(des.encrypt(blocktext))
+            blocktext = ""
+#            
+    blocktext += plaintext[idx+1] # TODO what if there is only block 0?
+#    
+    ciphertext.append(des.encrypt(blocktext))
 
     ## print result
     print "encrypted:"
