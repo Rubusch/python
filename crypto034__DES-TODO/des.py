@@ -634,8 +634,6 @@ class DES():
 
         ## F-function
         for idx in range(16):
-#            print "\nidx %d"%idx       
-
             ## DES loops the following steps
             ## 2. split
             left_half, right_half = self._ffunc.split(state)
@@ -674,10 +672,10 @@ class DES():
             DBG("\tstate      %s %s"%(tostring(left_half, 32), tostring(right_half, 32)))
 
             ## 8. merge and switch halves
-#            state = DES._append(right_exp, left_half, 32)  
             state = DES._append(right_half, left_half, 32)
             DBG("8. merge and switch halves")
             DBG("\tstate      %s"%tostring(state, 64))
+            DBG("")
 
         ## DES loops the following steps
         ## final split
@@ -698,6 +696,8 @@ class DES():
         return state
 
     def decrypt(self, ciphertext):
+        DBG( "\n\nDECRYPTION\n\nplaintext:         %#s"%tostring(ciphertext, 64) )
+
         ## 1. initial permutation
         ## Note that both permutations do not increase the security of DES at all
         ## takes 64-bit input, result is
@@ -710,26 +710,26 @@ class DES():
             ## DES loops the following steps
             ## 2. split
             ## in decryption, left and right halves are twisted!!!
-            right_half, left_half = self._ffunc.split(state)
+#            right_half, left_half = self._ffunc.split(state)
+            left_half, right_half = self._ffunc.split(state)
             DBG("2. split")
-# TODO check sizes
             DBG("\tstate      %s %s"%(tostring(left_half, 32), tostring(right_half, 32)))
 
             ## 3. expansion permutation
             right_exp = self._ffunc.expansion(right_half)
             DBG("3. expansion permutation")
 # TODO check sizes
-            DBG("\tstate      %s %s"%(tostring(left_half, 32), tostring(right_exp, 48)))
+            DBG("\tstate      %s %s | %s"%(tostring(left_half, 32), tostring(right_half, 32), tostring(right_exp, 48)))
 
             ## 4. key
             right_exp = self._ffunc.decryptkey(right_exp,idx)
             DBG("4. key")
-            DBG("\tstate      %s %s"%(tostring(left_half, 32), tostring(right_exp, 48)))
+            DBG("\tstate      %s %s | %s"%(tostring(left_half, 32), tostring(right_half, 32), tostring(right_exp, 48)))
 
             ## 5. s-boxes
             right_exp = self._ffunc.sbox(right_exp)
             DBG("5. s-box substitution")
-            DBG("\tstate      %s %s"%(tostring(left_half, 32), tostring(right_exp, 32)))
+            DBG("\tstate      %s %s | %s"%(tostring(left_half, 32), tostring(right_half, 32), tostring(right_exp, 32)))
 
             ## 6. permutation
             ## finally, the 32-bit output is permuted bitwise according to the
@@ -740,19 +740,20 @@ class DES():
             ## takes a 32-bit input, result is 32-bit
             right_exp = self._map_by_table(right_exp, self._ffunc._pbox, 32)
             DBG("6. permutation")
-            DBG("\tstate      %s %s"%(tostring(left_half, 32), tostring(right_exp, 32)))
+            DBG("\tstate      %s %s | %s"%(tostring(left_half, 32), tostring(right_half, 32), tostring(right_exp, 32)))
 
             ## 7. xor left and right half
             left_half ^= right_exp
             DBG("7. xor left and right half")
-            DBG("\tstate      %s %s"%(tostring(left_half, 32), tostring(right_exp, 32)))
+            DBG("\tstate      %s %s"%(tostring(left_half, 32), tostring(right_half, 32)))
 
             ## 8. switch halves
             ## in decryption, left and right halves are twisted!!!
 #            state = DES._append(right_exp, left_half, 32)  
-            state = DES._append(right_half, left_half, 32)  
+            state = DES._append(right_half, left_half, 32)
             DBG("8. merge and switch halves")
             DBG("\tstate      %s"%tostring(state, 64))
+            DBG("")
 
             
         ## DES loops the following steps
@@ -772,6 +773,8 @@ class DES():
         state = DES._map_by_table(state, self._ip._final_permutation, 64)
         DBG("9. final permutation")
         DBG("\tstate      %s"%tostring(state, 64))
+
+        die("STOP")
 
         ## convert to string
         return DES._hex2string(state)
@@ -810,8 +813,8 @@ def main(argv=sys.argv[1:]):
 
 #        plaintext = "A" # TODO, strings inferior to blocksize  
 
-#        inputkey = 0x5B5A57676A56676E
-#        plaintext = 0x675A69675E5A6B5A
+        inputkey = 0x5B5A57676A56676E
+        plaintext = 0x675A69675E5A6B5A
 
 
     
@@ -825,6 +828,8 @@ def main(argv=sys.argv[1:]):
     des = DES(inputkey)
 
 #    print "XXX %s"%tostring( des.encrypt(plaintext,ishex=True), 64)    
+    ciphertext = []
+    ciphertext.append(des.encrypt(plaintext,ishex=True))
 #    die("STOP")   
 
     ## some input text
@@ -834,17 +839,17 @@ def main(argv=sys.argv[1:]):
 ###    
 #    idx = 0  
 ## FIXME: is idx globally defined in other codes?
-    ciphertext = []
-    blocktext = ""
-    for idx in range(len(plaintext)-1):
-        blocktext += plaintext[idx]
-        if idx % (blocksize/8) == 0:
-            ciphertext.append(des.encrypt(blocktext))
-            blocktext = ""
+#    ciphertext = []
+#    blocktext = ""
+#    for idx in range(len(plaintext)-1):
+#        blocktext += plaintext[idx]
+#        if idx % (blocksize/8) == 0:
+#            ciphertext.append(des.encrypt(blocktext))
+#            blocktext = ""
 #            
-    blocktext += plaintext[idx+1] # TODO what if there is only block 0?
+#    blocktext += plaintext[idx+1] # TODO what if there is only block 0?
 #    
-    ciphertext.append(des.encrypt(blocktext))
+#    ciphertext.append(des.encrypt(blocktext))
 
     ## print result
     print "encrypted:"
