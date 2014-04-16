@@ -595,6 +595,15 @@ class DES():
             binlst = DES._append(binlst, val)
         return binlst
 
+    @staticmethod
+    def _string2hex(text):
+        return int(text.encode('hex'),16)
+
+    @staticmethod
+    def _hex2string(hexadecimal):
+        text = "%x"%hexadecimal
+        return ''.join(chr(int(text[i:i+2], 16)) for i in range(0, len(text), 2))
+
     def encrypt(self, plaintext, ishex=False):
         ## params
         ## plaintext = the plaintext as string or as hex number
@@ -605,7 +614,8 @@ class DES():
 
         ## init
         if ishex: state = plaintext
-        else: state = int(plaintext.encode('hex'),16) & 0xffffffffffffffff
+#        else: state = int(plaintext.encode('hex'),16) & 0xffffffffffffffff  
+        else: state = DES._string2hex(plaintext) & 0xffffffffffffffff
         DBG( "\n\nENCRYPTION\n\nplaintext:         %#s"%tostring(state, 64) )
 
         ## 1. initial permutation
@@ -617,6 +627,8 @@ class DES():
 
         ## F-function
         for idx in range(16):
+            print "\nidx %d"%idx       
+
             ## DES loops the following steps
             ## 2. split
             left_half, right_half = self._ffunc.split(state)
@@ -727,24 +739,16 @@ class DES():
             DBG("8. merge and switch halves")
             DBG("\tstate      %s"%tostring(state, 64))
 
-        ## revert permutation
+        ## 9. revert permutation
         ## Note that both permutations do not increase the security of DES at all
         state = DES._map_by_table(state, self._ip._final_permutation, 64)
         DBG("9. final permutation")
         DBG("\tstate      %s"%tostring(state, 64))
 
         ## convert to string
-        text = "%x"%state
-        return ''.join(chr(int(text[i:i+2], 16)) for i in range(0, len(text), 2))
-
-
-#            state = self._feistel.round_merge_and_switch( right_half, state)
-# TODO   
-
-        ## 9. revert permutation
-        ## Note that both permutations do not increase the security of DES at all
-#        state = DES._map_by_table(state, self._ip._final_permutation, 64)  
-#        return state  
+#        text = "%x"%state
+#        return ''.join(chr(int(text[i:i+2], 16)) for i in range(0, len(text), 2))
+        return DES._hex2string(state)
 
 
 ### main ###
