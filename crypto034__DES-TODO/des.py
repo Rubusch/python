@@ -285,6 +285,7 @@ class KeySchedule():
         ## right half; the total number of rotations sum up to 28 both halves
         ## are merged in this step
         ## key has size of 28 bit, result has 28 bit
+        
         shifter = self._shiftrules[roundidx]
         ret = (key <<shifter) & 0xfffffff
         mask = 0x0
@@ -452,10 +453,15 @@ class FFunction():
                     [ 7,11, 4, 1, 9,12,14, 2, 0, 6,10,13,15, 3, 5, 8],
                     [ 2, 1,14, 7, 4,10, 8,13,15,12, 9, 0, 3, 5, 6,11]]
 
-        self._pbox = [16, 7,20,21,29,12,28,17,
-                       1,15,23,26, 5,18,31,10,
-                       2, 8,24,14,32,27, 3, 9,
-                      19,13,30, 6,22,11, 4,25]
+        ## starts with 1
+        self._pbox = [16, 7,20,21,
+                      29,12,28,17,
+                       1,15,23,26,
+                       5,18,31,10,
+                       2, 8,24,14,
+                      32,27, 3, 9,
+                      19,13,30, 6,
+                      22,11, 4,25]
 
         self._keyschedule = KeySchedule(inputkey)
 
@@ -494,6 +500,7 @@ class FFunction():
         ## k[i], and the eight 6-bit blocks are fed into eight different substi-
         ## tution boxes, which are often referred to as S-boxes takes a 48-bit
         ## input and a 48-bit key, the result then is 48-bit
+        DBG("\t\t\t\t\t | %s - roundkey[%d]"%(tostring(self._keyschedule.get_encrypt_key(roundidx), 48), roundidx))
         text ^= self._keyschedule.get_encrypt_key(roundidx)
         return text
 
@@ -621,13 +628,13 @@ class DES():
         ## 1. initial permutation
         ## Note that both permutations do not increase the security of DES at all
         ## takes 64-bit input, result is
-        state = DES._map_by_table(state, self._ip._initial_permutation, 64) # ok   
+        state = DES._map_by_table(state, self._ip._initial_permutation, 64)
         DBG("1. initial permutation")
         DBG("\tstate      %s"%tostring(state, 64))
 
         ## F-function
         for idx in range(16):
-            print "\nidx %d"%idx       
+#            print "\nidx %d"%idx       
 
             ## DES loops the following steps
             ## 2. split
@@ -638,17 +645,17 @@ class DES():
             ## 3. expansion permutation
             right_exp = self._ffunc.expansion(right_half)
             DBG("3. expansion permutation")
-            DBG("\tstate      %s %s"%(tostring(left_half, 32), tostring(right_exp, 48)))
+            DBG("\tstate      %s %s | %s"%(tostring(left_half, 32), tostring(right_half, 32), tostring(right_exp, 48)))
 
             ## 4. apply key
             right_exp = self._ffunc.encryptkey(right_exp,idx)
             DBG("4. apply key")
-            DBG("\tstate      %s %s"%(tostring(left_half, 32), tostring(right_exp, 48)))
+            DBG("\tstate      %s %s | %s"%(tostring(left_half, 32), tostring(right_half, 32), tostring(right_exp, 48)))
 
             ## 5. s-boxes
             right_exp = self._ffunc.sbox(right_exp)
             DBG("5. s-box substitution")
-            DBG("\tstate      %s %s"%(tostring(left_half, 32), tostring(right_exp, 32)))
+            DBG("\tstate      %s %s | %s"%(tostring(left_half, 32), tostring(right_half, 32), tostring(right_exp, 32)))
 
             ## 6. permutation
             ## finally, the 32-bit output is permuted bitwise according to the
@@ -659,22 +666,29 @@ class DES():
             ## takes a 32-bit input, result is 32-bit
             right_exp = self._map_by_table(right_exp, self._ffunc._pbox, 32)
             DBG("6. permutation")
-            DBG("\tstate      %s %s"%(tostring(left_half, 32), tostring(right_exp, 32)))
+            DBG("\tstate      %s %s | %s"%(tostring(left_half, 32), tostring(right_half, 32), tostring(right_exp, 32)))
 
             ## 7. xor left and right half
             left_half ^= right_exp
-            DBG("7. xor left and right half")
-            DBG("\tstate      %s %s"%(tostring(left_half, 32), tostring(right_exp, 32)))
+            DBG("7. xor left and right half key")
+            DBG("\tstate      %s %s"%(tostring(left_half, 32), tostring(right_half, 32)))
 
             ## 8. merge and switch halves
-            state = DES._append(right_exp, left_half, 32)
+#            state = DES._append(right_exp, left_half, 32)  
+            state = DES._append(right_half, left_half, 32)
             DBG("8. merge and switch halves")
             DBG("\tstate      %s"%tostring(state, 64))
 
-            
-#            die("AAA")    
-            
+        ## DES loops the following steps
+        ## final split
+        left_half, right_half = self._ffunc.split(state)
+        DBG("final split")
+        DBG("\tstate      %s %s"%(tostring(left_half, 32), tostring(right_half, 32)))
 
+        ## final merge and switch halves
+        state = DES._append(right_half, left_half, 32)
+        DBG("final merge and switch halves")
+        DBG("\tstate      %s"%tostring(state, 64))
 
         ## revert permutation
         ## Note that both permutations do not increase the security of DES at all
@@ -735,9 +749,23 @@ class DES():
 
             ## 8. switch halves
             ## in decryption, left and right halves are twisted!!!
-            state = DES._append(right_exp, left_half, 32)
+#            state = DES._append(right_exp, left_half, 32)  
+            state = DES._append(right_half, left_half, 32)  
             DBG("8. merge and switch halves")
             DBG("\tstate      %s"%tostring(state, 64))
+
+            
+        ## DES loops the following steps
+        ## final split
+        left_half, right_half = self._ffunc.split(state)
+        DBG("final split")
+        DBG("\tstate      %s %s"%(tostring(left_half, 32), tostring(right_half, 32)))
+
+        ## final merge and switch halves
+        state = DES._append(right_half, left_half, 32)
+        DBG("final merge and switch halves")
+        DBG("\tstate      %s"%tostring(state, 64))
+            
 
         ## 9. revert permutation
         ## Note that both permutations do not increase the security of DES at all
@@ -746,8 +774,6 @@ class DES():
         DBG("\tstate      %s"%tostring(state, 64))
 
         ## convert to string
-#        text = "%x"%state
-#        return ''.join(chr(int(text[i:i+2], 16)) for i in range(0, len(text), 2))
         return DES._hex2string(state)
 
 
@@ -777,11 +803,16 @@ def main(argv=sys.argv[1:]):
 #    inputkey = 0xffffffffffffffff   
 #    inputkey =  0x0000000000000080  
 
-        plaintext = "Angelina"      
+#        plaintext = "Angelina"      
         
-        inputkey =  0x0000000000000002  
-        plaintext = 0x8000000000000000  
+#        inputkey =  0x0000000000000002  
+#        plaintext = 0x8000000000000000  
+
 #        plaintext = "A" # TODO, strings inferior to blocksize  
+
+#        inputkey = 0x5B5A57676A56676E
+#        plaintext = 0x675A69675E5A6B5A
+
 
     
 
@@ -793,8 +824,8 @@ def main(argv=sys.argv[1:]):
     ## init the algorithm
     des = DES(inputkey)
 
-    print "XXX %s"%tostring( des.encrypt(plaintext,ishex=True), 64)    
-    die("STOP")   
+#    print "XXX %s"%tostring( des.encrypt(plaintext,ishex=True), 64)    
+#    die("STOP")   
 
     ## some input text
     ## blocks
