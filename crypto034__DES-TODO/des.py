@@ -60,48 +60,77 @@ class InitialPermutation():
 #                                   0x3d,0x35,0x2d,0x25,0x1d,0x15,0x0d,0x05,
 #                                   0x3f,0x37,0x2f,0x27,0x1f,0x17,0x0f,0x07]
 # TODO rm, or leave in decimal?
-        self._initial_permutation=[58,50,42,34,26,18,10, 2,
-                                   60,52,44,36,28,20,12, 4,
-                                   62,54,46,38,30,22,14, 6,
-                                   64,56,48,40,32,24,16, 8,
-                                   57,49,41,33,25,17, 9, 1,
-                                   59,51,43,35,27,19,11, 3,
-                                   61,53,45,37,29,21,13, 5,
-                                   63,55,47,39,31,23,15, 7]
+        ## starts with 1
+        self._initial_permutation=[58,50,42,34,
+                                   26,18,10, 2,
+                                   60,52,44,36,
+                                   28,20,12, 4,
+                                   62,54,46,38,
+                                   30,22,14, 6,
+                                   64,56,48,40,
+                                   32,24,16, 8,
+                                   57,49,41,33,
+                                   25,17, 9, 1,
+                                   59,51,43,35,
+                                   27,19,11, 3,
+                                   61,53,45,37,
+                                   29,21,13, 5,
+                                   63,55,47,39,
+                                   31,23,15, 7]
 
 # TODO hex numbers  
-        self._final_permutation  =[40, 8,48,16,56,24,64,32,
-                                   39, 7,47,15,55,23,63,31,
-                                   38, 6,46,14,54,22,62,30,
-                                   37, 5,45,13,53,21,61,29,
-                                   36, 4,44,12,52,20,60,28,
-                                   35, 3,43,11,51,19,59,27,
-                                   34, 2,42,10,50,18,58,26,
-                                   33, 1,41, 9,49,17,57,25]
+        ## starts with 1
+        self._final_permutation  =[40, 8,48,16,
+                                   56,24,64,32,
+                                   39, 7,47,15,
+                                   55,23,63,31,
+                                   38, 6,46,14,
+                                   54,22,62,30,
+                                   37, 5,45,13,
+                                   53,21,61,29,
+                                   36, 4,44,12,
+                                   52,20,60,28,
+                                   35, 3,43,11,
+                                   51,19,59,27,
+                                   34, 2,42,10,
+                                   50,18,58,26,
+                                   33, 1,41, 9,
+                                   49,17,57,25]
 
-# TODO rm  
-#    def _checklength(self, text):
-#        if self._blocksize != len(text):
-#            die("wrong blocksize passed, %d needed, %d passed"%(self._blocksize, len(text)))
 
 class KeySchedule():
     def __init__(self, inputkey):
 
 # TODO hex values  
-        self._pc1 = [57,49,41,33,25,17, 9, 1,
-                     58,50,42,34,26,18,10, 2,
-                     59,51,43,35,27,19,11, 3,
-                     60,52,44,36,63,55,47,39,
-                     31,23,15, 7,62,54,46,38,
-                     30,22,14, 6,61,53,45,37,
-                     29,21,13, 5,28,20,12, 4]
+        ## starts with 1
+        self._pc1 = [57,49,41,33,
+                     25,17, 9, 1,
+                     58,50,42,34,
+                     26,18,10, 2,
+                     59,51,43,35,
+                     27,19,11, 3,
+                     60,52,44,36,
+                     63,55,47,39,
+                     31,23,15, 7,
+                     62,54,46,38,
+                     30,22,14, 6,
+                     61,53,45,37,
+                     29,21,13, 5,
+                     28,20,12, 4]
 # TODO hex values  
-        self._pc2 = [14,17,11,24, 1, 5, 3,28,
-                     15, 6,21,10,23,19,12, 4,
-                     26, 8,16, 7,27,20,13, 2,
-                     41,52,31,37,47,55,30,40,
-                     51,45,33,48,44,49,39,56,
-                     34,53,46,42,50,36,29,32]
+        ## starts with 1
+        self._pc2 = [14,17,11,24,
+                      1, 5, 3,28,
+                     15, 6,21,10,
+                     23,19,12, 4,
+                     26, 8,16, 7,
+                     27,20,13, 2,
+                     41,52,31,37,
+                     47,55,30,40,
+                     51,45,33,48,
+                     44,49,39,56,
+                     34,53,46,42,
+                     50,36,29,32]
 
         self._shiftrules = []
         shift_one = [1,2,9,16]
@@ -125,12 +154,6 @@ class KeySchedule():
         ## generated keys with the corresponding reverted index which of course
         ## would be the efficient way how to do it
         self._decryptkeys = self._decrypt_key_expansion(inputkey)
-
-#        for i in range(len(self._encryptkeys)):  
-#            print "ek[%d]\t%s"%(i, tostring(self._encryptkeys[i], 48))  
-#        print ""
-#        for i in range(len(self._decryptkeys)):  
-#            print "dk[%d]\t%s"%(i, tostring(self._decryptkeys[i], 48))  
 
     def _encrypt_key_expansion(self, inputkey):
         DBG("\nkey schedule: encryption key expansion")
@@ -350,18 +373,23 @@ class KeySchedule():
 
 class FFunction():
     def __init__(self, inputkey):
-# TODO hex values  
         ## the e-box as other boxes as well, historically starts by one as first
         ## index; for a better understanding, this is kept throughtout the im-
         ## plemenetation
-        self._ebox = [32, 1, 2, 3, 4, 5,
-                       4, 5, 6, 7, 8, 9,
-                       8, 9,10,11,12,13,
-                      12,13,14,15,16,17,
-                      16,17,18,19,20,21,
-                      20,21,22,23,24,25,
-                      24,25,26,27,28,29,
-                      28,29,30,31,32, 1]
+
+        ## starts with 1
+        self._ebox = [32, 1, 2, 3,
+                       4, 5, 4, 5,
+                       6, 7, 8, 9,
+                       8, 9,10,11,
+                      12,13,12,13,
+                      14,15,16,17,
+                      16,17,18,19,
+                      20,21,20,21,
+                      22,23,24,25,
+                      24,25,26,27,
+                      28,29,28,29,
+                      30,31,32, 1]
 
         ## S-boxes design criteria:
         ##
@@ -562,6 +590,8 @@ class DES():
         for pos in table:
             ## fetch bit specified by table
             val = (text >> (textsize - ((pos-1)+1))) & 0x1
+#            print "x text %s"%tostring(text, textsize)  
+#            print "x val %d, pos %d -> shift: %d\n"%(val, pos, (textsize - ((pos-1)+1)))  
             binlst = DES._append(binlst, val)
         return binlst
 
@@ -570,20 +600,20 @@ class DES():
         ## plaintext = the plaintext as string or as hex number
         ## ishex = if the plaintext was a hex number (True)
         
-        if len(plaintext) == 0: die("ERROR plaintext was empty")    
+#        if len(plaintext) == 0: die("ERROR plaintext was empty")    
         
 
         ## init
         if ishex: state = plaintext
         else: state = int(plaintext.encode('hex'),16) & 0xffffffffffffffff
-        DBG( "\n\nENCRYPTION\n\nplaintext: \t%#s"%tostring(state, 64) )
+        DBG( "\n\nENCRYPTION\n\nplaintext:         %#s"%tostring(state, 64) )
 
         ## 1. initial permutation
         ## Note that both permutations do not increase the security of DES at all
         ## takes 64-bit input, result is
         state = DES._map_by_table(state, self._ip._initial_permutation, 64) # ok   
         DBG("1. initial permutation")
-        DBG("\tstate      %s"%(tostring(state, 64)))
+        DBG("\tstate      %s"%tostring(state, 64))
 
         ## F-function
         for idx in range(16):
@@ -593,17 +623,10 @@ class DES():
             DBG("2. split")
             DBG("\tstate      %s %s"%(tostring(left_half, 32), tostring(right_half, 32)))
 
-#            print "AAA\t%s"%tostring(plaintext,64)    
-
             ## 3. expansion permutation
             right_exp = self._ffunc.expansion(right_half)
             DBG("3. expansion permutation")
             DBG("\tstate      %s %s"%(tostring(left_half, 32), tostring(right_exp, 48)))
-
-            
-#            print "BBB\t%s"%tostring(state,64)    
-#            die("BBB")
-            
 
             ## 4. apply key
             right_exp = self._ffunc.encryptkey(right_exp,idx)
@@ -613,6 +636,7 @@ class DES():
             ## 5. s-boxes
             right_exp = self._ffunc.sbox(right_exp)
             DBG("5. s-box substitution")
+# FIXME: everything is mapped against only the first S-box! 
             DBG("\tstate      %s %s"%(tostring(left_half, 32), tostring(right_exp, 32)))
 
             ## 6. permutation
@@ -635,6 +659,11 @@ class DES():
             state = DES._append(right_exp, left_half, 32)
             DBG("8. merge and switch halves")
             DBG("\tstate      %s"%tostring(state, 64))
+
+            
+            die("AAA")    
+            
+
 
         ## revert permutation
         ## Note that both permutations do not increase the security of DES at all
@@ -745,10 +774,11 @@ def main(argv=sys.argv[1:]):
 #    inputkey = 0xffffffffffffffff   
 #    inputkey =  0x0000000000000080  
 
-        plaintext = "Angelina"      
+#        plaintext = "Angelina"      
+        
         inputkey =  0x0000000000000002  
-#    plaintext = 0x0000000000000001  
-        plaintext = "A"  
+        plaintext = 0x8000000000000000  
+#        plaintext = "A" # TODO, strings inferior to blocksize  
 
     
 
@@ -760,23 +790,27 @@ def main(argv=sys.argv[1:]):
     ## init the algorithm
     des = DES(inputkey)
 
-#    print "XXX %s"%tostring( des.encrypt(plaintext,ishex=True), 64)    
-#    die("STOP")   
+    print "XXX %s"%tostring( des.encrypt(plaintext,ishex=True), 64)    
+    die("STOP")   
 
     ## some input text
     ## blocks
 # TODO uncomment                
-    idx = 0  
-# FIXME: is idx globally defined in other codes?
-    ciphertext = []
-    blocktext = ""
-    for idx in range(len(plaintext)-1):
-        blocktext += plaintext[idx]
-        if idx % (blocksize/8) == 0:
-            ciphertext.append(des.encrypt(blocktext))
-            blocktext = ""
+
+###    
+#    idx = 0  
+## FIXME: is idx globally defined in other codes?
+#    ciphertext = []
+#    blocktext = ""
+#    for idx in range(len(plaintext)-1):
+#        blocktext += plaintext[idx]
+#        if idx % (blocksize/8) == 0:
+#            ciphertext.append(des.encrypt(blocktext))
+#            blocktext = ""
+##            
 #    blocktext += plaintext[idx+1] # TODO what if there is only block 0?
-    ciphertext.append(des.encrypt(blocktext))
+##    
+#    ciphertext.append(des.encrypt(blocktext))
 
     ## print result
     print "encrypted:"
