@@ -333,44 +333,18 @@ class KeySchedule():
             binlst = DES._append(binlst, DES._getnth(key, (pos-1), 56))
         return binlst
 
-    def get_encrypt_key(self, roundidx):
-        ## generate a specific key for encryption
-        ## the roundkey length is 56 bit
-        ##
-        ## iterate for each key until the roundidx is reached (easier to
-        ## understand decryption afterwards)
-        return self._encryptkeys[roundidx]
+## TODO rm
+#    def get_encrypt_key(self, roundidx):
+#        ## generate a specific key for encryption
+#        ## the roundkey length is 56 bit
+#        ##
+#        ## iterate for each key until the roundidx is reached (easier to
+#        ## understand decryption afterwards)
+#        return self._encryptkeys[roundidx]
+#
+#    def get_decrypt_key(self, roundidx):
+#        return self._decryptkeys[roundidx]
 
-    def get_decrypt_key(self, roundidx):
-        return self._decryptkeys[roundidx]
-    
-##        print "\tdecrypt"
-#        ## generate keys for decryption, by the property
-#        ## C[0] == C[16] and D[0] == D[16]
-#        ## the first key for decryption is the last key for encryption
-#        key = self._inputkey
-#        for idx in range(roundidx+1):
-#            ## 2. split
-#            left, right = self._splitkey(key)
-##            printx(left,7)
-##            printx(right,7)
-#
-#            ## 3. shift right
-#            left = self._shiftright(left,idx)
-##            printx(left,7)
-#            right = self._shiftright(right,idx)
-##            printx(right,7)
-#
-#            ## 4. merge keys
-#            key = left+right
-##            printx(key)
-#
-#            ## 5. PC-2 permutation
-#            roundkey = self.pc2_permutation(key)
-##            printx(roundkey)
-#
-#        return roundkey
-#
 
 class FFunction():
     def __init__(self, inputkey):
@@ -500,12 +474,15 @@ class FFunction():
         ## k[i], and the eight 6-bit blocks are fed into eight different substi-
         ## tution boxes, which are often referred to as S-boxes takes a 48-bit
         ## input and a 48-bit key, the result then is 48-bit
-        DBG("\t\t\t\t\t | %s - roundkey[%d]"%(tostring(self._keyschedule.get_encrypt_key(roundidx), 48), roundidx))
-        text ^= self._keyschedule.get_encrypt_key(roundidx)
+        DBG("\t\t\t\t\t | %s - roundkey[%d]"%(tostring(self._keyschedule._encryptkeys[roundidx], 48), roundidx))
+#        text ^= self._keyschedule.get_encrypt_key(roundidx)  
+        text ^= self._keyschedule._encryptkeys[roundidx]
         return text
 
     def decryptkey(self, text, roundidx):
-        text ^= self._keyschedule.get_decrypt_key(roundidx)
+        DBG("\t\t\t\t\t | %s - roundkey[%d]"%(tostring(self._keyschedule._decryptkeys[roundidx], 48), roundidx))
+#        text ^= self._keyschedule.get_decrypt_key(roundidx)  
+        text ^= self._keyschedule._decryptkeys[roundidx]
         return text
 
     def sbox(self, text):
@@ -718,7 +695,6 @@ class DES():
             ## 3. expansion permutation
             right_exp = self._ffunc.expansion(right_half)
             DBG("3. expansion permutation")
-# TODO check sizes
             DBG("\tstate      %s %s | %s"%(tostring(left_half, 32), tostring(right_half, 32), tostring(right_exp, 48)))
 
             ## 4. key
@@ -749,7 +725,6 @@ class DES():
 
             ## 8. switch halves
             ## in decryption, left and right halves are twisted!!!
-#            state = DES._append(right_exp, left_half, 32)  
             state = DES._append(right_half, left_half, 32)
             DBG("8. merge and switch halves")
             DBG("\tstate      %s"%tostring(state, 64))
@@ -766,7 +741,6 @@ class DES():
         state = DES._append(right_half, left_half, 32)
         DBG("final merge and switch halves")
         DBG("\tstate      %s"%tostring(state, 64))
-            
 
         ## 9. revert permutation
         ## Note that both permutations do not increase the security of DES at all
@@ -774,7 +748,10 @@ class DES():
         DBG("9. final permutation")
         DBG("\tstate      %s"%tostring(state, 64))
 
+        
+        print "\n\nfinal:\n%s"%tostring(state, 64)  
         die("STOP")
+        
 
         ## convert to string
         return DES._hex2string(state)
