@@ -16,6 +16,21 @@
 # better to experience the algorithm, a better implementation would be to code
 # it with hex numbers and bit operations directly
 
+
+
+
+## additional settings #########################################################
+
+## print debug output
+DBG_OUTPUT = False
+
+## debug output in hex or bin (False)
+DBG_PRINT_HEX = True
+################################################################################
+
+
+
+
 import sys   # sys.exit()
 
 ### utils ###
@@ -24,10 +39,10 @@ def die(msg):
     sys.exit(1)
 
 def DBG(msg):
-    print msg
-    pass
+    if DBG_OUTPUT:
+        print msg
 
-DBG_PRINT_HEX = True
+
 def tostring(val, nbits):
 # FIXME: check print tostring(0,1) -> 0x00, make it 0x0    
     ## binary representation
@@ -596,9 +611,6 @@ def main(argv=sys.argv[1:]):
         ## init some input text example
         plaintext = "jack and jill went up the hill to fetch a pail of water"
 
-#        inputkey = 0x5B5A57676A56676E
-#        plaintext = 0x675A69675E5A6B5A
-
     print "initial key:\n%#.32x, key length %d, block size %d\n" % (inputkey, keylength, blocksize)
 
     print "plaintext:"
@@ -634,9 +646,7 @@ def main(argv=sys.argv[1:]):
     print "decrypted:"
     print "%s\n" % decryptedtext
 
-
 ### start ###
 if __name__ == '__main__':
-#    DBG_PRINT_HEX = False
     main()
 print "READY.\n"
