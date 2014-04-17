@@ -16,13 +16,6 @@
 # better to experience the algorithm, a better implementation would be to code
 # it with hex numbers and bit operations directly
 
-# TODO implement hexadecimal bit operations
-# TODO implement blockwise en/decryption
-# TODO change frontend
-# TODO command line encryption
-# TODO clean up
-# TODO refacture functions
-
 import sys   # sys.exit()
 
 ### utils ###
@@ -36,8 +29,7 @@ def DBG(msg):
 
 DBG_PRINT_HEX = True
 def tostring(val, nbits):
-# FIXME: print tostring(0,1) -> 0x00, make it 0x0
-    
+# FIXME: check print tostring(0,1) -> 0x00, make it 0x0    
     ## binary representation
     mask = 0x1 << nbits
     val += mask
@@ -53,15 +45,6 @@ def tostring(val, nbits):
 class InitialPermutation():
     def __init__(self):
         self._blocksize = 64
-#        self._initial_permutation=[0x3a,0x32,0x2a,0x22,0x1a,0x12,0x0a,0x02,
-#                                   0x3c,0x34,0x2c,0x24,0x1c,0x14,0x0c,0x04,
-#                                   0x3e,0x36,0x2e,0x26,0x1e,0x16,0x0e,0x06,
-#                                   0x40,0x38,0x30,0x28,0x20,0x18,0x10,0x08,
-#                                   0x39,0x31,0x29,0x21,0x19,0x11,0x09,0x01,
-#                                   0x3b,0x33,0x2b,0x23,0x1b,0x13,0x0b,0x03,
-#                                   0x3d,0x35,0x2d,0x25,0x1d,0x15,0x0d,0x05,
-#                                   0x3f,0x37,0x2f,0x27,0x1f,0x17,0x0f,0x07]
-# TODO rm, or leave in decimal?
         ## starts with 1
         self._initial_permutation=[58,50,42,34,
                                    26,18,10, 2,
@@ -80,7 +63,6 @@ class InitialPermutation():
                                    63,55,47,39,
                                    31,23,15, 7]
 
-# TODO hex numbers  
         ## starts with 1
         self._final_permutation  =[40, 8,48,16,
                                    56,24,64,32,
@@ -103,7 +85,6 @@ class InitialPermutation():
 class KeySchedule():
     def __init__(self, inputkey):
 
-# TODO hex values  
         ## starts with 1
         self._pc1 = [57,49,41,33,
                      25,17, 9, 1,
@@ -119,7 +100,7 @@ class KeySchedule():
                      61,53,45,37,
                      29,21,13, 5,
                      28,20,12, 4]
-# TODO hex values  
+
         ## starts with 1
         self._pc2 = [14,17,11,24,
                       1, 5, 3,28,
@@ -157,18 +138,6 @@ class KeySchedule():
         ## would be the efficient way how to do it
         self._decryptkeys = self.decrypt_key_expansion(inputkey)
 
-        
-#        for k in range(len(self._encryptkeys)):
-#            print "rndkey[%d] %s"%(k, tostring(self._encryptkeys[k], 48))
-#        print ""
-#        for k in range(len(self._decryptkeys)):
-#            print "rndkey[%d] %s"%(k, tostring(self._decryptkeys[k], 48))
-        
-#        for i in range(len(self._encryptkeys)):
-#            print "%.2d. rnd %s\n        %s\n"%(i, tostring(self._encryptkeys[i],48), tostring(self._decryptkeys[16-1-i],48))
-#        die("OK") 
-        
-
     def encrypt_key_expansion(self, inputkey):
         return self._key_expansion(inputkey, True)
 
@@ -198,7 +167,8 @@ class KeySchedule():
         key = stripped_initkey
 
         for idx in range(16):
-            print "idx = %d"%idx  
+            DBG("key schedule round %d" % idx)
+
             ## 2. split
             left, right = self._splitkey(key)
             DBG("key schedule: 2. split")
@@ -223,80 +193,11 @@ class KeySchedule():
 
             ## 5. PC-2 permutation
             roundkey = DES._map_by_table(key, self._pc2, 56)
-#            roundkey = self.pc2_permutation(key)
             DBG("key schedule: 5. PC-2 permutation")
             DBG("key schedule: rnd key   %s"%(tostring(roundkey, 48)))
 
             keys.append(roundkey)
             DBG("")
-        return keys
-
-#    def _decrypt_key_expansion(self, inputkey):
-#        DBG("\nkey schedule: decryption key expansion")
-#        DBG("key schedule: init key %s"%tostring(inputkey, 64))
-#
-#        stripped_initkey = DES._map_by_table(inputkey, self._pc1, 64)
-#        DBG("key schedule: 1. PC-1 permutation, stripping parity")
-#        DBG("key schedule: key      %s"%tostring(stripped_initkey, 56))
-#
-#        DBG( "key schedule" )
-#        keys = []
-#        key = stripped_initkey
-#
-#        for idx in range(16):
-#            ## 2. split
-#            left, right = self._splitkey(key)
-#            DBG("key schedule: 2. split")
-#            DBG("key schedule: key       %s %s"%(tostring(left, 28), tostring(right, 28)))
-## TODO check value
-#
-#            ## 3. shift right
-#            left = self._shiftright(left, idx) # FIXME implementation  
-#            right = self._shiftright(right, idx) # FIXME  
-#            DBG("key schedule: 3. shift right")
-#            DBG("key schedule: key       %s %s"%(tostring(left, 28), tostring(right, 28)))
-#
-##            die("XXX")  
-#
-#            ## 4. merge keys
-#            key = DES._append(left, right, 28)
-#            DBG("key schedule: 4. merge keys")
-#            DBG("key schedule: key       %s"%(tostring(key, 56)))
-#
-#            ## 5. PC-2 permutation
-#            roundkey = self.pc2_permutation(key)
-#            DBG("key schedule: 5. PC-2 permutation")
-#            DBG("key schedule: rnd key   %s"%(tostring(roundkey, 48)))
-#
-#            keys.append(roundkey)
-#        return keys
-
-        
-        ## generate keys for decryption, by the property
-        ## C[0] == C[16] and D[0] == D[16]
-        ## the first key for decryption is the last key for encryption
-#        key = self._inputkey 
-#        for idx in range(roundidx+1): 
-#            ## 2. split 
-#            left, right = self._splitkey(key) 
-# 
-# 
-#            ## 3. shift right
-#            left = self._shiftright(left,idx)
-#            right = self._shiftright(right,idx)
-#
-#
-#            ## 4. merge keys
-#            key = left+right
-#
-#
-#            ## 5. PC-2 permutation
-#            roundkey = self.pc2_permutation(key)
-#
-#
-#        return roundkey
-        
-        # TODO
         return keys
 
     def _splitkey(self, key):
@@ -314,7 +215,6 @@ class KeySchedule():
         ## right half; the total number of rotations sum up to 28 both halves
         ## are merged in this step
         ## key has size of 28 bit, result has 28 bit
-        
         shifter = self._shiftrules[roundidx]
         ret = (key <<shifter) & 0xfffffff
         mask = 0x0
@@ -332,91 +232,16 @@ class KeySchedule():
         ## are rotated right by two bits
         ## key has size of 28 bit, result has 28 bit
 
-# FIXME, 01 is prepended as 10
-        
-#        key = 0x8000000
-#        key = 0xf0f0f0f
-#        DBG("X key     %s"%tostring(key, 28))  
-#        roundidx = 1
         ## special for decryption, and key generation
         if 0 == roundidx: return key
         shifter = self._shiftrules[roundidx]
-
-        
-#        print "\n\n"
-#        0b0000000001111111111011000001
-#WRONG:  0b1000 0000 0001 1111 1111 1011 0000  
-#        0x801ffb0
-
-#        key = 0b0000000001111111111011000001                         
-#        key = 0b0000000000000000000000000110 #ok
-#        key = 0b0000000000000000000000000111
-#        key = 0b0000000000000000000000000001
-#        key = 0b0000000000000000000000000010
-#        key = 0b0000000000000000000000000100
-#        key = 0b1000000000000000000000000000 # FIXME: trailing 1s
-#        key = 0b0
-#        key = 0b1111111111111111111111111111
-#        key = 0b1010101010101010101010101010
-
-#        shifter = 3
-# FIXME: shifts 01 to 10                         
-#        print "\t%s, shifter %d"%(tostring(key,28),shifter)   
-        
         ret = 0x0
         for bit in range(shifter):
-#            ret = DES._append(ret, (key & 0x1)) # FIXME, not append -> reverses order
             pre = (key & 0b1) <<27
             ret = (ret >>1) | pre # prepend
-
-#            print "\t\tkey = %s" % tostring(key, 28)  
-#            print "\t\tpre = %s" % tostring(pre, 28)  
-#            print "\t\tret = %s" % tostring(ret, 28)  
-
             key >>= 1
-#            print ""
-
-#        print "\t-> ret = %s" % tostring(ret, 1)
-#        print "\t-> key = %s" % tostring(key, 28)
-        
-#        nbits = 28 - shifter
-#        val = key
-#        binlst = ret
-#        print "\t%s <<%d | %s" % ( tostring(binlst,28),nbits, tostring(val,nbits))
-#        print "       = %s" % tostring( ((binlst <<nbits)|val), 28-shifter )
-
-#        ret = DES._append(ret, key, (28-shifter))  
         ret = ret | key
-
-#        print "ret\t%s"%tostring(ret, 28)
-#        print "ref\t0b............................"
-#        die("FIXME")    
-
         return ret
-
-#    def pc2_permutation(self, key):
-#        
-#        ## to derive the 48-bit round keys k[i], the two halves are permuted
-#        ## bitwise again with PC-2, which stands for "permutation choice 2"
-#        ## PC-2 permutes the 56 input bits coming from C[i] and D[i] and ignores
-#        ## 8 of them; each bit is used in approximately 14 of the 16 round keys
-#        ## key has 56-bit size, result has 48-bit size
-#        binlst = 0x0
-#        for pos in self._pc2:
-#            binlst = DES._append(binlst, DES._getnth(key, (pos-1), 56))
-#        return binlst
-
-## TODO rm
-#    def get_encrypt_key(self, roundidx):
-#        ## generate a specific key for encryption
-#        ## the roundkey length is 56 bit
-#        ##
-#        ## iterate for each key until the roundidx is reached (easier to
-#        ## understand decryption afterwards)
-#        return self._encryptkeys[roundidx]
-#
-#    def get_decrypt_key(self, roundidx):
-#        return self._decryptkeys[roundidx]
 
 
 class FFunction():
@@ -545,16 +370,10 @@ class FFunction():
         ## k[i], and the eight 6-bit blocks are fed into eight different substi-
         ## tution boxes, which are often referred to as S-boxes takes a 48-bit
         ## input and a 48-bit key, the result then is 48-bit
-        DBG("\t\t\t\t\t | %s - roundkey[%d]"%(tostring(self._keyschedule._encryptkeys[roundidx], 48), roundidx))   
         text ^= self._keyschedule._encryptkeys[roundidx]
         return text
 
     def decryptkey(self, text, roundidx):
-        
-#        text ^= self._keyschedule._decryptkeys[roundidx]
-#        print "AAA %s [%d]" % (tostring(self._keyschedule._decryptkeys[roundidx], 48), roundidx)
-#        print "BBB %s [%d]" % (tostring(self._keyschedule._encryptkeys[len(self._keyschedule._decryptkeys) - roundidx -1], 48), (len(self._keyschedule._decryptkeys) - roundidx -1))
-            
         text ^= self._keyschedule._encryptkeys[len(self._keyschedule._decryptkeys) - roundidx -1]
         return text
 
@@ -647,10 +466,6 @@ class DES():
         for pos in table:
             ## fetch bit specified by table
             binlst = DES._append(binlst, DES._getnth(text, (pos-1), textsize))
-            
-# TODO rm
-#            val = (text >> (textsize - ((pos-1)+1))) & 0x1
-#            binlst = DES._append(binlst, val)
         return binlst
 
     @staticmethod
@@ -673,19 +488,12 @@ class DES():
         ## input is in hex, output will be string
         DBG( "\n\nDECRYPTION\n\nplaintext:         %#s"%tostring(ciphertext, 64) )
         state = self.crypto(ciphertext, False)
-        
-#        print "XXX %s"%tostring(state, 64)
-#        die("AAA")   
-        
         return DES._hex2string(state)
 
     def crypto(self, state, isencrypt):
         ## params
         ## plaintext = the plaintext as string or as hex number
         ## ishex = if the plaintext was a hex number (True)
-        
-#        if len(plaintext) == 0: die("ERROR plaintext was empty")    
-        
 
         ## 1. initial permutation
         ## Note that both permutations do not increase the security of DES at all
@@ -704,26 +512,21 @@ class DES():
 
             ## 3. expansion permutation
             right_exp = self._ffunc.expansion(right_half)
-#            DBG("3. expansion permutation")
-#            DBG("\tstate      %s %s | %s"%(tostring(left_half, 32), tostring(right_half, 32), tostring(right_exp, 48)))
             DBG("3. expansion permutation")
             DBG("    %s %s"%(tostring(left_half, 32), tostring(right_half, 32)))
             DBG("             | %s - expanded right half"%(tostring(right_exp, 48)))
-            DBG("             | %s - roundkey[%d]"%(tostring(self._ffunc._keyschedule._decryptkeys[idx], 48), idx))
+            if isencrypt: DBG("             | %s - roundkey[%d]"%(tostring(self._ffunc._keyschedule._encryptkeys[idx], 48), idx))
+            else: DBG("             | %s - roundkey[%d]"%(tostring(self._ffunc._keyschedule._decryptkeys[idx], 48), idx))
 
             ## 4. apply key
             if isencrypt: right_exp = self._ffunc.encryptkey(right_exp,idx)
             else: right_exp = self._ffunc.decryptkey(right_exp,idx)
-#            DBG("4. apply key")
-#            DBG("\tstate      %s %s | %s"%(tostring(left_half, 32), tostring(right_half, 32), tostring(right_exp, 48)))
             DBG("4. key")
             DBG("    %s %s"%(tostring(left_half, 32), tostring(right_half, 32)))
             DBG("             | %s"%(tostring(right_exp, 48)))
 
             ## 5. s-boxes
             right_exp = self._ffunc.sbox(right_exp)
-#            DBG("5. s-box substitution")
-#            DBG("\tstate      %s %s | %s"%(tostring(left_half, 32), tostring(right_half, 32), tostring(right_exp, 32)))
             DBG("5. s-box")
             DBG("    %s %s"%(tostring(left_half, 32), tostring(right_half, 32)))
             DBG("             | %s"%(tostring(right_exp, 32)))
@@ -736,24 +539,17 @@ class DES():
             ## different S-boxes in the following round
             ## takes a 32-bit input, result is 32-bit
             right_exp = self._map_by_table(right_exp, self._ffunc._pbox, 32)
-#            DBG("6. permutation")
-#            DBG("\tstate      %s %s | %s"%(tostring(left_half, 32), tostring(right_half, 32), tostring(right_exp, 32)))
             DBG("6. permutation")
             DBG("    %s %s"%(tostring(left_half, 32), tostring(right_half, 32)))
             DBG("             | %s"%(tostring(right_exp, 32)))
 
             ## 7. xor left and right half
             left_half ^= right_exp
-#            DBG("7. xor left and right half key")
-#            DBG("\tstate      %s %s"%(tostring(left_half, 32), tostring(right_half, 32)))
             DBG("7. xor left half")
             DBG("    %s %s"%(tostring(left_half, 32), tostring(right_half, 32)))
 
             ## 8. merge and switch halves
             state = DES._append(right_half, left_half, 32)
-#            DBG("8. merge and switch halves")
-#            DBG("\tstate      %s"%tostring(state, 64))
-#            DBG("")
             DBG("8. merge and switch halves")
             DBG("    %s"%(tostring(state, 64)))
             DBG("")
@@ -761,118 +557,22 @@ class DES():
         ## DES loops the following steps
         ## final split
         left_half, right_half = self._ffunc.split(state)
-#        DBG("final split")
-#        DBG("\tstate      %s %s"%(tostring(left_half, 32), tostring(right_half, 32)))
         DBG("final split")
         DBG("    %s %s"%(tostring(left_half, 32), tostring(right_half, 32)))
 
         ## final merge and switch halves
         state = DES._append(right_half, left_half, 32)
-#        DBG("final merge and switch halves")
-#        DBG("\tstate      %s"%tostring(state, 64))
         DBG("final switch halves")
         DBG("    %s"%(tostring(state, 64)))
 
         ## revert permutation
         ## Note that both permutations do not increase the security of DES at all
         state = DES._map_by_table(state, self._ip._final_permutation, 64)
-#        DBG("9. final permutation")
-#        DBG("\tstate      %s"%tostring(state, 64))
         DBG("9. final permutation")
         DBG("    %s"%(tostring(state, 64)))
 
         return state
 
-#    def decrypt(self, ciphertext):
-#        DBG( "\n\nDECRYPTION\n\nplaintext:         %#s"%tostring(ciphertext, 64) )
-#        state = ciphertext
-#
-#        ## 1. initial permutation
-#        ## Note that both permutations do not increase the security of DES at all
-#        ## takes 64-bit input, result is
-#        state = DES._map_by_table(state, self._ip._initial_permutation, 64) 
-#        DBG("1. initial permutation")
-#        DBG("    %s"%(tostring(state, 64)))
-#
-#        ## F-function
-#        for idx in range(16):
-#            ## DES loops the following steps
-#            ## 2. split
-#            ## in decryption, left and right halves are twisted!!!
-#            left_half, right_half = self._ffunc.split(state)
-#            DBG("2. split")
-#            DBG("    %s %s"%(tostring(left_half, 32), tostring(right_half, 32)))
-#
-#            ## 3. expansion permutation
-#            right_exp = self._ffunc.expansion(right_half)
-#            DBG("3. expansion permutation")
-#            DBG("    %s %s"%(tostring(left_half, 32), tostring(right_half, 32)))
-#            DBG("             | %s - expanded right half"%(tostring(right_exp, 48)))
-#            DBG("             | %s - roundkey[%d]"%(tostring(self._ffunc._keyschedule._decryptkeys[idx], 48), idx))
-#
-#            ## 4. key
-#            
-#            right_exp = self._ffunc.decryptkey(right_exp,idx)
-#            DBG("4. key")
-#            DBG("    %s %s"%(tostring(left_half, 32), tostring(right_half, 32)))
-#            DBG("             | %s"%(tostring(right_exp, 48)))
-#
-#            ## 5. s-boxes
-#            right_exp = self._ffunc.sbox(right_exp)
-#            DBG("5. s-box")
-#            DBG("    %s %s"%(tostring(left_half, 32), tostring(right_half, 32)))
-#            DBG("             | %s"%(tostring(right_exp, 32)))
-#
-#            ## 6. permutation
-#            ## finally, the 32-bit output is permuted bitwise according to the
-#            ## P permutation; unlike the initial IP and its inverse IP-1, the
-#            ## permutation P introduces diffusion because the four output bits of
-#            ## each S-box are permuted in such a way that they affect several
-#            ## different S-boxes in the following round
-#            ## takes a 32-bit input, result is 32-bit
-#            right_exp = self._map_by_table(right_exp, self._ffunc._pbox, 32)
-#            DBG("6. permutation")
-#            DBG("    %s %s"%(tostring(left_half, 32), tostring(right_half, 32)))
-#            DBG("             | %s"%(tostring(right_exp, 32)))
-#
-#            ## 7. left = left xor right half
-#            left_half ^= right_exp
-#            DBG("7. xor left half")
-#            DBG("    %s %s"%(tostring(left_half, 32), tostring(right_half, 32)))
-#
-#            ## 8. switch halves
-#            ## in decryption, left and right halves are twisted!!!
-#            state = DES._append(right_half, left_half, 32)
-#            DBG("8. merge and switch halves")
-#            DBG("    %s"%(tostring(state, 64)))
-#            DBG("")
-## FIXME    
-#        ## DES loops the following steps
-#        ## final split
-#        left_half, right_half = self._ffunc.split(state)
-#        DBG("final split")
-#        DBG("    %s %s"%(tostring(left_half, 32), tostring(right_half, 32)))
-#
-#        ## final merge and switch halves
-#        state = DES._append(right_half, left_half, 32)
-#        DBG("final switch halves")
-#        DBG("    %s"%(tostring(state, 64)))
-#
-#        ## 9. revert permutation
-#        ## Note that both permutations do not increase the security of DES at all
-#        state = DES._map_by_table(state, self._ip._final_permutation, 64)
-#        DBG("9. final permutation")
-#        DBG("    %s"%(tostring(state, 64)))
-##        DBG("\tstate      %s"%tostring(state, 64))
-#
-#        
-#        print "\n\nfinal:\n%s"%tostring(state, 64)  
-#        die("STOP")
-#        
-#
-#        ## convert to string
-#        return DES._hex2string(state)
-#
 
 ### main ###
 def main(argv=sys.argv[1:]):
@@ -892,24 +592,12 @@ def main(argv=sys.argv[1:]):
             die('usage: either w/o arguments, or as follows\n$ %s <inputkey> "<plaintext>"\ne.g.\n$ %s %s "%s"'%(sys.argv[0],sys.argv[0],"0x000102030405060708090a0b0c0d0e0f","from Disco to Disco.."))
     else:
         ## init some raw input key example
-#        inputkey = 0x0001020304050607 #08090a0b0c0d0e0f
+        inputkey = 0x0001020304050607
         ## init some input text example
         plaintext = "jack and jill went up the hill to fetch a pail of water"
-    
-# TODO rm
-#    inputkey = 0xffffffffffffffff   
-#    inputkey =  0x0000000000000080  
 
-#        plaintext = "Angelina"      
-        
-#        inputkey =  0x0000000000000002  
-#        plaintext = 0x8000000000000000  
-
-#        plaintext = "A" # TODO, strings inferior to blocksize  
-
-        inputkey = 0x5B5A57676A56676E
+#        inputkey = 0x5B5A57676A56676E
 #        plaintext = 0x675A69675E5A6B5A
-    
 
     print "initial key:\n%#.32x, key length %d, block size %d\n" % (inputkey, keylength, blocksize)
 
@@ -919,16 +607,6 @@ def main(argv=sys.argv[1:]):
     ## init the algorithm
     des = DES(inputkey)
 
-#    print "XXX %s"%tostring( des.encrypt(plaintext,ishex=True), 64)    
-#    ciphertext = []
-#    ciphertext.append(des.encrypt(plaintext,ishex=True))
-#    die("STOP")   
-
-    ## some input text
-    ## blocks
-# TODO uncomment                
-
-###    
     idx = 0  
 # FIXME: is idx globally defined in other codes?
     ciphertext = []
