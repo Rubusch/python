@@ -430,17 +430,10 @@ class AES:
 
         ## padding for broken blocks
         if 0 < npaddingbits:
-            
-            print "%s" % tostring(state, 128)   
-            
-            # TODO check leading 1, pattern seems to have a leading 0
+#            print "%s" % tostring(state, 128)   
             padding = 1 <<(npaddingbits-1)
             state = (state <<(npaddingbits)) | padding
-
-            
-            print "%s" % tostring(state, 128)  
-            die("XXX")    
-            
+#            print "%s" % tostring(state, 128)   
 
         ## round 0
         state = self._add_round_key(state, 0)
@@ -476,13 +469,13 @@ class AES:
         return state
 
 
-    def decrypt(self, ciphertext, ashex=False):
+    def decrypt(self, ciphertext, ashex=False, islast=False):
         ## params:
         ## ciphertext = the ciphertext as hex number
         ## ashex = shall the output be a hex number, or a string?
 
         state = ciphertext
-
+# TODO handle padding cut off, with if islast == True
         DBG("\n\nDECRYPTION\n\ninput: %#.32x" % state)
 
         ## round n
@@ -542,8 +535,7 @@ def main(argv=sys.argv[1:]):
         ## init some raw input key example
         inputkey = 0x000102030405060708090a0b0c0d0e0f
         ## init some input text example
-#        plaintext = "jack and jill went up the hill to fetch a pail of water"
-        plaintext = "1"
+        plaintext = "jack and jill went up the hill to fetch a pail of water"
 
     print "initial key:\n%#.32x, key length %d, block size %d\n" % (inputkey, keylength, blocksize)
 
