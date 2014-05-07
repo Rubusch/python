@@ -30,7 +30,7 @@ def die(msg):
 
 ### DEBUGGING ###
 
-DEBUGGING = True
+DEBUGGING = False
 def DBG(msg):
     if DEBUGGING: print msg
 
@@ -517,10 +517,12 @@ class AES:
             state = state>>1
 
         ## convert to string
-            
-        data = "%.32x"%state
-# FIXME: leading '0's omitted
-        if ashex: return data
+        data = "%x"%state
+        if ashex:
+            ## append trailing zeros, for string encoding, the string is reduced
+            ## to the significant digits implicitely
+            while len(data) < 32: data += "0"
+            return data
         return ''.join(chr(int(data[i:i+2], 16)) for i in range(0, len(data), 2))
 
 
@@ -584,6 +586,9 @@ def main(argv=sys.argv[1:]):
     decryptedtext = ""
     for block in ciphertext:
         if block == ciphertext[-1]:
+            ## checkout hex result (w/o string decoding)
+            DBG( "hex: 0x%s"%aes.decrypt(block, ashex=True, ispadded=True) )
+            ## decryption for a padded / padding block
             decryptedtext += aes.decrypt(block, ispadded=True)
         else:
             decryptedtext += aes.decrypt(block)

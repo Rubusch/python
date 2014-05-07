@@ -502,12 +502,13 @@ class AES:
         DBG( "\nfinal result: %s\n"%tostring(state, 128))
 
         ## convert to string
-        
-#        data = "%x"%state # FIXME: omits leading 0s
-        data = "%.32x"%state  # TODO
-        if ashex: return data
+        data = "%x"%state
+        if ashex:
+            ## append trailing zeros, for string encoding, the string is reduced
+            ## to the significant digits implicitely
+            while len(data) < 32: data += "0"
+            return data
         return ''.join(chr(int(data[i:i+2], 16)) for i in range(0, len(data), 2))
-
 
 
 ### main ###
@@ -563,10 +564,9 @@ def main(argv=sys.argv[1:]):
     ## decrypt
     decryptedtext = ""
     for block in ciphertext:
-#        decryptedtext += aes.decrypt(block)
+        decryptedtext += aes.decrypt(block)
         ## checkout hex result (w/o string decoding)
-        print "0x%s"%aes.decrypt(block, ashex=True)  
-    die("STOP")  
+        DBG( "hex: 0x%s"%aes.decrypt(block, ashex=True) )
 
     ## print result
     print "decrypted:"
