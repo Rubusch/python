@@ -507,6 +507,10 @@ class DES():
         ## input is in hex, output will be string
         DBG( "\n\nDECRYPTION\n\nplaintext:         %#s"%tostring(ciphertext, 64) )
         state = self.crypto(ciphertext, False)
+
+        ## IMPORTANT: for ciphertext blocks shorter than blocksize - if hex
+        ## output is needed, '0's have to be appended, otherwise (as string)
+        ## missing '0's to fill size are cut off at decoding automatically
         return DES._hex2string(state)
 
     def crypto(self, state, isencrypt):
