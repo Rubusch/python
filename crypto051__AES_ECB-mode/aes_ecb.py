@@ -431,7 +431,6 @@ class AES:
         ## init
         if ishex: state = plaintext
         else: state = int(plaintext.encode('hex'),16) & 0xffffffffffffffffffffffffffffffff
-#        DBG( "\n\nENCRYPTION\n\nplaintext: \t%#.32x"%state )  
         DBG( "\n\nENCRYPTION\n\nplaintext: \t%s"%tostring(state, 128) )
 
         ## padding for broken blocks
@@ -443,12 +442,10 @@ class AES:
 
         ## round 0
         state = self._add_round_key(state, 0)
-#        DBG( "add key: \t%#.32x\n"%state )  
         DBG( "add key: \t%s\n"%tostring(state, 128) )
 
         for rnd in range(self._rounds-1):
             state = self._substitution_layer__sub_bytes(state, self._sbox)
-#            DBG( "substitute: \t\t%#.32x"%state )  
             DBG( "substitute: \t\t%s"%tostring(state, 128))
 
             state = self._diffusion_layer__shift_rows(state, self._shift_rows)
@@ -458,25 +455,20 @@ class AES:
 #            state = self._diffusion_layer__mix_column_TRICK(state) ## KEEP!
             ## more generic implementation
             state = self._diffusion_layer__mix_column(state, self._mix_columns__const_matrix)
-            ##
-#            DBG( "mix column: \t\t%#.32x"%state )  
+            ## /alternative implementation
             DBG( "mix column: \t\t%s"%tostring(state, 128) )
 
             state = self._add_round_key(state, rnd+1)
-#            DBG( "add key: \t\t%#.32x\n"%state )  
             DBG( "add key: \t\t%s\n"%tostring(state, 128) )
 
         ## round n
         state = self._substitution_layer__sub_bytes(state, self._sbox)
-#        DBG( "substitute: \t%#.32x"%state )  
         DBG( "substitute: \t%s"%tostring(state, 128) )
 
         state = self._diffusion_layer__shift_rows(state, self._shift_rows)
-#        DBG( "shift rows: \t%#.32x"%state )  
         DBG( "shift rows: \t%s"%tostring(state, 128) )
 
         state = self._add_round_key(state, self._rounds)
-#        DBG( "add key: \t%#.32x\n"%state )  
         DBG( "add key: \t%s\n"%tostring(state, 128) )
 
         return state
@@ -486,43 +478,35 @@ class AES:
         ## params:
         ## ciphertext = the ciphertext as hex number
         ## ashex = shall the output be a hex number, or a string?
+        ## ispadded = is ciphertext, or does it contain a padding block?
 
         state = ciphertext
-#        DBG("\n\nDECRYPTION\n\ninput: %#.32x" % state)  
         DBG("\n\nDECRYPTION\n\ninput: %s"%tostring(state, 128))
 
         ## round n
         state = self._add_round_key(state, self._rounds)
-#        DBG( "add key: \t%#.32x"%state )  
         DBG( "add key: \t%s"%tostring(state, 128) )
 
         state = self._diffusion_layer__shift_rows(state, self._inv_shift_rows)
-#        DBG( "shift rows: \t%#.32x"%state )  
         DBG( "shift rows: \t%s"%tostring(state, 128) )
 
         state = self._substitution_layer__sub_bytes(state, self._inv_sbox)
-#        DBG( "substitute: \t%#.32x\n"%state )  
         DBG( "substitute: \t%s\n"%tostring(state, 128) )
 
         for rnd in range(self._rounds-2,-1,-1):
             state = self._add_round_key(state, rnd+1)
-#            DBG( "add key: \t\t%#.32x"%state )  
             DBG( "add key: \t\t%s"%tostring(state, 128) )
 
             state = self._diffusion_layer__mix_column(state, self._mix_columns__inv_const_matrix)
-#            DBG( "mix column: \t\t%#.32x"%state )  
             DBG( "mix column: \t\t%s"%tostring(state, 128) )
 
             state = self._diffusion_layer__shift_rows(state, self._inv_shift_rows)
-#            DBG( "shift rows: \t\t%#.32x"%state )  
             DBG( "shift rows: \t\t%s"%tostring(state, 128) )
 
             state = self._substitution_layer__sub_bytes(state, self._inv_sbox)
-#            DBG( "substitute: \t\t%#.32x"%state )  
             DBG( "substitute: \t\t%s"%tostring(state, 128) )
             DBG("")
 
-#        DBG( "\nfinal result: %#.32x\n" % state )  
         DBG( "\nfinal result: %s\n"%tostring(state, 128) )
 
         if ispadded:
@@ -534,7 +518,8 @@ class AES:
 
         if ashex: return state
         ## convert to string
-        data = "%x"%state
+        data = "%x"%state # FIXME: leading '0's omitted
+        
         return ''.join(chr(int(data[i:i+2], 16)) for i in range(0, len(data), 2))
 
 
