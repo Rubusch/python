@@ -479,11 +479,6 @@ class AES:
             DBG( "substitute: \t\t%#.32x"%state )
             DBG("")
 
-        ## round 0
-# TODO rm ?  
-#        state = self._add_round_key(state, 0)
-#        DBG( "add key: \t%#.32x"%state )
-
         DBG( "\nfinal result: %#.32x\n" % state )
 
         if ashex: return state
