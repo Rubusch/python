@@ -29,7 +29,7 @@ def die(msg):
 
 ### DEBUGGING ###
 
-DEBUGGING = True
+DEBUGGING = False
 def DBG(msg):
     if DEBUGGING: print msg
 
@@ -501,10 +501,11 @@ class AES:
 
         DBG( "\nfinal result: %s\n"%tostring(state, 128))
 
-        if ashex: return state
         ## convert to string
-        data = "%x"%state # FIXME: omits leading 0s
-#        data = "%#.32x"%state  # TODO
+        
+#        data = "%x"%state # FIXME: omits leading 0s
+        data = "%.32x"%state  # TODO
+        if ashex: return data
         return ''.join(chr(int(data[i:i+2], 16)) for i in range(0, len(data), 2))
 
 
@@ -541,6 +542,14 @@ def main(argv=sys.argv[1:]):
     aes = AES(inputkey, keylength)
 
     ## blocks
+    
+    # FIXME: first block only contains one character, this is not nice...
+    # FIXME: also fix this for the DES implementation and blocks
+    # FIXME: also fix/check leading '0's for DES
+    # FIXME: also fix/check this for the PRESENT implementation and blocks
+    # FIXME: also fix/check leading '0's for PRESENT
+    # FIXME: same issues for other, already implemented algorithms, e.g. TRIVIUM, etc.. 
+    
     ciphertext = []
     blocktext = ""
     for idx in range(len(plaintext)-1):
@@ -560,7 +569,9 @@ def main(argv=sys.argv[1:]):
     ## decrypt
     decryptedtext = ""
     for block in ciphertext:
-        decryptedtext += aes.decrypt(block)
+#        decryptedtext += aes.decrypt(block)
+        print "%s"%aes.decrypt(block, ashex=True)
+    die("STOP")  
 
     ## print result
     print "decrypted:"

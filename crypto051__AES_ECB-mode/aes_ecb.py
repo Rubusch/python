@@ -516,10 +516,9 @@ class AES:
             ## cut off padding '1'
             state = state>>1
 
-        if ashex: return state
         ## convert to string
-        data = "%x"%state # FIXME: leading '0's omitted
-        
+        data = "%.32x"%state # FIXME: leading '0's omitted
+        if ashex: return data
         return ''.join(chr(int(data[i:i+2], 16)) for i in range(0, len(data), 2))
 
 
