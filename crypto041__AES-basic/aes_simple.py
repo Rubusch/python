@@ -547,17 +547,6 @@ def main(argv=sys.argv[1:]):
     # FIXME: also fix/check this for the PRESENT implementation and blocks
     # FIXME: also fix/check leading '0's for PRESENT
     # FIXME: same issues for other, already implemented algorithms, e.g. TRIVIUM, etc.. 
-    
-#    ciphertext = []
-#    blocktext = ""
-#    for idx in range(len(plaintext)-1):
-#        blocktext += plaintext[idx]
-#        if idx % (blocksize/8) == 0:
-#            ciphertext.append(aes.encrypt(blocktext))
-#            blocktext = ""
-#    blocktext += plaintext[idx+1]
-#    ciphertext.append(aes.encrypt(blocktext))
-
     ciphertext = []
     blocktext = ""
     for idx in range(len(plaintext)-1):
