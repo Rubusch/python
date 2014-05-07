@@ -543,8 +543,6 @@ def main(argv=sys.argv[1:]):
     aes = AES(inputkey, keylength)
 
     ## blocks
-    # FIXME: also fix/check leading '0's for DES
-    # FIXME: also fix/check leading '0's for PRESENT
     ciphertext = []
     blocktext = ""
     for idx in range(len(plaintext)-1):
