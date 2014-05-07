@@ -542,11 +542,8 @@ def main(argv=sys.argv[1:]):
     aes = AES(inputkey, keylength)
 
     ## blocks
-    # FIXME: also fix this for the DES implementation and blocks
     # FIXME: also fix/check leading '0's for DES
-    # FIXME: also fix/check this for the PRESENT implementation and blocks
     # FIXME: also fix/check leading '0's for PRESENT
-    # FIXME: same issues for other, already implemented algorithms, e.g. TRIVIUM, etc.. 
     ciphertext = []
     blocktext = ""
     for idx in range(len(plaintext)-1):
