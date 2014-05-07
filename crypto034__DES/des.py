@@ -60,7 +60,7 @@ class InitialPermutation():
     def __init__(self):
         self._blocksize = 64
         ## starts with 1
-        self._initial_permutation=[58,50,42,34,
+        self.initial_permutation=[58,50,42,34,
                                    26,18,10, 2,
                                    60,52,44,36,
                                    28,20,12, 4,
@@ -78,7 +78,7 @@ class InitialPermutation():
                                    31,23,15, 7]
 
         ## starts with 1
-        self._final_permutation  =[40, 8,48,16,
+        self.final_permutation  =[40, 8,48,16,
                                    56,24,64,32,
                                    39, 7,47,15,
                                    55,23,63,31,
@@ -143,14 +143,14 @@ class KeySchedule():
         ## the key schedule derives 16 round keys k[i], each consisting of
         ## 48 bits, from original 56-bit key; another term for round key is
         ## subkey
-        self._encryptkeys = self.encrypt_key_expansion(inputkey)
+        self.encryptkeys = self.encrypt_key_expansion(inputkey)
 
         ## decryption keys are the same as encyrption keys, but also can be gene-
         ## rated by using a right shift instead of a left shift, so here is pre-
         ## sented how to generate them freshly, instead of accessing the already
         ## generated keys with the corresponding reverted index which of course
         ## would be the efficient way how to do it
-        self._decryptkeys = self.decrypt_key_expansion(inputkey)
+        self.decryptkeys = self.decrypt_key_expansion(inputkey)
 
     def encrypt_key_expansion(self, inputkey):
         return self._key_expansion(inputkey, True)
@@ -339,7 +339,7 @@ class FFunction():
                     [0x2,0x1,0xe,0x7,0x4,0xa,0x8,0xd,0xf,0xc,0x9,0x0,0x3,0x5,0x6,0xb]]
 
         ## starts with 1
-        self._pbox = [16, 7,20,21,
+        self.pbox = [16, 7,20,21,
                       29,12,28,17,
                        1,15,23,26,
                        5,18,31,10,
@@ -348,7 +348,7 @@ class FFunction():
                       19,13,30, 6,
                       22,11, 4,25]
 
-        self._keyschedule = KeySchedule(inputkey)
+        self.keyschedule = KeySchedule(inputkey)
 
     def _sbox(self, text, sbox):
         ## text has 6 bit, result is a 4-bit s-box entry
@@ -383,17 +383,17 @@ class FFunction():
         ## k[i], and the eight 6-bit blocks are fed into eight different substi-
         ## tution boxes, which are often referred to as S-boxes takes a 48-bit
         ## input and a 48-bit key, the result then is 48-bit
-        text ^= self._keyschedule._encryptkeys[roundidx]
+        text ^= self.keyschedule.encryptkeys[roundidx]
         return text
 
     def decryptkey(self, text, roundidx):
         ## in fact this method is not necessary - for decryption the encryption
         ## keys are used in the reversed order (give it a try)
-#        text ^= self._keyschedule._encryptkeys[len(self._keyschedule._encryptkeys) - roundidx -1]
+#        text ^= self.keyschedule.encryptkeys[len(self.keyschedule.encryptkeys) - roundidx -1]
         ## finally, a separate key generation for decryption keys (using right
         ## shift instead of left shift, basically) is not needed, but just
         ## demonstrated here
-        text ^= self._keyschedule._decryptkeys[roundidx]
+        text ^= self.keyschedule.decryptkeys[roundidx]
         return text
 
     def sbox(self, text):
@@ -433,8 +433,8 @@ class FFunction():
 
 class DES():
     def __init__(self, inputkey):
-        self._ip = InitialPermutation()
-        self._ffunc = FFunction(inputkey)
+        self.ip = InitialPermutation()
+        self.ffunc = FFunction(inputkey)
 
     @staticmethod
     def _tablelookup(table, index, offset=0):
@@ -517,7 +517,7 @@ class DES():
         ## 1. initial permutation
         ## Note that both permutations do not increase the security of DES at all
         ## takes 64-bit input, result is
-        state = DES._map_by_table(state, self._ip._initial_permutation, 64)
+        state = DES._map_by_table(state, self.ip.initial_permutation, 64)
         DBG("1. initial permutation")
         DBG("    %s"%(tostring(state, 64)))
 
@@ -525,27 +525,27 @@ class DES():
         for idx in range(16):
             ## DES loops the following steps
             ## 2. split
-            left_half, right_half = self._ffunc.split(state)
+            left_half, right_half = self.ffunc.split(state)
             DBG("2. split")
             DBG("    %s %s"%(tostring(left_half, 32), tostring(right_half, 32)))
 
             ## 3. expansion permutation
-            right_exp = self._ffunc.expansion(right_half)
+            right_exp = self.ffunc.expansion(right_half)
             DBG("3. expansion permutation")
             DBG("    %s %s"%(tostring(left_half, 32), tostring(right_half, 32)))
             DBG("             | %s - expanded right half"%(tostring(right_exp, 48)))
-            if isencrypt: DBG("             | %s - roundkey[%d]"%(tostring(self._ffunc._keyschedule._encryptkeys[idx], 48), idx))
-            else: DBG("             | %s - roundkey[%d]"%(tostring(self._ffunc._keyschedule._decryptkeys[idx], 48), idx))
+            if isencrypt: DBG("             | %s - roundkey[%d]"%(tostring(self.ffunc.keyschedule.encryptkeys[idx], 48), idx))
+            else: DBG("             | %s - roundkey[%d]"%(tostring(self.ffunc.keyschedule.decryptkeys[idx], 48), idx))
 
             ## 4. apply key
-            if isencrypt: right_exp = self._ffunc.encryptkey(right_exp,idx)
-            else: right_exp = self._ffunc.decryptkey(right_exp,idx)
+            if isencrypt: right_exp = self.ffunc.encryptkey(right_exp,idx)
+            else: right_exp = self.ffunc.decryptkey(right_exp,idx)
             DBG("4. key")
             DBG("    %s %s"%(tostring(left_half, 32), tostring(right_half, 32)))
             DBG("             | %s"%(tostring(right_exp, 48)))
 
             ## 5. s-boxes
-            right_exp = self._ffunc.sbox(right_exp)
+            right_exp = self.ffunc.sbox(right_exp)
             DBG("5. s-box")
             DBG("    %s %s"%(tostring(left_half, 32), tostring(right_half, 32)))
             DBG("             | %s"%(tostring(right_exp, 32)))
@@ -557,7 +557,7 @@ class DES():
             ## each S-box are permuted in such a way that they affect several
             ## different S-boxes in the following round
             ## takes a 32-bit input, result is 32-bit
-            right_exp = self._map_by_table(right_exp, self._ffunc._pbox, 32)
+            right_exp = self._map_by_table(right_exp, self.ffunc.pbox, 32)
             DBG("6. permutation")
             DBG("    %s %s"%(tostring(left_half, 32), tostring(right_half, 32)))
             DBG("             | %s"%(tostring(right_exp, 32)))
@@ -575,7 +575,7 @@ class DES():
 
         ## DES loops the following steps
         ## final split
-        left_half, right_half = self._ffunc.split(state)
+        left_half, right_half = self.ffunc.split(state)
         DBG("final split")
         DBG("    %s %s"%(tostring(left_half, 32), tostring(right_half, 32)))
 
@@ -586,7 +586,7 @@ class DES():
 
         ## revert permutation
         ## Note that both permutations do not increase the security of DES at all
-        state = DES._map_by_table(state, self._ip._final_permutation, 64)
+        state = DES._map_by_table(state, self.ip.final_permutation, 64)
         DBG("9. final permutation")
         DBG("    %s"%(tostring(state, 64)))
 
@@ -628,7 +628,7 @@ def main(argv=sys.argv[1:]):
     blocktext = ""
     for idx in range(len(plaintext)-1):
         blocktext += plaintext[idx]
-        if idx % (blocksize/8) == 0:
+        if (idx+1) % (blocksize/8) == 0:
             ciphertext.append(des.encrypt(blocktext))
             blocktext = ""
     blocktext += plaintext[idx+1]

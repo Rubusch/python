@@ -162,7 +162,7 @@ def main():
     blocktext = ""
     for idx in range(len(plaintext)-1):
         blocktext += plaintext[idx]
-        if idx % (blocksize/8) == 0:
+        if (idx+1) % (blocksize/8) == 0:
             ciphertext.append(present.encrypt(blocktext))
             blocktext = ""
     blocktext += plaintext[idx+1]

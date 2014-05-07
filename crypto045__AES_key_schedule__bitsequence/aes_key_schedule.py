@@ -113,15 +113,16 @@ def key_print(keys, ncols=4):
         print "%s" % sz,
     print "\n"
 
-                                                                                
+
 if __name__ == "__main__":
     ## input key
     key = 0x000102030405060708090a0b0c0d0e0f
     keylength = 128
-    
+
+    ## try another key length
 #    key = 0x000102030405060708090a0b0c0d0e0f000102030405060708090a0b0c0d0e0f
 #    keylength = 256
-    
+
     print "input key:\n%x\n" % key
 
     ## input key

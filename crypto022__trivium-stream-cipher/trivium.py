@@ -161,6 +161,12 @@ def encrypt(binplaintext):
     print "PRNG:\t\t%s"%"".join(pseudorandom)
     print "ciphertext:\t%s"%"".join(ciphertext)
 
+def decrypt():
+# TODO
+    pass
+
+
+
 ## args - the filenmae
 def main(argv=sys.argv[1:]):
     ## check args
