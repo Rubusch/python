@@ -27,7 +27,7 @@ def die(msg):
     sys.exit(1)
 
 def DBG(msg):
-#    print msg
+    print msg
     pass
 
 class AES:
@@ -480,8 +480,9 @@ class AES:
             DBG("")
 
         ## round 0
-        state = self._add_round_key(state, 0)
-        DBG( "add key: \t%#.32x"%state )
+# TODO rm ?  
+#        state = self._add_round_key(state, 0)
+#        DBG( "add key: \t%#.32x"%state )
 
         DBG( "\nfinal result: %#.32x\n" % state )
 

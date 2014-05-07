@@ -27,13 +27,16 @@ def die(msg):
     if 0 < len(msg): print msg
     sys.exit(1)
 
-def DBG(msg):
-#    print msg
-    pass
 
-DBG_PRINT_HEX = False
+### DEBUGGING ###
+
+DEBUGGING = True
+def DBG(msg):
+    if DEBUGGING: print msg
+
+DBG_PRINT_HEX = True
 def tostring(val, nbits):
-    ## binary representation
+    ## push a leading dummy, to obtain leading '0's
     mask = 0x1 << nbits
     val += mask
 
@@ -44,6 +47,8 @@ def tostring(val, nbits):
         ## remove the 1 from the mask and return as string w/ leading 0s
         res = bin(val)[:2] + bin(val)[3:]
     return res
+
+### /DEBUGGING ###
 
 
 class AES:
@@ -426,87 +431,106 @@ class AES:
         ## init
         if ishex: state = plaintext
         else: state = int(plaintext.encode('hex'),16) & 0xffffffffffffffffffffffffffffffff
-        DBG( "\n\nENCRYPTION\n\nplaintext: \t%#.32x"%state )
+#        DBG( "\n\nENCRYPTION\n\nplaintext: \t%#.32x"%state )  
+        DBG( "\n\nENCRYPTION\n\nplaintext: \t%s"%tostring(state, 128) )
 
         ## padding for broken blocks
         if 0 < npaddingbits:
-#            print "%s" % tostring(state, 128)   
+            DBG( "padding (before): \t%s"%tostring(state, 128))
             padding = 1 <<(npaddingbits-1)
             state = (state <<(npaddingbits)) | padding
-#            print "%s" % tostring(state, 128)   
+            DBG( "padding (after): \t%s"%tostring(state, 128))
 
         ## round 0
         state = self._add_round_key(state, 0)
-        DBG( "add key: \t%#.32x\n"%state )
+#        DBG( "add key: \t%#.32x\n"%state )  
+        DBG( "add key: \t%s\n"%tostring(state, 128) )
 
         for rnd in range(self._rounds-1):
             state = self._substitution_layer__sub_bytes(state, self._sbox)
-            DBG( "substitute: \t\t%#.32x"%state )
+#            DBG( "substitute: \t\t%#.32x"%state )  
+            DBG( "substitute: \t\t%s"%tostring(state, 128))
 
             state = self._diffusion_layer__shift_rows(state, self._shift_rows)
-            DBG( "shift rows: \t\t%#.32x"%state )
+            DBG( "shift rows: \t\t%s"%tostring(state, 128))
 
             ## alternative implementation
-#            state = self._diffusion_layer__mix_column_TRICK(state)
+#            state = self._diffusion_layer__mix_column_TRICK(state) ## KEEP!
             ## more generic implementation
             state = self._diffusion_layer__mix_column(state, self._mix_columns__const_matrix)
             ##
-            DBG( "mix column: \t\t%#.32x"%state )
+#            DBG( "mix column: \t\t%#.32x"%state )  
+            DBG( "mix column: \t\t%s"%tostring(state, 128) )
 
             state = self._add_round_key(state, rnd+1)
-            DBG( "add key: \t\t%#.32x\n"%state )
+#            DBG( "add key: \t\t%#.32x\n"%state )  
+            DBG( "add key: \t\t%s\n"%tostring(state, 128) )
 
         ## round n
         state = self._substitution_layer__sub_bytes(state, self._sbox)
-        DBG( "substitute: \t%#.32x"%state )
+#        DBG( "substitute: \t%#.32x"%state )  
+        DBG( "substitute: \t%s"%tostring(state, 128) )
 
         state = self._diffusion_layer__shift_rows(state, self._shift_rows)
-        DBG( "shift rows: \t%#.32x"%state )
+#        DBG( "shift rows: \t%#.32x"%state )  
+        DBG( "shift rows: \t%s"%tostring(state, 128) )
 
         state = self._add_round_key(state, self._rounds)
-        DBG( "add key: \t%#.32x\n"%state )
+#        DBG( "add key: \t%#.32x\n"%state )  
+        DBG( "add key: \t%s\n"%tostring(state, 128) )
 
         return state
 
 
-    def decrypt(self, ciphertext, ashex=False, islast=False):
+    def decrypt(self, ciphertext, ashex=False, ispadded=False):
         ## params:
         ## ciphertext = the ciphertext as hex number
         ## ashex = shall the output be a hex number, or a string?
 
         state = ciphertext
-# TODO handle padding cut off, with if islast == True
-        DBG("\n\nDECRYPTION\n\ninput: %#.32x" % state)
+#        DBG("\n\nDECRYPTION\n\ninput: %#.32x" % state)  
+        DBG("\n\nDECRYPTION\n\ninput: %s"%tostring(state, 128))
 
         ## round n
         state = self._add_round_key(state, self._rounds)
-        DBG( "add key: \t%#.32x"%state )
+#        DBG( "add key: \t%#.32x"%state )  
+        DBG( "add key: \t%s"%tostring(state, 128) )
 
         state = self._diffusion_layer__shift_rows(state, self._inv_shift_rows)
-        DBG( "shift rows: \t%#.32x"%state )
+#        DBG( "shift rows: \t%#.32x"%state )  
+        DBG( "shift rows: \t%s"%tostring(state, 128) )
 
         state = self._substitution_layer__sub_bytes(state, self._inv_sbox)
-        DBG( "substitute: \t%#.32x\n"%state )
+#        DBG( "substitute: \t%#.32x\n"%state )  
+        DBG( "substitute: \t%s\n"%tostring(state, 128) )
 
         for rnd in range(self._rounds-2,-1,-1):
             state = self._add_round_key(state, rnd+1)
-            DBG( "add key: \t\t%#.32x"%state )
+#            DBG( "add key: \t\t%#.32x"%state )  
+            DBG( "add key: \t\t%s"%tostring(state, 128) )
 
             state = self._diffusion_layer__mix_column(state, self._mix_columns__inv_const_matrix)
-            DBG( "mix column: \t\t%#.32x"%state )
+#            DBG( "mix column: \t\t%#.32x"%state )  
+            DBG( "mix column: \t\t%s"%tostring(state, 128) )
 
             state = self._diffusion_layer__shift_rows(state, self._inv_shift_rows)
-            DBG( "shift rows: \t\t%#.32x"%state )
+#            DBG( "shift rows: \t\t%#.32x"%state )  
+            DBG( "shift rows: \t\t%s"%tostring(state, 128) )
 
             state = self._substitution_layer__sub_bytes(state, self._inv_sbox)
-            DBG( "substitute: \t\t%#.32x"%state )
+#            DBG( "substitute: \t\t%#.32x"%state )  
+            DBG( "substitute: \t\t%s"%tostring(state, 128) )
             DBG("")
 
-        ## round 0
-        state = self._add_round_key(state, 0)
-        DBG( "add key: \t%#.32x"%state )
+#        DBG( "\nfinal result: %#.32x\n" % state )  
+        DBG( "\nfinal result: %s\n"%tostring(state, 128) )
 
-        DBG( "\nfinal result: %#.32x\n" % state )
+        if ispadded:
+            ## cut off padding '0's
+            while 0 == state & 0b1:
+                state = state >>1
+            ## cut off padding '1'
+            state = state>>1
 
         if ashex: return state
         ## convert to string
@@ -545,16 +569,10 @@ def main(argv=sys.argv[1:]):
     ## init the algorithm
     aes = AES(inputkey, keylength)
 
-    ## blocks
-# TODO padding function
-    
-#    print (len(plaintext) * 8)   
-    size = len(plaintext) * 8
-    print "size",size  
+    ## blocks and padding
+    size = len(plaintext) * 8 # given a character is encoded by 8 bit
     rest = size % 128
-    print "rest",rest  
     nblocks = size / 128
-    print "nblocks",nblocks  
 
     ciphertext = []
     for b in range(nblocks):
@@ -562,25 +580,13 @@ def main(argv=sys.argv[1:]):
 
     padding = 1 <<127
     if 0 == rest:
-#        print "AAA multiple of blocksize, append padding block", rest
+        ## plaintext size is a multiple of blocksize
         padding = 1 <<127
         ciphertext.append(aes.encrypt(padding))
     else:
-        print "BBB last block is padded", rest
+        ## last block is partly padded, since it's not a multiple of blocksize
         text = plaintext[((nblocks)*16):]
         ciphertext.append(aes.encrypt(text, npaddingbits = (128-rest)))
-
-    
-    # blocktext = ""
-    # for idx in range(len(plaintext)-1):
-    #     blocktext += plaintext[idx]
-    #     if idx % (blocksize/8) == 0:
-    #         ciphertext.append(aes.encrypt(blocktext))
-    #         blocktext = ""
-    # blocktext += plaintext[idx+1]
-    # ciphertext.append(aes.encrypt(blocktext))
-    
-
 
     ## print result
     print "encrypted:"
@@ -588,12 +594,13 @@ def main(argv=sys.argv[1:]):
         print "%#.32x"%item
     print "\n"
 
-    die("XXX")    
-
     ## decrypt
     decryptedtext = ""
     for block in ciphertext:
-        decryptedtext += aes.decrypt(block)
+        if block == ciphertext[-1]:
+            decryptedtext += aes.decrypt(block, ispadded=True)
+        else:
+            decryptedtext += aes.decrypt(block)
 
     ## print result
     print "decrypted:"
