@@ -6,7 +6,7 @@
 @author: Lothar Rubusch
 @email: L.Rubusch@gmx.ch
 @license: GPLv3
-@2014-Mar-19
+@2014-May-04
 
 AES (american encryption standard)
 128-bit block size
@@ -19,16 +19,16 @@ Key:        000102030405060708090a0b0c0d0e0f
 Plaintext:  00112233445566778899aabbccddeeff
 Ciphertext: 69c4e0d86a7b0430d8cdb78070b4c55a
 
+
 CBC mode
 
- * encryption not parallelizable, decryption parallelizable
- * encrypts also dependend data
+ * encryption not parallelizable
+ * decryption parallelizable
 
 sources
 http://en.wikipedia.org/wiki/Block_cipher_modes_of_operation
 http://csrc.nist.gov/groups/ST/toolkit/BCM/index.html
 """
-
 
 import sys
 
@@ -434,7 +434,7 @@ class AES:
 
     ## public interface
 
-    def encrypt(self, plaintext, ishex=False):
+    def encrypt(self, plaintext, ishex=False, npaddingbits=0):
         ## params
         ## plaintext = the plaintext as string or as hex number
         ## ishex = if the plaintext was a hex number (True)
@@ -442,11 +442,18 @@ class AES:
         ## init
         if ishex: state = plaintext
         else: state = int(plaintext.encode('hex'),16) & 0xffffffffffffffffffffffffffffffff
-        DBG( "\n\nENCRYPTION\n\nplaintext: \t%s"%tostring(state, 128))
+        DBG( "\n\nENCRYPTION\n\nplaintext: \t%s"%tostring(state, 128) )
+
+        ## padding for broken blocks
+        if 0 < npaddingbits:
+            DBG( "padding (before): \t%s"%tostring(state, 128))
+            padding = 1 <<(npaddingbits-1)
+            state = (state <<(npaddingbits)) | padding
+            DBG( "padding (after): \t%s"%tostring(state, 128))
 
         ## round 0
         state = self._add_round_key(state, 0)
-        DBG( "add key: \t%s\n"%tostring(state, 128))
+        DBG( "add key: \t%s\n"%tostring(state, 128) )
 
         for rnd in range(self._rounds-1):
             state = self._substitution_layer__sub_bytes(state, self._sbox)
@@ -456,66 +463,73 @@ class AES:
             DBG( "shift rows: \t\t%s"%tostring(state, 128))
 
             ## alternative implementation
-#            state = self._diffusion_layer__mix_column_TRICK(state) # KEEP!
+#            state = self._diffusion_layer__mix_column_TRICK(state) ## KEEP!
             ## more generic implementation
             state = self._diffusion_layer__mix_column(state, self._mix_columns__const_matrix)
             ## /alternative implementation
-            DBG( "mix column: \t\t%s"%tostring(state, 128))
+            DBG( "mix column: \t\t%s"%tostring(state, 128) )
 
             state = self._add_round_key(state, rnd+1)
-            DBG( "add key: \t\t%s\n"%tostring(state, 128))
+            DBG( "add key: \t\t%s\n"%tostring(state, 128) )
 
         ## round n
         state = self._substitution_layer__sub_bytes(state, self._sbox)
-        DBG( "substitute: \t%s"%tostring(state, 128))
+        DBG( "substitute: \t%s"%tostring(state, 128) )
 
         state = self._diffusion_layer__shift_rows(state, self._shift_rows)
-        DBG( "shift rows: \t%s"%tostring(state, 128))
+        DBG( "shift rows: \t%s"%tostring(state, 128) )
 
         state = self._add_round_key(state, self._rounds)
-        DBG( "add key: \t%s\n"%tostring(state, 128))
+        DBG( "add key: \t%s\n"%tostring(state, 128) )
 
         return state
 
 
-    def decrypt(self, ciphertext, ashex=False):
+    def decrypt(self, ciphertext, ashex=False, ispadded=False):
         ## params:
         ## ciphertext = the ciphertext as hex number
         ## ashex = shall the output be a hex number, or a string?
+        ## ispadded = is ciphertext, or does it contain a padding block?
 
         state = ciphertext
-
         DBG("\n\nDECRYPTION\n\ninput: %s"%tostring(state, 128))
 
         ## round n
         state = self._add_round_key(state, self._rounds)
-        DBG( "add key: \t%s"%tostring(state, 128))
+        DBG( "add key: \t%s"%tostring(state, 128) )
 
         state = self._diffusion_layer__shift_rows(state, self._inv_shift_rows)
-        DBG( "shift rows: \t%s"%tostring(state, 128))
+        DBG( "shift rows: \t%s"%tostring(state, 128) )
 
         state = self._substitution_layer__sub_bytes(state, self._inv_sbox)
-        DBG( "substitute: \t%s\n"%tostring(state, 128))
+        DBG( "substitute: \t%s\n"%tostring(state, 128) )
 
         for rnd in range(self._rounds-2,-1,-1):
             state = self._add_round_key(state, rnd+1)
-            DBG( "add key: \t\t%s"%tostring(state, 128))
+            DBG( "add key: \t\t%s"%tostring(state, 128) )
 
             state = self._diffusion_layer__mix_column(state, self._mix_columns__inv_const_matrix)
-            DBG( "mix column: \t\t%s"%tostring(state, 128))
+            DBG( "mix column: \t\t%s"%tostring(state, 128) )
 
             state = self._diffusion_layer__shift_rows(state, self._inv_shift_rows)
-            DBG( "shift rows: \t\t%s"%tostring(state, 128))
+            DBG( "shift rows: \t\t%s"%tostring(state, 128) )
 
             state = self._substitution_layer__sub_bytes(state, self._inv_sbox)
-            DBG( "substitute: \t\t%s"%tostring(state, 128))
+            DBG( "substitute: \t\t%s"%tostring(state, 128) )
             DBG("")
 
-# TODO check that this step is actually correct
+# TODO check that the next step is correct
         state = self._add_round_key(state, 0)
         DBG( "add key: \t%#.32x"%state )
 
-        DBG( "\nfinal result: %s\n"%tostring(state, 128))
+        DBG( "\nfinal result: %s\n"%tostring(state, 128) )
+
+        if ispadded:
+            ## cut off padding '0's
+            while 0 == state & 0b1:
+                state = state >>1
+            ## cut off padding '1'
+            state = state>>1
 
         ## convert to string
         data = "%x"%state
@@ -525,6 +539,7 @@ class AES:
             while len(data) < 32: data += "0"
             return data
         return ''.join(chr(int(data[i:i+2], 16)) for i in range(0, len(data), 2))
+
 
 
 ### main ###
@@ -547,7 +562,7 @@ def main(argv=sys.argv[1:]):
         ## init some raw input key example
         inputkey = 0x000102030405060708090a0b0c0d0e0f
         ## init some input text example
-        plaintext = "Per aspera ad astra"
+        plaintext = "Noli turbare circulos meos!"
 
     print "initial key:\n%#.32x, key length %d, block size %d\n" % (inputkey, keylength, blocksize)
 
@@ -557,16 +572,24 @@ def main(argv=sys.argv[1:]):
     ## init the algorithm
     aes = AES(inputkey, keylength)
 
-    ## blocks
+    ## blocks and padding
+    size = len(plaintext) * 8 # given a character is encoded by 8 bit
+    rest = size % 128
+    nblocks = size / 128
+
     ciphertext = []
-    blocktext = ""
-    for idx in range(len(plaintext)-1):
-        blocktext += plaintext[idx]
-        if (idx+1) % (blocksize/8) == 0:
-            ciphertext.append(aes.encrypt(blocktext))
-            blocktext = ""
-    blocktext += plaintext[idx+1]
-    ciphertext.append(aes.encrypt(blocktext))
+    for b in range(nblocks):
+        ciphertext.append(aes.encrypt(plaintext[(b*16):(b*16+16)]))
+
+    padding = 1 <<127
+    if 0 == rest:
+        ## plaintext size is a multiple of blocksize
+        padding = 1 <<127
+        ciphertext.append(aes.encrypt(padding))
+    else:
+        ## last block is partly padded, since it's not a multiple of blocksize
+        text = plaintext[((nblocks)*16):]
+        ciphertext.append(aes.encrypt(text, npaddingbits = (128-rest)))
 
     ## print result
     print "encrypted:"
@@ -577,9 +600,13 @@ def main(argv=sys.argv[1:]):
     ## decrypt
     decryptedtext = ""
     for block in ciphertext:
-        decryptedtext += aes.decrypt(block)
-        ## checkout hex result (w/o string decoding)
-        DBG( "hex: 0x%s"%aes.decrypt(block, ashex=True) )
+        if block == ciphertext[-1]:
+            ## checkout hex result (w/o string decoding)
+            DBG( "hex: 0x%s"%aes.decrypt(block, ashex=True, ispadded=True) )
+            ## decryption for a padded / padding block
+            decryptedtext += aes.decrypt(block, ispadded=True)
+        else:
+            decryptedtext += aes.decrypt(block)
 
     ## print result
     print "decrypted:"
