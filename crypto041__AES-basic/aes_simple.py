@@ -499,6 +499,10 @@ class AES:
             DBG( "substitute: \t\t%s"%tostring(state, 128))
             DBG("")
 
+# TODO check that this step is actually correct
+        state = self._add_round_key(state, 0)
+        DBG( "add key: \t%#.32x"%state )
+
         DBG( "\nfinal result: %s\n"%tostring(state, 128))
 
         ## convert to string
@@ -531,13 +535,12 @@ def main(argv=sys.argv[1:]):
         ## init some raw input key example
         inputkey = 0x000102030405060708090a0b0c0d0e0f
         ## init some input text example
-        plaintext = "jack and jill went up the hill to fetch a pail of water"
+        plaintext = "Ceterum censeo Carthaginem esse delendam"
 
     print "initial key:\n%#.32x, key length %d, block size %d\n" % (inputkey, keylength, blocksize)
 
     print "plaintext:"
     print "%s\n" % plaintext
-
 
     ## init the algorithm
     aes = AES(inputkey, keylength)

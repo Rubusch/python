@@ -507,6 +507,10 @@ class AES:
             DBG( "substitute: \t\t%s"%tostring(state, 128) )
             DBG("")
 
+# TODO check that the next step is correct
+        state = self._add_round_key(state, 0)
+        DBG( "add key: \t%#.32x"%state )
+
         DBG( "\nfinal result: %s\n"%tostring(state, 128) )
 
         if ispadded:
@@ -547,7 +551,7 @@ def main(argv=sys.argv[1:]):
         ## init some raw input key example
         inputkey = 0x000102030405060708090a0b0c0d0e0f
         ## init some input text example
-        plaintext = "jack and jill went up the hill to fetch a pail of water"
+        plaintext = "Noli turbare circulos meos!"
 
     print "initial key:\n%#.32x, key length %d, block size %d\n" % (inputkey, keylength, blocksize)
 
