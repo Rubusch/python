@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: iso-8859-1 -*-
+#
+# IMPORTANT: this implementation is meant as an educational demonstration only
 """
 @author: Lothar Rubusch
 @email: L.Rubusch@gmx.ch
@@ -17,6 +19,23 @@ AES example
 Key:        000102030405060708090a0b0c0d0e0f
 Plaintext:  00112233445566778899aabbccddeeff
 Ciphertext: 69c4e0d86a7b0430d8cdb78070b4c55a
+
+
+ECB mode
+
+ * parallelizable
+ * deterministic codebook translation
+ * records should be smaller than blocksize (128bit), and independent of each
+   other
+ * vulnerable to substitution attack
+ * vulnerable to replay attack
+ * at looking on the cipherblocks it is possible to discover how often a
+   specific plaintext block appeared
+ * not recommended
+
+sources
+http://en.wikipedia.org/wiki/Block_cipher_modes_of_operation
+http://csrc.nist.gov/groups/ST/toolkit/BCM/index.html
 """
 
 import sys

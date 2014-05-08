@@ -17,6 +17,8 @@
 # PRESENT algorithm authors
 # Copyright (c) 2008 Christophe Oosterlynck (christophe.oosterlynck@gmail.com)
 #         Philippe Teuwen (philippe.teuwen@nxp.com)
+#
+# IMPORTANT: this implementation is meant as an educational demonstration only
 
 import sys   # sys.argv[]
 

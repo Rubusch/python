@@ -15,8 +15,8 @@
 # this implementation is working on strings, which makes it easier readable or
 # better to experience the algorithm, a better implementation would be to code
 # it with hex numbers and bit operations directly
-
-
+#
+# IMPORTANT: this implementation is meant as an educational demonstration only
 
 
 ## additional settings #########################################################

@@ -17,6 +17,9 @@
 # IV is 80 times '0'
 # key is 80 times '0'
 #
+#
+# IMPORTANT: this implementation is meant as an educational demonstration only
+
 
 # TODO decryption
 # TODO work with real bit operations
