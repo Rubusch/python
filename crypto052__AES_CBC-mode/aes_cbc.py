@@ -24,6 +24,7 @@ CBC mode
 
  * encryption not parallelizable
  * decryption parallelizable
+ * turns AES into a stream cipher, thus does not need padding
 
 sources
 http://en.wikipedia.org/wiki/Block_cipher_modes_of_operation
@@ -562,7 +563,7 @@ def main(argv=sys.argv[1:]):
         ## init some raw input key example
         inputkey = 0x000102030405060708090a0b0c0d0e0f
         ## init some input text example
-        plaintext = "Noli turbare circulos meos!"
+        plaintext = "Per aspera ad astra"
 
     print "initial key:\n%#.32x, key length %d, block size %d\n" % (inputkey, keylength, blocksize)
 
@@ -581,6 +582,8 @@ def main(argv=sys.argv[1:]):
     for b in range(nblocks):
         ciphertext.append(aes.encrypt(plaintext[(b*16):(b*16+16)]))
 
+# TODO implement block chaining, instead of padding - additional function
+                       
     padding = 1 <<127
     if 0 == rest:
         ## plaintext size is a multiple of blocksize
