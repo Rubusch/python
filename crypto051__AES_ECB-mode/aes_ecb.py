@@ -518,6 +518,19 @@ class AES:
         return state
 
 
+    def decrypt_ecb(self, ciphertext):
+        decryptedtext = ""
+        for block in ciphertext:
+            if block == ciphertext[-1]:
+                ## checkout hex result (w/o string decoding)
+                DBG( "hex: 0x%s"%self.decrypt(block, ashex=True, ispadded=True) )
+                ## decryption for a padded / padding block
+                decryptedtext += self.decrypt(block, ispadded=True)
+            else:
+                decryptedtext += self.decrypt(block)
+        return decryptedtext
+
+
     def decrypt(self, ciphertext, ashex=False, ispadded=False):
         ## params:
         ## ciphertext = the ciphertext as hex number
@@ -620,19 +633,11 @@ def main(argv=sys.argv[1:]):
     ## print result
     print "encrypted:"
     for item in ciphertext:
-        print "%#.32x"%item
+        print "%s"%tostring(item, blocksize)
     print "\n"
 
     ## decrypt
-    decryptedtext = ""
-    for block in ciphertext:
-        if block == ciphertext[-1]:
-            ## checkout hex result (w/o string decoding)
-            DBG( "hex: 0x%s"%aes.decrypt(block, ashex=True, ispadded=True) )
-            ## decryption for a padded / padding block
-            decryptedtext += aes.decrypt(block, ispadded=True)
-        else:
-            decryptedtext += aes.decrypt(block)
+    decryptedtext = aes.decrypt_ecb(ciphertext)
 
     ## print result
     print "decrypted:"

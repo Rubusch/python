@@ -495,6 +495,12 @@ class AES:
         return state
 
 
+    def decrypt_cbc(self, ciphertext):
+        
+        # TODO
+        pass
+
+
     def decrypt(self, ciphertext, ashex=False, ispadded=False):
         ## params:
         ## ciphertext = the ciphertext as hex number
@@ -593,46 +599,16 @@ def main(argv=sys.argv[1:]):
     aes = AES(inputkey, keylength)
 
     ## blocks and padding
-    aes.encrypt_cbc(plaintext)  
-
-    
-#     size = len(plaintext) * 8 # given a character is encoded by 8 bit
-#     rest = size % 128
-#     nblocks = size / 128
-
-#     ciphertext = []
-#     for b in range(nblocks):
-#         ciphertext.append(aes.encrypt(plaintext[(b*16):(b*16+16)]))
-
-# # TODO implement block chaining, instead of padding - additional function
-                      
-#     padding = 1 <<127
-#     if 0 == rest:
-#         ## plaintext size is a multiple of blocksize
-#         padding = 1 <<127
-#         ciphertext.append(aes.encrypt(padding))
-#     else:
-#         ## last block is partly padded, since it's not a multiple of blocksize
-#         text = plaintext[((nblocks)*16):]
-#         ciphertext.append(aes.encrypt(text, npaddingbits = (128-rest)))
-    
+    ciphertext = aes.encrypt_cbc(plaintext, blocksize)  
 
     ## print result
     print "encrypted:"
     for item in ciphertext:
-        print "%#.32x"%item
+        print "%x"%tostring(item, 128)
     print "\n"
 
     ## decrypt
-    decryptedtext = ""
-    for block in ciphertext:
-        if block == ciphertext[-1]:
-            ## checkout hex result (w/o string decoding)
-            DBG( "hex: 0x%s"%aes.decrypt(block, ashex=True, ispadded=True) )
-            ## decryption for a padded / padding block
-            decryptedtext += aes.decrypt(block, ispadded=True)
-        else:
-            decryptedtext += aes.decrypt(block)
+    decryptedtext = aes.decrypt_cbc(ciphertext)  
 
     ## print result
     print "decrypted:"

@@ -573,7 +573,7 @@ def main(argv=sys.argv[1:]):
     ## print result
     print "encrypted:"
     for item in ciphertext:
-        print "%#.32x"%item
+        print "%s"%tostring(item, blocksize)
     print "\n"
 
     ## decrypt
