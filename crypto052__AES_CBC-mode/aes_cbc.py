@@ -307,7 +307,7 @@ class AES:
         key = self._append(key, self._keys[rnd*4+2], 4)
         key = self._append(key, self._keys[rnd*4+3], 4)
         ret = key ^ state
-        DBG( "R%d (key = %#.32x)\t= %#.32x" % (rnd,key,ret) )
+        print "R%d (key = %s)\t= %#x" % (rnd,tostring(key, self._keylength),ret)
         return ret
 
     def _substitution_layer__sub_bytes(self, state, table):
@@ -434,16 +434,24 @@ class AES:
 
 
     ## public interface
+    def encrypt_cbc(self, plaintext):
+        
+# TODO
+
+        pass
+
 
     def encrypt(self, plaintext, ishex=False, npaddingbits=0):
         ## params
         ## plaintext = the plaintext as string or as hex number
         ## ishex = if the plaintext was a hex number (True)
 
+        
+# TODO move init to encrypt_cbc()
         ## init
         if ishex: state = plaintext
         else: state = int(plaintext.encode('hex'),16) & 0xffffffffffffffffffffffffffffffff
-        DBG( "\n\nENCRYPTION\n\nplaintext: \t%s"%tostring(state, 128) )
+        DBG( "\nENCRYPTION\n\nplaintext: \t%s"%tostring(state, 128) )
 
         ## padding for broken blocks
         if 0 < npaddingbits:
@@ -483,6 +491,7 @@ class AES:
         state = self._add_round_key(state, self._rounds)
         DBG( "add key: \t%s\n"%tostring(state, 128) )
 
+        print ""
         return state
 
 
@@ -519,11 +528,11 @@ class AES:
             DBG( "substitute: \t\t%s"%tostring(state, 128) )
             DBG("")
 
-# TODO check that the next step is correct
         state = self._add_round_key(state, 0)
         DBG( "add key: \t%#.32x"%state )
 
         DBG( "\nfinal result: %s\n"%tostring(state, 128) )
+        print ""
 
         if ispadded:
             ## cut off padding '0's
@@ -545,11 +554,21 @@ class AES:
 
 ### main ###
 def main(argv=sys.argv[1:]):
+## to just use it with hex numbers and a single block, the class can be
+## instrumented the following way
+#    inputkey = 0x2b7e151628aed2a6abf7158809cf4f3c
+#    keylength = 128
+#    aes = AES(inputkey, keylength)
+#    blocktext = 0x01000000000000000000000000000000
+#    ciphertext = aes.encrypt(blocktext, ishex=True)
+#    print "ciphered: %s"%tostring( ciphertext, 128)
+#    die("STOP")
+
     ## AES has fixed block size of 128 bit
     blocksize = 128
     inputkey = 0x0
     plaintext = ""
-    keylength = 256
+    keylength = 128
 
     if len(argv) > 0:
         ## offer encryption by command line argument
@@ -574,25 +593,29 @@ def main(argv=sys.argv[1:]):
     aes = AES(inputkey, keylength)
 
     ## blocks and padding
-    size = len(plaintext) * 8 # given a character is encoded by 8 bit
-    rest = size % 128
-    nblocks = size / 128
+    aes.encrypt_cbc(plaintext)  
 
-    ciphertext = []
-    for b in range(nblocks):
-        ciphertext.append(aes.encrypt(plaintext[(b*16):(b*16+16)]))
+    
+#     size = len(plaintext) * 8 # given a character is encoded by 8 bit
+#     rest = size % 128
+#     nblocks = size / 128
 
-# TODO implement block chaining, instead of padding - additional function
-                       
-    padding = 1 <<127
-    if 0 == rest:
-        ## plaintext size is a multiple of blocksize
-        padding = 1 <<127
-        ciphertext.append(aes.encrypt(padding))
-    else:
-        ## last block is partly padded, since it's not a multiple of blocksize
-        text = plaintext[((nblocks)*16):]
-        ciphertext.append(aes.encrypt(text, npaddingbits = (128-rest)))
+#     ciphertext = []
+#     for b in range(nblocks):
+#         ciphertext.append(aes.encrypt(plaintext[(b*16):(b*16+16)]))
+
+# # TODO implement block chaining, instead of padding - additional function
+                      
+#     padding = 1 <<127
+#     if 0 == rest:
+#         ## plaintext size is a multiple of blocksize
+#         padding = 1 <<127
+#         ciphertext.append(aes.encrypt(padding))
+#     else:
+#         ## last block is partly padded, since it's not a multiple of blocksize
+#         text = plaintext[((nblocks)*16):]
+#         ciphertext.append(aes.encrypt(text, npaddingbits = (128-rest)))
+    
 
     ## print result
     print "encrypted:"
