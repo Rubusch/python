@@ -25,6 +25,7 @@ CBC mode
  * encryption not parallelizable
  * decryption parallelizable
  * turns AES into a stream cipher, thus does not need padding
+TODO
 
 sources
 http://en.wikipedia.org/wiki/Block_cipher_modes_of_operation

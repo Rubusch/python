@@ -22,6 +22,7 @@ Ciphertext: 69c4e0d86a7b0430d8cdb78070b4c55a
 
 
 ECB mode
+TODO: published in paper???
 
  * parallelizable
  * deterministic codebook translation
