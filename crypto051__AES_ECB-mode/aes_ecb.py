@@ -614,12 +614,19 @@ def main(argv=sys.argv[1:]):
             inputkey = int(argv[1],16)
             plaintext = argv[2]
         except:
-            die('usage: either w/o arguments, or as follows\n$ %s <keylength> <inputkey> "<plaintext>"\ne.g.\n$ %s %d %s "%s"'%(sys.argv[0],sys.argv[0],128,"0x000102030405060708090a0b0c0d0e0f","from Disco to Disco.."))
+            die('usage: either w/o arguments, or as follows\n$ %s <keylength> ' \
+                    '<inputkey> "<plaintext>"\ne.g.\n$ %s %d %s "%s"' \
+                    %(sys.argv[0],sys.argv[0],128, \
+                          "0x000102030405060708090a0b0c0d0e0f","Non est ad " \
+                          "De Bello Gallico"))
     else:
         ## init some raw input key example
         inputkey = 0x000102030405060708090a0b0c0d0e0f
         ## init some input text example
-        plaintext = "Noli turbare circulos meos!"
+        plaintext = "Qua de causa Helvetii quoque reliquos Gallos virtute " \
+            "praecedunt, quod fere cotidianis proeliis cum Germanis " \
+            "contendunt, cum aut suis finibus eos prohibent aut ipsi in eorum " \
+            "finibus bellum gerunt."
 
     print "initial key:\n%#.32x, key length %d, block size %d\n" % (inputkey, keylength, blocksize)
 
@@ -627,9 +634,9 @@ def main(argv=sys.argv[1:]):
     print "%s\n" % plaintext
 
     ## init the algorithm
-    aes = AES(inputkey, keylength)
+    aes_encrypter = AES(inputkey, keylength)
 
-    ciphertext = aes.encrypt_ecb(plaintext, blocksize)
+    ciphertext = aes_encrypter.encrypt_ecb(plaintext, blocksize)
 
     ## print result
     print "encrypted:"
@@ -637,8 +644,12 @@ def main(argv=sys.argv[1:]):
         print "%s"%tostring(item, blocksize)
     print "\n"
 
+
+    ## init the algorithm
+    aes_decrypter = AES(inputkey, keylength)
+
     ## decrypt
-    decryptedtext = aes.decrypt_ecb(ciphertext)
+    decryptedtext = aes_decrypter.decrypt_ecb(ciphertext)
 
     ## print result
     print "decrypted:"

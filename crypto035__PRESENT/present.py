@@ -156,7 +156,7 @@ def main():
     present = Present(inputkey)
 
     ## init some input text
-    plaintext = "jack and jill went up the hill to fetch a pail of water"
+    plaintext = "Hi omnes lingua, institutis, legibus inter se differunt."
     print "plaintext:"
     print "%s\n" % plaintext
 

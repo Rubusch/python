@@ -105,17 +105,20 @@ def print_alpha(binplaintext):
 
 ## args - the filenmae
 def main(argv=sys.argv[1:]):
-    ## check args
-#    plaintext = "ABC"   
-## or
-    plaintext = "TY4"   
-    # TODO in case take plaintext as arg
+    ## shall result in "ABC"
+    plaintext = "TY4"
+    if len(argv) > 0: plaintext = argv[0]
+    plaintext = plaintext.upper()
+    print "provided input: %s"%plaintext
 
     ## init dictionary
     initdict()
     binplaintext = []
     for c in plaintext:
-        binplaintext += alpha2bin.get(c)
+        try:
+            binplaintext += alpha2bin.get(c)
+        except TypeError:
+            die("FAIL: only letters and no spaces allowed in input")
 
     binciphertext = encryptdecrypt(binplaintext)
 

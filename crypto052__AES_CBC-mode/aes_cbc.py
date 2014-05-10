@@ -435,11 +435,32 @@ class AES:
 
 
     ## public interface
-    def encrypt_cbc(self, plaintext):
-        
-# TODO
 
-        pass
+    def encrypt_cbc(self, plaintext, blocksize, IV):
+        ## this asking for blocksize is bogus here, though, it is left on purpose
+        ## to stress the point that AES has always 128bit block size!
+        if 128 != blocksize: die("AES is defined for only 128bit blocksize")
+
+        print "IV: %s"%tostring(IV, blocksize)
+
+        ## CBC mode
+        size = len(plaintext) * 8
+        nblocks = size / blocksize
+        blockbytes = blocksize / 8
+        ciphertext = []
+        for b in range(nblocks+1):
+            ## convert textblock into hex
+            textblock = plaintext[(b*blockbytes):(b*blockbytes+blockbytes)]
+            if 0 == len(textblock): break
+            hexblock = int(textblock.encode('hex'),16) & 0xffffffffffffffffffffffffffffffff
+            ## get last block or IV for the first
+            if 0 == b: last_block = IV
+            else: last_block = ciphertext[b-1]
+            ## XOR next plaintext block against last ciphered text block
+            inputblock = hexblock ^ last_block
+            ## encrypt
+            ciphertext.append(self.encrypt(inputblock, ishex=True))
+        return ciphertext
 
 
     def encrypt(self, plaintext, ishex=False, npaddingbits=0):
@@ -447,8 +468,6 @@ class AES:
         ## plaintext = the plaintext as string or as hex number
         ## ishex = if the plaintext was a hex number (True)
 
-        
-# TODO move init to encrypt_cbc()
         ## init
         if ishex: state = plaintext
         else: state = int(plaintext.encode('hex'),16) & 0xffffffffffffffffffffffffffffffff
@@ -496,10 +515,23 @@ class AES:
         return state
 
 
-    def decrypt_cbc(self, ciphertext):
-        
-        # TODO
-        pass
+    def decrypt_cbc(self, ciphertext, IV):
+        decryptedtext = ""
+        decryptedblock = 0x0
+        for b in reversed(range(len(ciphertext))):
+            ## decrypt last block
+            
+# TODO 'ashex' returns a hex string, not a number -> 'asnum=True' which returns the number
+            decryptedblock = self.decrypt(ciphertext[b], ashex=True) # FIXME
+
+            ## XOR decrypted text block against forelast encrypted block
+            if b > 0: decryptedblock = decryptedblock ^ ciphertext[b-1]
+            else: decryptedblock = decryptedblock ^ IV
+            ## convert to string
+            data = "%x"%decryptedblock
+            decryptedtext += ''.join(chr(int(data[i:i+2], 16)) for i in range(0, len(data), 2))
+        return decryptedtext
+
 
 
     def decrypt(self, ciphertext, ashex=False, ispadded=False):
@@ -584,12 +616,19 @@ def main(argv=sys.argv[1:]):
             inputkey = int(argv[1],16)
             plaintext = argv[2]
         except:
-            die('usage: either w/o arguments, or as follows\n$ %s <keylength> <inputkey> "<plaintext>"\ne.g.\n$ %s %d %s "%s"'%(sys.argv[0],sys.argv[0],128,"0x000102030405060708090a0b0c0d0e0f","from Disco to Disco.."))
+            die('usage: either w/o arguments, or as follows\n$ %s <keylength> '\
+                    '<inputkey> "<plaintext>"\ne.g.\n$ %s %d %s "%s"' \
+                    %(sys.argv[0],sys.argv[0],128, \
+                          "0x000102030405060708090a0b0c0d0e0f", \
+                          "De Bello Gallico"))
     else:
         ## init some raw input key example
         inputkey = 0x000102030405060708090a0b0c0d0e0f
         ## init some input text example
-        plaintext = "Per aspera ad astra"
+        plaintext = "Eorum una, pars, quam Gallos obtinere dictum est, initium "\
+            "capit a flumine Rhodano, continetur Garumna flumine, Oceano, " \
+            "finibus Belgarum, attingit etiam ab Sequanis et Helvetiis flumen " \
+            "Rhenum, vergit ad septentriones."
 
     print "initial key:\n%#.32x, key length %d, block size %d\n" % (inputkey, keylength, blocksize)
 
@@ -597,19 +636,23 @@ def main(argv=sys.argv[1:]):
     print "%s\n" % plaintext
 
     ## init the algorithm
-    aes = AES(inputkey, keylength)
+    aes_encrypter = AES(inputkey, keylength)
 
-    ## blocks and padding
-    ciphertext = aes.encrypt_cbc(plaintext, blocksize)  
+    ## blocks
+    IV = 0x0
+    ciphertext = aes_encrypter.encrypt_cbc(plaintext, blocksize, IV)
 
     ## print result
     print "encrypted:"
     for item in ciphertext:
-        print "%x"%tostring(item, 128)
+        print "%s"%tostring(item, 128)
     print "\n"
 
+    ## init the algorithm
+    aes_decrypter = AES(inputkey, keylength)
+
     ## decrypt
-    decryptedtext = aes.decrypt_cbc(ciphertext)  
+    decryptedtext = aes_decrypter.decrypt_cbc(ciphertext, IV)
 
     ## print result
     print "decrypted:"

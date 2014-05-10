@@ -616,7 +616,9 @@ def main(argv=sys.argv[1:]):
         ## init some raw input key example
         inputkey = 0x0001020304050607
         ## init some input text example
-        plaintext = "Neque porro quisquam est, qui dolorem ipsum, quia dolor sit, amet, consectetur, adipisci velit"
+        plaintext = "Gallia est omnis divisa in partes tres, quarum unam " \
+            "incolunt Belgae, aliam Aquitani, tertiam qui ipsorum lingua " \
+            "Celtae, nostra Galli appellantur."""
 
     print "initial key:\n%s, key length %d, block size %d\n" % (tostring(inputkey, 16), keylength, blocksize)
 
