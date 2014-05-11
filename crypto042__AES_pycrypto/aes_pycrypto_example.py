@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 #
 # @author: Lothar Rubusch
 # @email: L.Rubusch@gmx.ch
@@ -42,11 +42,15 @@ if __name__ == '__main__':
     ## the pair "randomkey + ciphered text" then will be passed to the decrypt
     ## function (that's why the ciphered printout looks always different);
     ## in addition an IV will be applied at encryption (CBC ?)
-    plaintext = b"Horum omnium fortissimi sunt Belgae, propterea quod a cultu "\
-        "atque humanitate provinciae longissime absunt, minimeque ad eos " \
-        "mercatores saepe commeant atque ea quae ad effeminandos animos " \
-        "pertinent important, proximique sunt Germanis, qui trans Rhenum " \
-        "incolunt, quibuscum continenter bellum gerunt."
+
+    plaintext = "E vós, Tágides minhas, pois criado\n" \
+        "Tendes em mim um novo engenho ardente,\n" \
+        "Se sempre em verso humilde celebrado\n" \
+        "Foi de mim vosso rio alegremente,\n" \
+        "Dai-me agora um som alto e sublimado,\n" \
+        "Um estilo grandíloquo e corrente,\n" \
+        "Porque de vossas águas, Febo ordene\n" \
+        "Que não tenham inveja às de Hipocrene."
     print "plaintext:\n%s\n" % plaintext
 
     ciphertext_and_key = encrypt(plaintext)

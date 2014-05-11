@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 #
 # IMPORTANT: this implementation is meant as an educational demonstration only
 """
@@ -623,10 +623,22 @@ def main(argv=sys.argv[1:]):
         ## init some raw input key example
         inputkey = 0x000102030405060708090a0b0c0d0e0f
         ## init some input text example
-        plaintext = "Qua de causa Helvetii quoque reliquos Gallos virtute " \
-            "praecedunt, quod fere cotidianis proeliis cum Germanis " \
-            "contendunt, cum aut suis finibus eos prohibent aut ipsi in eorum " \
-            "finibus bellum gerunt."
+        plaintext = "Dai-me uma fúria grande e sonorosa,\n" \
+            "E não de agreste avena ou frauta ruda,\n" \
+            "Mas de tuba canora e belicosa,\n" \
+            "Que o peito acende e a cor ao gesto muda;\n" \
+            "Dai-me igual canto aos feitos da famosa\n" \
+            "Gente vossa, que a Marte tanto ajuda;\n" \
+            "Que se espalhe e se cante no universo,\n" \
+            "Se tão sublime preço cabe em verso. "
+
+## interesting:
+## ...cabe em verso."
+##
+## results in "AttributeError: 'long' object has no attribute 'encode'"
+##
+## a small change fixes this:
+## ...cabe em verso. "
 
     print "initial key:\n%#.32x, key length %d, block size %d\n" % (inputkey, keylength, blocksize)
 

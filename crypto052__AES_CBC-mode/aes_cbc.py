@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 #
 # IMPORTANT: this implementation is meant as an educational demonstration only
 """
@@ -625,10 +625,14 @@ def main(argv=sys.argv[1:]):
         ## init some raw input key example
         inputkey = 0x000102030405060708090a0b0c0d0e0f
         ## init some input text example
-        plaintext = "Eorum una, pars, quam Gallos obtinere dictum est, initium "\
-            "capit a flumine Rhodano, continetur Garumna flumine, Oceano, " \
-            "finibus Belgarum, attingit etiam ab Sequanis et Helvetiis flumen " \
-            "Rhenum, vergit ad septentriones."
+        plaintext = "E vós, ó bem nascida segurança\n" \
+            "Da Lusitana antiga liberdade,\n" \
+            "E não menos certíssima esperança\n" \
+            "De aumento da pequena Cristandade;\n" \
+            "Vós, ó novo temor da Maura lança,\n" \
+            "Maravilha fatal da nossa idade,\n" \
+            "Dada ao mundo por Deus, que todo o mande,\n" \
+            "Para do mundo a Deus dar parte grande; "
 
     print "initial key:\n%#.32x, key length %d, block size %d\n" % (inputkey, keylength, blocksize)
 

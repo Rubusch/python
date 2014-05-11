@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
+#
 #
 # @author: Lothar Rubusch
 # @email: L.Rubusch@gmx.ch
@@ -616,9 +617,14 @@ def main(argv=sys.argv[1:]):
         ## init some raw input key example
         inputkey = 0x0001020304050607
         ## init some input text example
-        plaintext = "Gallia est omnis divisa in partes tres, quarum unam " \
-            "incolunt Belgae, aliam Aquitani, tertiam qui ipsorum lingua " \
-            "Celtae, nostra Galli appellantur."""
+        plaintext = "As armas e os barões assinalados,\n" \
+            "Que da ocidental praia Lusitana,\n" \
+            "Por mares nunca de antes navegados,\n" \
+            "Passaram ainda além da Taprobana,\n" \
+            "Em perigos e guerras esforçados,\n" \
+            "Mais do que prometia a força humana,\n" \
+            "E entre gente remota edificaram\n" \
+            "Novo Reino, que tanto sublimaram;"
 
     print "initial key:\n%s, key length %d, block size %d\n" % (tostring(inputkey, 16), keylength, blocksize)
 

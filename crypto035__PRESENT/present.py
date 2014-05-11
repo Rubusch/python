@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 #
 # @author: Lothar Rubusch
 # @email: L.Rubusch@gmx.ch
@@ -139,8 +139,10 @@ class Present:
             state = self._sBoxLayer_dec(state)
         state = self._addRoundKey(state, self._roundkeys[0])
 
-        string = "%0*x" % (8,state)
-        ret = string.decode('hex')
+        ## conversion to string, simply prpends '0' in case of smaller blocks
+        data = "%.16x" % (state)
+        ret = data.decode('hex')
+
         return ret
 
 ### main ###
@@ -156,7 +158,14 @@ def main():
     present = Present(inputkey)
 
     ## init some input text
-    plaintext = "Hi omnes lingua, institutis, legibus inter se differunt."
+    plaintext = "E também as memórias gloriosas\n" \
+        "Daqueles Reis, que foram dilatando\n" \
+        "A Fé, o Império, e as terras viciosas\n" \
+        "De África e de Ásia andaram devastando;\n" \
+        "E aqueles, que por obras valerosas\n" \
+        "Se vão da lei da morte libertando;\n" \
+        "Cantando espalharei por toda parte,\n" \
+        "Se a tanto me ajudar o engenho e arte."
     print "plaintext:"
     print "%s\n" % plaintext
 
