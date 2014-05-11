@@ -515,26 +515,28 @@ class AES:
         return state
 
 
-    def decrypt_cbc(self, ciphertext, IV):
+    def decrypt_cbc(self, cipherblocks, IV):
         decryptedtext = ""
         decryptedblock = 0x0
-        for b in reversed(range(len(ciphertext))):
+        decryptedblocks = ['' for i in range(len(cipherblocks))]
+        ## deciphered will be from last to first block - so is only possible
+        ## after having received the last block but then actually it is possible
+        ## to run this also in parallel, since all XOR-patterns, the ciphered
+        ## blocks, are available
+        for b in reversed(range(len(cipherblocks))):
             ## decrypt last block
-            
-# TODO 'ashex' returns a hex string, not a number -> 'asnum=True' which returns the number
-            decryptedblock = self.decrypt(ciphertext[b], ashex=True) # FIXME
+            decryptedblock = self.decrypt(cipherblocks[b], asnum=True)
 
             ## XOR decrypted text block against forelast encrypted block
-            if b > 0: decryptedblock = decryptedblock ^ ciphertext[b-1]
+            if b > 0: decryptedblock = decryptedblock ^ cipherblocks[b-1]
             else: decryptedblock = decryptedblock ^ IV
             ## convert to string
             data = "%x"%decryptedblock
-            decryptedtext += ''.join(chr(int(data[i:i+2], 16)) for i in range(0, len(data), 2))
-        return decryptedtext
+            decryptedblocks[b] = ''.join(chr(int(data[i:i+2], 16)) for i in range(0, len(data), 2))
+        return "".join(decryptedblocks)
 
 
-
-    def decrypt(self, ciphertext, ashex=False, ispadded=False):
+    def decrypt(self, ciphertext, ashex=False, ispadded=False, asnum=False):
         ## params:
         ## ciphertext = the ciphertext as hex number
         ## ashex = shall the output be a hex number, or a string?
@@ -579,6 +581,9 @@ class AES:
                 state = state >>1
             ## cut off padding '1'
             state = state>>1
+
+        ## as number
+        if asnum: return state
 
         ## convert to string
         data = "%x"%state
