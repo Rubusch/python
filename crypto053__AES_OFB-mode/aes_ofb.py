@@ -598,6 +598,7 @@ class AES:
 
 ### main ###
 def main(argv=sys.argv[1:]):
+    die("under construction")                    
 ## to just use it with hex numbers and a single block, the class can be
 ## instrumented the following way
 #    inputkey = 0x2b7e151628aed2a6abf7158809cf4f3c
