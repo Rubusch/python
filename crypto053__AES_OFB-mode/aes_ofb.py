@@ -22,7 +22,33 @@ Ciphertext: 69c4e0d86a7b0430d8cdb78070b4c55a
 
 OFB (output feedback) mode
 
-TODO
+         +------>O   O<-- IV    IV -->O   O<------+
+         |        \                      /        |
+         |         |                    |         |
+         |         V                    V         |
+    +--------+  +-----+              +-----+  +--------+
+    | s[i-1] |  | e() |<--- k  k --->| e() |  | s[i-1] |
+    +--------+  +-----+              +-----+  +--------+
+         A         |                    |         A
+         |         |                    |         |
+         +---------+                    +---------+
+                   |                    |
+                   V                    V
+    x[i] -------> XOR ----> y[i] ----> XOR -----------> x[i]
+
+ * the OFB mode forms a synchronous stream cipher, as the key stream does not
+   depend on the plain or ciphertext.
+   [p. 130; Understanding Cryptography; Paar / Pelzl; Springer 2010]
+ * turns a block cipher into a stream cipher
+ * OFB does not know any explicit decryption process, it XORs the plaintext with
+   the generated encrypted key a first time, which corresponds an encrpytion, and
+   XORs it a second time to the encrypted text, which corresponds then a
+   decryption
+ * OFB has been critizized being limited to the number of key encryptions, after
+   which it will cycle again and start with the first encrypted key
+   [TODO source, Wikipedia? Nist? Paper?]
+ * OFB is nondeterminant, hence, encryptig the same plaintext twice results in different ciphertexts
+   [p. 131; Understanding Cryptography; Paar / Pelzel; Springer 2010]
 
 sources
 http://en.wikipedia.org/wiki/Block_cipher_modes_of_operation
@@ -434,6 +460,12 @@ class AES:
     ## public interface
 
     def encrypt_ofb(self, plaintext, blocksize, IV):
+        ## this asking for blocksize is bogus here, though, it is left on purpose
+        ## to stress the point that AES has always 128bit block size!
+        if 128 != blocksize: die("AES is defined for only 128bit blocksize")
+
+
+
         die ("STOP")  
 #        ## this asking for blocksize is bogus here, though, it is left on purpose
 #        ## to stress the point that AES has always 128bit block size!
@@ -514,7 +546,7 @@ class AES:
         return state
 
 
-    def decrypt_ofb(self, cipherblocks, IV):
+    def decrypt_ofb(self, cipherblocks, blocksize, IV):
 #
 #        decryptedtext = ""
 #        decryptedblock = 0x0
@@ -650,7 +682,7 @@ def main(argv=sys.argv[1:]):
 
     ## blocks
     IV = 0x0
-# TODO
+# TODO test a "valid" initiation vector
     ciphertext = aes_encrypter.encrypt_ofb(plaintext, blocksize, IV)   
 
     ## print result
@@ -660,13 +692,11 @@ def main(argv=sys.argv[1:]):
     print "\n"
 
     ## init the algorithm
-# TODO apply this to AES-simple, as AES-ECB, too    
-# TODO make isnum standard also in AES-simple, and AES-ECB...   
     aes_decrypter = AES(inputkey, keylength)
 
     ## decrypt
 # TODO
-    decryptedtext = aes_decrypter.decrypt_ofb(ciphertext, IV)   
+    decryptedtext = aes_decrypter.decrypt_ofb(ciphertext, blocksize, IV)   
 
     ## print result
     print "decrypted:"
