@@ -536,10 +536,10 @@ class AES:
         return "".join(decryptedblocks)
 
 
-    def decrypt(self, ciphertext, ashex=False, ispadded=False, asnum=False):
+    def decrypt(self, ciphertext, asnum=False, ispadded=False):
         ## params:
         ## ciphertext = the ciphertext as hex number
-        ## ashex = shall the output be a hex number, or a string?
+        ## asnum = return the integer representation
         ## ispadded = is ciphertext, or does it contain a padding block?
 
         state = ciphertext
@@ -587,11 +587,6 @@ class AES:
 
         ## convert to string
         data = "%x"%state
-        if ashex:
-            ## append trailing zeros, for string encoding, the string is reduced
-            ## to the significant digits implicitely
-            while len(data) < 32: data += "0"
-            return data
         return ''.join(chr(int(data[i:i+2], 16)) for i in range(0, len(data), 2))
 
 

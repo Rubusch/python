@@ -519,12 +519,12 @@ class AES:
         return state
 
 
-    def decrypt_ecb(self, ciphertext):
+    def decrypt_ecb(self, ciphertext, blocksize):
         decryptedtext = ""
         for block in ciphertext:
             if block == ciphertext[-1]:
                 ## checkout hex result (w/o string decoding)
-                DBG( "hex: 0x%s"%self.decrypt(block, ashex=True, ispadded=True) )
+                DBG( "hex: 0x%s"%tostring(self.decrypt(block, asnum=True, ispadded=True), blocksize) )
                 ## decryption for a padded / padding block
                 decryptedtext += self.decrypt(block, ispadded=True)
             else:
@@ -532,10 +532,10 @@ class AES:
         return decryptedtext
 
 
-    def decrypt(self, ciphertext, ashex=False, ispadded=False):
+    def decrypt(self, ciphertext, asnum=False, ispadded=False):
         ## params:
         ## ciphertext = the ciphertext as hex number
-        ## ashex = shall the output be a hex number, or a string?
+        ## asnum = return the integer representation
         ## ispadded = is ciphertext, or does it contain a padding block?
 
         state = ciphertext
@@ -578,13 +578,11 @@ class AES:
             ## cut off padding '1'
             state = state>>1
 
+        ## as number
+        if asnum: return state
+
         ## convert to string
         data = "%x"%state
-        if ashex:
-            ## append trailing zeros, for string encoding, the string is reduced
-            ## to the significant digits implicitely
-            while len(data) < 32: data += "0"
-            return data
         return ''.join(chr(int(data[i:i+2], 16)) for i in range(0, len(data), 2))
 
 
@@ -661,7 +659,7 @@ def main(argv=sys.argv[1:]):
     aes_decrypter = AES(inputkey, keylength)
 
     ## decrypt
-    decryptedtext = aes_decrypter.decrypt_ecb(ciphertext)
+    decryptedtext = aes_decrypter.decrypt_ecb(ciphertext, blocksize)
 
     ## print result
     print "decrypted:"

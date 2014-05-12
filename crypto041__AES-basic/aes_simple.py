@@ -20,7 +20,7 @@ Plaintext:  00112233445566778899aabbccddeeff
 Ciphertext: 69c4e0d86a7b0430d8cdb78070b4c55a
 
 AES
-TODO published in paper ???
+TODO published in which paper ???
 """
 
 
@@ -428,6 +428,19 @@ class AES:
 
     ## public interface
 
+    def encrypt_basic(self, plaintext, blocksize):
+        ## just blocking, but still no padding or the like applied here
+        ciphertext = []
+        blocktext = ""
+        for idx in range(len(plaintext)-1):
+            blocktext += plaintext[idx]
+            if (idx+1) % (blocksize/8) == 0:
+                ciphertext.append(self.encrypt(blocktext))
+                blocktext = ""
+        blocktext += plaintext[idx+1]
+        ciphertext.append(self.encrypt(blocktext))
+        return ciphertext
+
     def encrypt(self, plaintext, ishex=False):
         ## params
         ## plaintext = the plaintext as string or as hex number
@@ -473,10 +486,19 @@ class AES:
         return state
 
 
-    def decrypt(self, ciphertext, ashex=False):
+    def decrypt_basic(self, ciphertext, blocksize):
+        decryptedtext = ""
+        for block in ciphertext:
+            decryptedtext += self.decrypt(block)
+            ## checkout hex result (w/o string decoding)
+            DBG( "hex: 0x%s"%tostring(self.decrypt(block, asnum=True), blocksize) )
+        return decryptedtext
+
+
+    def decrypt(self, ciphertext, asnum=False):
         ## params:
         ## ciphertext = the ciphertext as hex number
-        ## ashex = shall the output be a hex number, or a string?
+        ## asnum = return the integer representation
 
         state = ciphertext
 
@@ -512,13 +534,11 @@ class AES:
         DBG( "\nfinal result: %s\n"%tostring(state, 128))
         print ""
 
+        ## as number
+        if asnum: return state
+
         ## convert to string
         data = "%x"%state
-        if ashex:
-            ## append trailing zeros, for string encoding, the string is reduced
-            ## to the significant digits implicitely
-            while len(data) < 32: data += "0"
-            return data
         return ''.join(chr(int(data[i:i+2], 16)) for i in range(0, len(data), 2))
 
 
@@ -571,18 +591,10 @@ def main(argv=sys.argv[1:]):
     print "%s\n" % plaintext
 
     ## init the algorithm
-    aes = AES(inputkey, keylength)
+    aes_encrypter = AES(inputkey, keylength)
 
-    ## blocks
-    ciphertext = []
-    blocktext = ""
-    for idx in range(len(plaintext)-1):
-        blocktext += plaintext[idx]
-        if (idx+1) % (blocksize/8) == 0:
-            ciphertext.append(aes.encrypt(blocktext))
-            blocktext = ""
-    blocktext += plaintext[idx+1]
-    ciphertext.append(aes.encrypt(blocktext))
+    ## encrypt plaintext
+    ciphertext = aes_encrypter.encrypt_basic(plaintext, blocksize)
 
     ## print result
     print "encrypted:"
@@ -590,12 +602,11 @@ def main(argv=sys.argv[1:]):
         print "%s"%tostring(item, blocksize)
     print "\n"
 
+    ## init the algorithm
+    aes_decrypter = AES(inputkey, keylength)
+
     ## decrypt
-    decryptedtext = ""
-    for block in ciphertext:
-        decryptedtext += aes.decrypt(block)
-        ## checkout hex result (w/o string decoding)
-        DBG( "hex: 0x%s"%aes.decrypt(block, ashex=True) )
+    decryptedtext = aes_decrypter.decrypt_basic(ciphertext, blocksize)
 
     ## print result
     print "decrypted:"
