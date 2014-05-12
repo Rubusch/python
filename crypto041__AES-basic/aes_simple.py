@@ -547,7 +547,11 @@ def main(argv=sys.argv[1:]):
             inputkey = int(argv[1],16)
             plaintext = argv[2]
         except:
-            die('usage: either w/o arguments, or as follows\n$ %s <keylength> <inputkey> "<plaintext>"\ne.g.\n$ %s %d %s "%s"'%(sys.argv[0],sys.argv[0],128,"0x000102030405060708090a0b0c0d0e0f","from Disco to Disco.."))
+            die('usage: either w/o arguments, or as follows\n$ %s <keylength> ' \
+                    '<inputkey> "<plaintext>"\ne.g.\n$ %s %d %s "%s"' \
+                    %(sys.argv[0],sys.argv[0],128, \
+                          "0x000102030405060708090a0b0c0d0e0f", \
+                          "As Lusíadas"))
     else:
         ## init some raw input key example
         inputkey = 0x000102030405060708090a0b0c0d0e0f

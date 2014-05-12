@@ -625,7 +625,7 @@ def main(argv=sys.argv[1:]):
                     '<inputkey> "<plaintext>"\ne.g.\n$ %s %d %s "%s"' \
                     %(sys.argv[0],sys.argv[0],128, \
                           "0x000102030405060708090a0b0c0d0e0f", \
-                          "De Bello Gallico"))
+                          "As Lusíadas"))
     else:
         ## init some raw input key example
         inputkey = 0x000102030405060708090a0b0c0d0e0f
