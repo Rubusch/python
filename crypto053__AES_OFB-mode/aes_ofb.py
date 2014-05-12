@@ -466,7 +466,7 @@ class AES:
 
 
 
-        die ("STOP")  
+        die ("encrypt_ofb - TODO")  
 #        ## this asking for blocksize is bogus here, though, it is left on purpose
 #        ## to stress the point that AES has always 128bit block size!
 #        if 128 != blocksize: die("AES is defined for only 128bit blocksize")
