@@ -464,9 +464,36 @@ class AES:
         ## to stress the point that AES has always 128bit block size!
         if 128 != blocksize: die("AES is defined for only 128bit blocksize")
 
-        
+        ## blocking
+        size = len(plaintext) * 8
+        nblocks = size / blocksize
+        blockbytes = blocksize / 8
+        ciphertext = []
+        curr_block = 0x0 
 
-        die ("encrypt_ofb - TODO")  
+        for b in range(nblocks+1):
+            ## convert textblock into hex
+            textblock = plaintext[(b*blockbytes):(b*blockbytes+blockbytes)]
+            if 0 == len(textblock): break
+            hexblock = int(textblock.encode('hex'),16) & 0xffffffffffffffffffffffffffffffff
+
+            ## get last block or IV for the first
+            if 0 == b: last_block = IV
+#            else: last_block = ciphertext[b-1]   
+            else: last_block = curr_block
+
+            ## XOR next plaintext block against last ciphered text block
+#            inputblock = hexblock ^ last_block   
+            curr_block = self.encrypt(last_block, ishex=True)
+
+            ## encrypt
+#            ciphertext.append(self.encrypt(inputblock, ishex=True))
+            ciphertext.append(hexblock ^ curr_block)  
+
+        return ciphertext
+
+
+# TODO rm   
 #        ## this asking for blocksize is bogus here, though, it is left on purpose
 #        ## to stress the point that AES has always 128bit block size!
 #        if 128 != blocksize: die("AES is defined for only 128bit blocksize")
@@ -491,7 +518,7 @@ class AES:
 #            ## encrypt
 #            ciphertext.append(self.encrypt(inputblock, ishex=True))
 #        return ciphertext
-        pass   
+
 
 
     def encrypt(self, plaintext, ishex=False, npaddingbits=0):
@@ -690,6 +717,8 @@ def main(argv=sys.argv[1:]):
     for item in ciphertext:
         print "%s"%tostring(item, 128)
     print "\n"
+
+    die("STOP")   
 
     ## init the algorithm
     aes_decrypter = AES(inputkey, keylength)
