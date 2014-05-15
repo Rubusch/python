@@ -20,46 +20,23 @@ Plaintext:  00112233445566778899aabbccddeeff
 Ciphertext: 69c4e0d86a7b0430d8cdb78070b4c55a
 
 
-CTR (counter) mode
+CFB (cipher feedback) mode
 
-TODO correct image        
+       IV--->O   O<------+             +------>O   O<---IV
+                /        |             |          /
+               |         |             |         |
+               V         |             |         V
+            +-----+  +--------+   +--------+  +-----+
+      k --->| e() |  | y[i-1] |   | y[i-1] |  | e() |
+            +-----+  +--------+   +--------+  +-----+
+               |         A             A         |
+               |         |             |         |
+               V         |             |         V
+    x[i] ---> XOR -------+---> y[i] ---+------> XOR ---> x[i]
 
-        +--------+  +--------+  +--------+        +--------+
-        | IV + 1 |  | IV + 2 |  | IV + 3 | ...    | IV + i |
-        +--------+  +--------+  +--------+        +--------+
-             |           |           |                 |
-             V           V           V                 V
-          +-----+     +-----+     +-----+           +-----+
-       k->| e() |  k->| e() |  k->| e() |  ...   k->| e() |
-          +-----+     +-----+     +-----+           +-----+
-             |           |           |                 |
-             V           V           V                 V
-      x[1]->XOR   x[2]->XOR   x[3]->XOR    ...  x[i]->XOR
-             |           |           |                 |
-             V           V           V                 V
-            y[1]        y[2]        y[3]              y[i]
-
- - as in OFB and CFB modes, the key stream is computed in a blockwise fashion;
-   the input to the block cipher is a counter which assumes a different value
-   every time the block cipher computes a new key stream block
- - encryption and decryption in CTR can be parallelized
- - the IV will be less than block size, e.g. with a blocksize of 128bit, an IV
-   of 96bit, the counter will take the remaining 32bit
- - CTR mode actually only uses the encrypt function, and encrypts/decrypts by
-   XORing the result
- - the CTR cycles only after huge amount of data; in the above case the numer of
-   blocks we can encrypt without choosing a new IV is 2^32; since every block
-   consists of 8 bytes, a maximum of 8 * 2^32 = 2^35 bytes, or about 32
-   Gigabytes can be encrypted before a new IV must be generated.
-
-   formally this means:
-   Let e() be a block cipher of block size b, and let x[i] and y[i] be bit
-   strings of length b. The concatenation of the initialization value IV and the
-   counter CTR[i] is denoted by (IV||CTR[i]) and is a bit string of length b.
-
-   encryption: y[i] = e[k](IV||CTR[i]) XOR x[i]   ; i >= 1
-   decryption: x[i] = e[k](IV||CTR[i]) XOR y[i]   ; i >= 1
-   [p. 132; Understanding Cryptography; Paar / Pelzel; Springer 2010]
+TODO theory / points              
+TODO check resource               
+   [p. 131; Understanding Cryptography; Paar / Pelzel; Springer 2010]  
 
 sources
 http://en.wikipedia.org/wiki/Block_cipher_modes_of_operation
@@ -470,7 +447,8 @@ class AES:
 
     ## public interface
 
-    def encrypt_ctr(self, plaintext, blocksize, IV):
+    def encrypt_cfb_variant(self, plaintext, blocksize, IV):
+        die("TODO implement encryption")                      
         ## params:
         ## plaintext = the plaintext as string
         ## blocksize = the blocksize of the algorithm
@@ -484,47 +462,20 @@ class AES:
         nblocks = size / blocksize
         blockbytes = blocksize / 8
         cipherblocks = []
-        input_block = 0x0
         curr_block = 0x0
-        for counter in range(nblocks+1):
+        for b in range(nblocks+1):
             ## convert textblock into hex
-            textblock = plaintext[(counter*blockbytes):(counter*blockbytes+blockbytes)]
+            textblock = plaintext[(b*blockbytes):(b*blockbytes+blockbytes)]
             if 0 == len(textblock): break
             hexblock = int(textblock.encode('hex'),16) & 0xffffffffffffffffffffffffffffffff
-
             ## get last block or IV for the first
-            input_block = IV + counter
-
+            if 0 == b: last_block = IV
+            else: last_block = cipherblocks[b-1]
             ## XOR next plaintext block against last ciphered text block
-            curr_block = self.encrypt(input_block, ishex=True)
-
+            curr_block = self.encrypt(last_block, ishex=True)
             ## encrypt
             cipherblocks.append(hexblock ^ curr_block)
-#        die("TODO implement encryption")   
         return cipherblocks
-
-#        ## asking for blocksize is bogus here, though, it is left on purpose
-#        ## to stress the point that AES has always 128bit block size!
-#        if 128 != blocksize: die("AES is defined for only 128bit blocksize")
-#        ## blocking
-#        size = len(plaintext) * 8
-#        nblocks = size / blocksize
-#        blockbytes = blocksize / 8
-#        cipherblocks = []
-#        curr_block = 0x0
-#        for b in range(nblocks+1):
-#            ## convert textblock into hex
-#            textblock = plaintext[(b*blockbytes):(b*blockbytes+blockbytes)]
-#            if 0 == len(textblock): break
-#            hexblock = int(textblock.encode('hex'),16) & 0xffffffffffffffffffffffffffffffff
-#            ## get last block or IV for the first
-#            if 0 == b: last_block = IV
-#            else: last_block = cipherblocks[b-1]
-#            ## XOR next plaintext block against last ciphered text block
-#            curr_block = self.encrypt(last_block, ishex=True)
-#            ## encrypt
-#            cipherblocks.append(hexblock ^ curr_block)
-#        return cipherblocks
 
 
     def encrypt(self, plaintext, ishex=False, npaddingbits=0):
@@ -579,29 +530,28 @@ class AES:
         return state
 
 
-    def decrypt_ctr(self, cipherblocks, blocksize, IV):
+    def decrypt_cfb_variant(self, cipherblocks, blocksize, IV):
+        die("TODO implement decryption")                   
         ## params:
         ## plaintext = the plaintext as string
         ## blocksize = the blocksize of the algorithm
         ## IV = the initiation vector, size 128 bit
-        die("TODO implement decryption")
-
-#        decryptedtext = ""
-#        last_block = 0x0
-#        curr_block = 0x0
-#        ## AES-OFB turns the block cipher AES into a stream cipher
-#        ## it also actually only needs the encrypt function
-#        for b in range(len(cipherblocks)):
-#            if b == 0: last_block = IV
-#            else: last_block = cipherblocks[b-1]
-#            ## decrypt last block
-#            curr_block = self.encrypt(last_block, ishex=True)
-#            ## XOR decrypted text block against forelast encrypted block
-#            decryptedblock = cipherblocks[b] ^ curr_block
-#            ## convert to string
-#            data = "%x"%decryptedblock
-#            decryptedtext += ''.join(chr(int(data[i:i+2], 16)) for i in range(0, len(data), 2))
-#        return decryptedtext
+        decryptedtext = ""
+        last_block = 0x0
+        curr_block = 0x0
+        ## AES-OFB turns the block cipher AES into a stream cipher
+        ## it also actually only needs the encrypt function
+        for b in range(len(cipherblocks)):
+            if b == 0: last_block = IV
+            else: last_block = cipherblocks[b-1]
+            ## decrypt last block
+            curr_block = self.encrypt(last_block, ishex=True)
+            ## XOR decrypted text block against forelast encrypted block
+            decryptedblock = cipherblocks[b] ^ curr_block
+            ## convert to string
+            data = "%x"%decryptedblock
+            decryptedtext += ''.join(chr(int(data[i:i+2], 16)) for i in range(0, len(data), 2))
+        return decryptedtext
 
 
     def decrypt(self, ciphertext, ashex=False, ispadded=False, asnum=False):
@@ -698,14 +648,14 @@ def main(argv=sys.argv[1:]):
         ## init some raw input key example
         inputkey = 0x000102030405060708090a0b0c0d0e0f
         ## init some input text example
-        plaintext = "Vereis amor da pátria, não movido\n" \
-            "De prémio vil, mas alto e quase eterno:\n" \
-            "Que não é prémio vil ser conhecido\n" \
-            "Por um pregão do ninho meu paterno.\n" \
-            "Ouvi: vereis o nome engrandecido\n" \
-            "Daqueles de quem sois senhor superno,\n" \
-            "E julgareis qual é mais excelente,\n" \
-            "Se ser do mundo Rei, se de tal gente."
+        plaintext = "Por estes vos darei um Nuno fero,\n" \
+            "Que fez ao Rei o ao Reino tal serviço,\n" \
+            "Um Egas, e um D. Fuas, que de Homero\n" \
+            "A cítara para eles só cobiço.\n" \
+            "Pois pelos doze Pares dar-vos quero\n" \
+            "Os doze de Inglaterra, e o seu Magriço;\n" \
+            "Dou-vos também aquele ilustre Gama,\n" \
+            "Que para si de Eneias toma a fama."
 
     print "initial key:\n%#.32x, key length %d, block size %d\n" % (inputkey, keylength, blocksize)
 
@@ -717,7 +667,7 @@ def main(argv=sys.argv[1:]):
 
     ## blocks
     IV = 0x00112233445566778899aabbccddeeff
-    ciphertext = aes_encrypter.encrypt_ctr(plaintext, blocksize, IV)
+    ciphertext = aes_encrypter.encrypt_cfb_variant(plaintext, blocksize, IV)
 
     ## print result
     print "encrypted:"
@@ -729,7 +679,7 @@ def main(argv=sys.argv[1:]):
     aes_decrypter = AES(inputkey, keylength)
 
     ## decrypt
-    decryptedtext = aes_decrypter.decrypt_ctr(ciphertext, blocksize, IV)
+    decryptedtext = aes_decrypter.decrypt_cfb_variant(ciphertext, blocksize, IV)
 
     ## print result
     print "decrypted:"
