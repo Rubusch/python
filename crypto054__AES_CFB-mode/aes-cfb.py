@@ -36,8 +36,8 @@ TODO check
                V         |             |         V
     x[i] ---> XOR -------+---> y[i] ---+------> XOR --------> x[i]
 
-
-TODO               
+TODO theory / points              
+TODO check resource               
    [p. 131; Understanding Cryptography; Paar / Pelzel; Springer 2010]  
 
 sources
