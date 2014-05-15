@@ -22,19 +22,17 @@ Ciphertext: 69c4e0d86a7b0430d8cdb78070b4c55a
 
 CFB (cipher feedback) mode
 
-TODO check        
-
        IV--->O   O<------+             +------>O   O<---IV
                 /        |             |          /
                |         |             |         |
                V         |             |         V
             +-----+  +--------+   +--------+  +-----+
-      k --->| e() |  | s[i-1] |   | s[i-1] |  | e() |
+      k --->| e() |  | y[i-1] |   | y[i-1] |  | e() |
             +-----+  +--------+   +--------+  +-----+
                |         A             A         |
                |         |             |         |
                V         |             |         V
-    x[i] ---> XOR -------+---> y[i] ---+------> XOR --------> x[i]
+    x[i] ---> XOR -------+---> y[i] ---+------> XOR ---> x[i]
 
 TODO theory / points              
 TODO check resource               

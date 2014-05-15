@@ -24,21 +24,41 @@ CTR (counter) mode
 
 TODO correct image        
 
-       IV--->O   O<------+             +------>O   O<---IV
-                /        |             |          /
-               |         |             |         |
-               V         |             |         V
-            +-----+  +--------+   +--------+  +-----+
-      k --->| e() |  | s[i-1] |   | s[i-1] |  | e() |
-            +-----+  +--------+   +--------+  +-----+
-               |         A             A         |
-               |         |             |         |
-               V         |             |         V
-    x[i] ---> XOR -------+---> y[i] ---+------> XOR --------> x[i]
+        +--------+  +--------+  +--------+        +--------+
+        | IV + 1 |  | IV + 2 |  | IV + 3 | ...    | IV + i |
+        +--------+  +--------+  +--------+        +--------+
+             |           |           |                 |
+             V           V           V                 V
+          +-----+     +-----+     +-----+           +-----+
+       k->| e() |  k->| e() |  k->| e() |  ...   k->| e() |
+          +-----+     +-----+     +-----+           +-----+
+             |           |           |                 |
+             V           V           V                 V
+      x[1]->XOR   x[2]->XOR   x[3]->XOR    ...  x[i]->XOR
+             |           |           |                 |
+             V           V           V                 V
+            y[1]        y[2]        y[3]              y[i]
 
-TODO theory / points              
-TODO check resource               
-   [p. 131; Understanding Cryptography; Paar / Pelzel; Springer 2010]  
+ - as in OFB and CFB modes, the key stream is computed in a blockwise fashion;
+   the input to the block cipher is a counter which assumes a different value
+   every time the block cipher computes a new key stream block
+ - encryption and decryption in CTR can be parallelized
+ - the IV will be less than block size, e.g. with a blocksize of 128bit, an IV
+   of 96bit, the counter will take the remaining 32bit
+
+ - the CTR cycles only after huge amount of data; in the above case the numer of
+   blocks we can encrypt without choosing a new IV is 2^32; since every block
+   consists of 8 bytes, a maximum of 8 * 2^32 = 2^35 bytes, or about 32
+   Gigabytes can be encrypted before a new IV must be generated.
+
+   formally this means:
+   Let e() be a block cipher of block size b, and let x[i] and y[i] be bit
+   strings of length b. The concatenation of the initialization value IV and the
+   counter CTR[i] is denoted by (IV||CTR[i]) and is a bit string of length b.
+
+   encryption: y[i] = e[k](IV||CTR[i]) XOR x[i]   ; i >= 1
+   decryption: x[i] = e[k](IV||CTR[i]) XOR y[i]   ; i >= 1
+   [p. 132; Understanding Cryptography; Paar / Pelzel; Springer 2010]
 
 sources
 http://en.wikipedia.org/wiki/Block_cipher_modes_of_operation
@@ -454,7 +474,29 @@ class AES:
         ## plaintext = the plaintext as string
         ## blocksize = the blocksize of the algorithm
         ## IV = the initiation vector, size 128 bit
+        ## asking for blocksize is bogus here, though, it is left on purpose
+        ## to stress the point that AES has always 128bit block size!
+        if 128 != blocksize: die("AES is defined for only 128bit blocksize")
+        ## blocking
+        size = len(plaintext) * 8
+        nblocks = size / blocksize
+        blockbytes = blocksize / 8
+        cipherblocks = []
+        curr_block = 0x0
+        for counter in range(nblocks+1):
+            ## convert textblock into hex
+            textblock = plaintext[(counter*blockbytes):(counter*blockbytes+blockbytes)]
+            if 0 == len(textblock): break
+            hexblock = int(textblock.encode('hex'),16) & 0xffffffffffffffffffffffffffffffff
+            ## get last block or IV for the first
+            if 0 == counter: last_block = IV
+            else: last_block = cipherblocks[counter-1]
+            ## XOR next plaintext block against last ciphered text block
+            curr_block = self.encrypt(last_block, ishex=True)
+            ## encrypt
+            cipherblocks.append(hexblock ^ curr_block)
         die("TODO implement encryption")   
+        return cipherblocks
 
 #        ## asking for blocksize is bogus here, though, it is left on purpose
 #        ## to stress the point that AES has always 128bit block size!

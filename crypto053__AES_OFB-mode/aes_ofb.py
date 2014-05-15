@@ -22,19 +22,19 @@ Ciphertext: 69c4e0d86a7b0430d8cdb78070b4c55a
 
 OFB (output feedback) mode
 
-         +------>O   O<-- IV    IV -->O   O<------+
-         |        \                      /        |
-         |         |                    |         |
-         |         V                    V         |
-    +--------+  +-----+              +-----+  +--------+
-    | s[i-1] |  | e() |<--- k  k --->| e() |  | s[i-1] |
-    +--------+  +-----+              +-----+  +--------+
-         A         |                    |         A
-         |         |                    |         |
-         +---------+                    +---------+
-                   |                    |
-                   V                    V
-    x[i] -------> XOR ----> y[i] ----> XOR -----------> x[i]
+       IV--->O   O<------+             +------>O   O<---IV
+                /        |             |          /
+               |         |             |         |
+               V         |             |         V
+            +-----+  +--------+   +--------+  +-----+
+      k --->| e() |  | s[i-1] |   | s[i-1] |  | e() |
+            +-----+  +--------+   +--------+  +-----+
+               |         A             A         |
+               |         |             |         |
+               +---------+             +---------+
+               |                                 |
+               V                                 V
+    x[i] ---> XOR -----------> y[i] ----------> XOR ---> x[i]
 
  * the OFB mode forms a synchronous stream cipher, as the key stream does not
    depend on the plain or ciphertext.
@@ -48,7 +48,7 @@ OFB (output feedback) mode
    which it will cycle again and start with the first encrypted key
    [TODO source, Wikipedia? Nist? Paper?]
  * OFB is nondeterminant, hence, encryptig the same plaintext twice results in different ciphertexts
-   [p. 131; Understanding Cryptography; Paar / Pelzel; Springer 2010]
+   [p. 130; Understanding Cryptography; Paar / Pelzel; Springer 2010]
 
 sources
 http://en.wikipedia.org/wiki/Block_cipher_modes_of_operation
