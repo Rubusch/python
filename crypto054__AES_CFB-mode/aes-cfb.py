@@ -532,26 +532,26 @@ class AES:
 
 
     def decrypt_cfb(self, cipherblocks, blocksize, IV):
+        ## params:
+        ## plaintext = the plaintext as string
+        ## blocksize = the blocksize of the algorithm
+        ## IV = the initiation vector, size 128 bit
         decryptedtext = ""
-        die("TODO - implement decryption") 
+        last_block = 0x0
+        curr_block = 0x0
+        ## AES-OFB turns the block cipher AES into a stream cipher
+        ## it also actually only needs the encrypt function
+        for b in range(len(cipherblocks)):
+            if b == 0: last_block = IV
+            else: last_block = cipherblocks[b-1]
+            ## decrypt last block
+            curr_block = self.encrypt(last_block, ishex=True)
+            ## XOR decrypted text block against forelast encrypted block
+            decryptedblock = cipherblocks[b] ^ curr_block
+            ## convert to string
+            data = "%x"%decryptedblock
+            decryptedtext += ''.join(chr(int(data[i:i+2], 16)) for i in range(0, len(data), 2))
         return decryptedtext
-    
-#        decryptedtext = ""
-#        last_block = 0x0
-#        curr_block = 0x0
-#        ## AES-OFB turns the block cipher AES into a stream cipher
-#        ## it also actually only needs the encrypt function
-#        for b in range(len(cipherblocks)):
-#            if b == 0: last_block = IV
-#            else: last_block = curr_block
-#            ## decrypt last block
-#            curr_block = self.encrypt(last_block, ishex=True)
-#            ## XOR decrypted text block against forelast encrypted block
-#            decryptedblock = cipherblocks[b] ^ curr_block
-#            ## convert to string
-#            data = "%x"%decryptedblock
-#            decryptedtext += ''.join(chr(int(data[i:i+2], 16)) for i in range(0, len(data), 2))
-#        return decryptedtext
 
 
     def decrypt(self, ciphertext, ashex=False, ispadded=False, asnum=False):
