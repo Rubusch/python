@@ -460,65 +460,28 @@ class AES:
     ## public interface
 
     def encrypt_ofb(self, plaintext, blocksize, IV):
-        ## this asking for blocksize is bogus here, though, it is left on purpose
+        ## asking for blocksize is bogus here, though, it is left on purpose
         ## to stress the point that AES has always 128bit block size!
         if 128 != blocksize: die("AES is defined for only 128bit blocksize")
-
         ## blocking
         size = len(plaintext) * 8
         nblocks = size / blocksize
         blockbytes = blocksize / 8
         ciphertext = []
-        curr_block = 0x0 
-
+        curr_block = 0x0
         for b in range(nblocks+1):
             ## convert textblock into hex
             textblock = plaintext[(b*blockbytes):(b*blockbytes+blockbytes)]
             if 0 == len(textblock): break
             hexblock = int(textblock.encode('hex'),16) & 0xffffffffffffffffffffffffffffffff
-
             ## get last block or IV for the first
             if 0 == b: last_block = IV
-#            else: last_block = ciphertext[b-1]   
             else: last_block = curr_block
-
             ## XOR next plaintext block against last ciphered text block
-#            inputblock = hexblock ^ last_block   
             curr_block = self.encrypt(last_block, ishex=True)
-
             ## encrypt
-#            ciphertext.append(self.encrypt(inputblock, ishex=True))
-            ciphertext.append(hexblock ^ curr_block)  
-
+            ciphertext.append(hexblock ^ curr_block)
         return ciphertext
-
-
-# TODO rm   
-#        ## this asking for blocksize is bogus here, though, it is left on purpose
-#        ## to stress the point that AES has always 128bit block size!
-#        if 128 != blocksize: die("AES is defined for only 128bit blocksize")
-#
-#        print "IV: %s"%tostring(IV, blocksize)
-#
-#        ## CBC mode
-#        size = len(plaintext) * 8
-#        nblocks = size / blocksize
-#        blockbytes = blocksize / 8
-#        ciphertext = []
-#        for b in range(nblocks+1):
-#            ## convert textblock into hex
-#            textblock = plaintext[(b*blockbytes):(b*blockbytes+blockbytes)]
-#            if 0 == len(textblock): break
-#            hexblock = int(textblock.encode('hex'),16) & 0xffffffffffffffffffffffffffffffff
-#            ## get last block or IV for the first
-#            if 0 == b: last_block = IV
-#            else: last_block = ciphertext[b-1]
-#            ## XOR next plaintext block against last ciphered text block
-#            inputblock = hexblock ^ last_block
-#            ## encrypt
-#            ciphertext.append(self.encrypt(inputblock, ishex=True))
-#        return ciphertext
-
 
 
     def encrypt(self, plaintext, ishex=False, npaddingbits=0):
@@ -574,27 +537,22 @@ class AES:
 
 
     def decrypt_ofb(self, cipherblocks, blocksize, IV):
-        die("STOP - decrypt_ofb")     
-#
-#        decryptedtext = ""
-#        decryptedblock = 0x0
-#        decryptedblocks = ['' for i in range(len(cipherblocks))]
-#        ## deciphered will be from last to first block - so is only possible
-#        ## after having received the last block but then actually it is possible
-#        ## to run this also in parallel, since all XOR-patterns, the ciphered
-#        ## blocks, are available
-#        for b in reversed(range(len(cipherblocks))):
-#            ## decrypt last block
-#            decryptedblock = self.decrypt(cipherblocks[b], asnum=True)
-#
-#            ## XOR decrypted text block against forelast encrypted block
-#            if b > 0: decryptedblock = decryptedblock ^ cipherblocks[b-1]
-#            else: decryptedblock = decryptedblock ^ IV
-#            ## convert to string
-#            data = "%x"%decryptedblock
-#            decryptedblocks[b] = ''.join(chr(int(data[i:i+2], 16)) for i in range(0, len(data), 2))
-#        return "".join(decryptedblocks)
-        pass  
+        decryptedtext = ""
+        last_block = 0x0
+        curr_block = 0x0
+        ## AES-OFB turns the block cipher AES into a stream cipher
+        ## it also actually only needs the encrypt function
+        for b in range(len(cipherblocks)):
+            if b == 0: last_block = IV
+            else: last_block = curr_block
+            ## decrypt last block
+            curr_block = self.encrypt(last_block, ishex=True)
+            ## XOR decrypted text block against forelast encrypted block
+            decryptedblock = cipherblocks[b] ^ curr_block
+            ## convert to string
+            data = "%x"%decryptedblock
+            decryptedtext += ''.join(chr(int(data[i:i+2], 16)) for i in range(0, len(data), 2))
+        return decryptedtext
 
 
     def decrypt(self, ciphertext, ashex=False, ispadded=False, asnum=False):
@@ -709,7 +667,7 @@ def main(argv=sys.argv[1:]):
     aes_encrypter = AES(inputkey, keylength)
 
     ## blocks
-    IV = 0x0
+    IV = 0x00112233445566778899aabbccddeeff
     ciphertext = aes_encrypter.encrypt_ofb(plaintext, blocksize, IV)
 
     ## print result
