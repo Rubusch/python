@@ -430,16 +430,16 @@ class AES:
 
     def encrypt_basic(self, plaintext, blocksize):
         ## just blocking, but still no padding or the like applied here
-        ciphertext = []
+        cipherblocks = []
         blocktext = ""
         for idx in range(len(plaintext)-1):
             blocktext += plaintext[idx]
             if (idx+1) % (blocksize/8) == 0:
-                ciphertext.append(self.encrypt(blocktext))
+                cipherblocks.append(self.encrypt(blocktext))
                 blocktext = ""
         blocktext += plaintext[idx+1]
-        ciphertext.append(self.encrypt(blocktext))
-        return ciphertext
+        cipherblocks.append(self.encrypt(blocktext))
+        return cipherblocks
 
     def encrypt(self, plaintext, ishex=False):
         ## params
