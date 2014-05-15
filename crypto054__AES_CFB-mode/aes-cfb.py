@@ -22,23 +22,23 @@ Ciphertext: 69c4e0d86a7b0430d8cdb78070b4c55a
 
 CFB (cipher feedback) mode
 
-TODO        
-         +------>O   O<-- IV    IV -->O   O<------+
-         |        \                      /        |
-         |         |                    |         |
-         |         V                    V         |
-    +--------+  +-----+              +-----+  +--------+
-    | s[i-1] |  | e() |<--- k  k --->| e() |  | s[i-1] |
-    +--------+  +-----+              +-----+  +--------+
-         A         |                    |         A
-         |         |                    |         |
-         +---------+                    +---------+
-                   |                    |
-                   V                    V
-    x[i] -------> XOR ----> y[i] ----> XOR -----------> x[i]
+TODO check        
+
+       IV--->O   O<------+             +------>O   O<---IV
+                /        |             |          /
+               |         |             |         |
+               V         |             |         V
+            +-----+  +--------+   +--------+  +-----+
+      k --->| e() |  | s[i-1] |   | s[i-1] |  | e() |
+            +-----+  +--------+   +--------+  +-----+
+               |         A             A         |
+               |         |             |         |
+               V         |             |         V
+    x[i] ---> XOR -------+---> y[i] ---+------> XOR --------> x[i]
+
 
 TODO               
-   [p. 131; Understanding Cryptography; Paar / Pelzel; Springer 2010]
+   [p. 131; Understanding Cryptography; Paar / Pelzel; Springer 2010]  
 
 sources
 http://en.wikipedia.org/wiki/Block_cipher_modes_of_operation
@@ -451,7 +451,7 @@ class AES:
 
     def encrypt_cfb(self, plaintext, blocksize, IV):
         ciphertext = []
-        die("TODO implement cfb")  
+        die("TODO implement cfb")   
         return ciphertext
         
 #        ## asking for blocksize is bogus here, though, it is left on purpose
