@@ -647,14 +647,14 @@ def main(argv=sys.argv[1:]):
         ## init some raw input key example
         inputkey = 0x000102030405060708090a0b0c0d0e0f
         ## init some input text example
-        plaintext = "Vós, tenro e novo ramo florescente\n" \
-            "De uma árvore de Cristo mais amada\n" \
-            "Que nenhuma nascida no Ocidente,\n" \
-            "Cesárea ou Cristianíssima chamada;\n" \
-            "(Vede-o no vosso escudo, que presente\n" \
-            "Vos amostra a vitória já passada,\n" \
-            "Na qual vos deu por armas, e deixou\n" \
-            "As que Ele para si na Cruz tomou)"
+        plaintext = "Vós, poderoso Rei, cujo alto Império\n" \
+            "O Sol, logo em nascendo, vê primeiro;\n" \
+            "Vê-o também no meio do Hemisfério,\n" \
+            "E quando desce o deixa derradeiro;\n" \
+            "Vós, que esperamos jugo e vitupério\n" \
+            "Do torpe Ismaelita cavaleiro,\n" \
+            "Do Turco oriental, e do Gentio,\n" \
+            "Que inda bebe o licor do santo rio;"
 
     print "initial key:\n%#.32x, key length %d, block size %d\n" % (inputkey, keylength, blocksize)
 
