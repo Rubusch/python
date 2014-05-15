@@ -64,7 +64,7 @@ sources
 http://en.wikipedia.org/wiki/Block_cipher_modes_of_operation
 http://csrc.nist.gov/groups/ST/toolkit/BCM/index.html
 """
-
+# TODO turn ctr into a stream cipher - loop around the actual blocks, and not passing the whole text!!!               
 import sys
 
 ### tools ###

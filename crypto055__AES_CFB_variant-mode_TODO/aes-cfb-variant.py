@@ -22,6 +22,8 @@ Ciphertext: 69c4e0d86a7b0430d8cdb78070b4c55a
 
 CFB (cipher feedback) mode
 
+TODO adjust diagram               
+
        IV--->O   O<------+             +------>O   O<---IV
                 /        |             |          /
                |         |             |         |
@@ -34,15 +36,28 @@ CFB (cipher feedback) mode
                V         |             |         V
     x[i] ---> XOR -------+---> y[i] ---+------> XOR ---> x[i]
 
-TODO theory / points              
-TODO check resource               
-   [p. 131; Understanding Cryptography; Paar / Pelzel; Springer 2010]  
+ - turns the block cipher AES into a stream cipher
+ - the CFB mode is an example of an asynchronous stream cipher, since the stream
+   cipher output is also a function of the ciphertext
+ - this variant of the CFB mode can be used in situations where short plaintext
+   blocks are to be encrypted, e.g. encryption of a link to a remote keyboard,
+   i.e. only 8 bit of the key stream are used
+
+   theory
+   let e() be a block cipher of block size b; let x[i] and y[i] be bit strings of
+   length b; and IV be a nonce of length b
+
+   encryption (first block): y[1] = e[k](IV) XOR x[1]
+   encryption (general block): y[i] = e[k](IV) XOR x[i]   ; i >= 2
+   decryption (first block): x[1] = e[k](IV) XOR y[1]
+   decryption (general block): y[i] = e[k](IV) XOR y[i]   ; i >= 2
+   [p. 132; Understanding Cryptography; Paar / Pelzel; Springer 2010]
 
 sources
 http://en.wikipedia.org/wiki/Block_cipher_modes_of_operation
 http://csrc.nist.gov/groups/ST/toolkit/BCM/index.html
 """
-
+# TODO turn cfb_variant into a stream cipher - loop around the actual blocks, and not passing the whole text!!!               
 import sys
 
 ### tools ###
@@ -447,12 +462,16 @@ class AES:
 
     ## public interface
 
-    def encrypt_cfb_variant(self, plaintext, blocksize, IV):
+    def encrypt_cfb_variant(self, plaintext, blocksize, IV, subblocksize):
         die("TODO implement encryption")                      
         ## params:
         ## plaintext = the plaintext as string
         ## blocksize = the blocksize of the algorithm
         ## IV = the initiation vector, size 128 bit
+        ## subblocksize = the size of the command to be encrypted, e.g. 8 bit
+
+# TODO generate one key, rotate around the key and stream around the byte index of the specific 
+
 
         ## asking for blocksize is bogus here, though, it is left on purpose
         ## to stress the point that AES has always 128bit block size!
@@ -530,12 +549,13 @@ class AES:
         return state
 
 
-    def decrypt_cfb_variant(self, cipherblocks, blocksize, IV):
+    def decrypt_cfb_variant(self, cipherblocks, blocksize, IV, subblocksize):
         die("TODO implement decryption")                   
         ## params:
         ## plaintext = the plaintext as string
         ## blocksize = the blocksize of the algorithm
         ## IV = the initiation vector, size 128 bit
+        ## subblocksize = the size of the command to be encrypted, e.g. 8 bit
         decryptedtext = ""
         last_block = 0x0
         curr_block = 0x0
@@ -667,7 +687,7 @@ def main(argv=sys.argv[1:]):
 
     ## blocks
     IV = 0x00112233445566778899aabbccddeeff
-    ciphertext = aes_encrypter.encrypt_cfb_variant(plaintext, blocksize, IV)
+    ciphertext = aes_encrypter.encrypt_cfb_variant(plaintext, blocksize, IV, 8)
 
     ## print result
     print "encrypted:"
@@ -679,7 +699,7 @@ def main(argv=sys.argv[1:]):
     aes_decrypter = AES(inputkey, keylength)
 
     ## decrypt
-    decryptedtext = aes_decrypter.decrypt_cfb_variant(ciphertext, blocksize, IV)
+    decryptedtext = aes_decrypter.decrypt_cfb_variant(ciphertext, blocksize, IV, 8)
 
     ## print result
     print "decrypted:"

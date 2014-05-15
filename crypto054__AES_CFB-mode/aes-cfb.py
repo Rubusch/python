@@ -34,14 +34,25 @@ CFB (cipher feedback) mode
                V         |             |         V
     x[i] ---> XOR -------+---> y[i] ---+------> XOR ---> x[i]
 
-TODO theory / points              
-TODO check resource               
-   [p. 131; Understanding Cryptography; Paar / Pelzel; Springer 2010]  
+ - turns the block cipher AES into a stream cipher
+ - the CFB mode is an example of an asynchronous stream cipher, since the stream
+   cipher output is also a function of the ciphertext
+
+   theory
+   let e() be a block cipher of block size b; let x[i] and y[i] be bit strings of
+   length b; and IV be a nonce of length b
+
+   encryption (first block): y[1] = e[k](IV) XOR x[1]
+   encryption (general block): y[i] = e[k](IV) XOR x[i]   ; i >= 2
+   decryption (first block): x[1] = e[k](IV) XOR y[1]
+   decryption (general block): y[i] = e[k](IV) XOR y[i]   ; i >= 2
+   [p. 131; Understanding Cryptography; Paar / Pelzel; Springer 2010]
 
 sources
 http://en.wikipedia.org/wiki/Block_cipher_modes_of_operation
 http://csrc.nist.gov/groups/ST/toolkit/BCM/index.html
 """
+# TODO turn cfb into a stream cipher - loop around the actual blocks, and not passing the whole text!!!               
 
 import sys
 
