@@ -429,6 +429,14 @@ class AES:
     ## public interface
 
     def encrypt_basic(self, plaintext, blocksize):
+        ## params:
+        ## plaintext = the plaintext as string
+        ## blocksize = the blocksize of the algorithm
+
+        ## asking for blocksize is bogus here, though, it is left on purpose
+        ## to stress the point that AES has always 128bit block size!
+        if 128 != blocksize: die("AES is defined for only 128bit blocksize")
+
         ## just blocking, but still no padding or the like applied here
         cipherblocks = []
         blocktext = ""

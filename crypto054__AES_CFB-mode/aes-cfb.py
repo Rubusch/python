@@ -450,6 +450,11 @@ class AES:
     ## public interface
 
     def encrypt_cfb(self, plaintext, blocksize, IV):
+        ## params:
+        ## plaintext = the plaintext as string
+        ## blocksize = the blocksize of the algorithm
+        ## IV = the initiation vector, size 128 bit
+
         ## asking for blocksize is bogus here, though, it is left on purpose
         ## to stress the point that AES has always 128bit block size!
         if 128 != blocksize: die("AES is defined for only 128bit blocksize")
@@ -464,41 +469,14 @@ class AES:
             textblock = plaintext[(b*blockbytes):(b*blockbytes+blockbytes)]
             if 0 == len(textblock): break
             hexblock = int(textblock.encode('hex'),16) & 0xffffffffffffffffffffffffffffffff
-
             ## get last block or IV for the first
             if 0 == b: last_block = IV
             else: last_block = cipherblocks[b-1]
-
             ## XOR next plaintext block against last ciphered text block
             curr_block = self.encrypt(last_block, ishex=True)
-
             ## encrypt
             cipherblocks.append(hexblock ^ curr_block)
-
         return cipherblocks
-        
-#        ## asking for blocksize is bogus here, though, it is left on purpose
-#        ## to stress the point that AES has always 128bit block size!
-#        if 128 != blocksize: die("AES is defined for only 128bit blocksize")
-#        ## blocking
-#        size = len(plaintext) * 8
-#        nblocks = size / blocksize
-#        blockbytes = blocksize / 8
-#        ciphertext = []
-#        curr_block = 0x0
-#        for b in range(nblocks+1):
-#            ## convert textblock into hex
-#            textblock = plaintext[(b*blockbytes):(b*blockbytes+blockbytes)]
-#            if 0 == len(textblock): break
-#            hexblock = int(textblock.encode('hex'),16) & 0xffffffffffffffffffffffffffffffff
-#            ## get last block or IV for the first
-#            if 0 == b: last_block = IV
-#            else: last_block = curr_block
-#            ## XOR next plaintext block against last ciphered text block
-#            curr_block = self.encrypt(last_block, ishex=True)
-#            ## encrypt
-#            ciphertext.append(hexblock ^ curr_block)
-#        return ciphertext
 
 
     def encrypt(self, plaintext, ishex=False, npaddingbits=0):

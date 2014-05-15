@@ -444,7 +444,12 @@ class AES:
     ## public interface
 
     def encrypt_ecb(self, plaintext, blocksize):
-        ## this asking for blocksize is bogus here, though, it is left on purpose
+        ## params:
+        ## plaintext = the plaintext as string
+        ## blocksize = the blocksize of the algorithm
+        ## IV = the initiation vector, size 128 bit
+
+        ## asking for blocksize is bogus here, though, it is left on purpose
         ## to stress the point that AES has always 128bit block size!
         if 128 != blocksize: die("AES is defined for only 128bit blocksize")
 
