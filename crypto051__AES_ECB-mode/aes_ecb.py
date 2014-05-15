@@ -525,6 +525,9 @@ class AES:
 
 
     def decrypt_ecb(self, ciphertext, blocksize):
+        ## params:
+        ## plaintext = the plaintext as string
+        ## blocksize = the blocksize of the algorithm
         decryptedtext = ""
         for block in ciphertext:
             if block == ciphertext[-1]:

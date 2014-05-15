@@ -495,6 +495,9 @@ class AES:
 
 
     def decrypt_basic(self, ciphertext, blocksize):
+        ## params:
+        ## plaintext = the plaintext as string
+        ## blocksize = the blocksize of the algorithm
         decryptedtext = ""
         for block in ciphertext:
             decryptedtext += self.decrypt(block)

@@ -542,6 +542,10 @@ class AES:
 
 
     def decrypt_ofb(self, cipherblocks, blocksize, IV):
+        ## params:
+        ## plaintext = the plaintext as string
+        ## blocksize = the blocksize of the algorithm
+        ## IV = the initiation vector, size 128 bit
         decryptedtext = ""
         last_block = 0x0
         curr_block = 0x0

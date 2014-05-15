@@ -520,7 +520,11 @@ class AES:
         return state
 
 
-    def decrypt_cbc(self, cipherblocks, IV):
+    def decrypt_cbc(self, cipherblocks, blocksize, IV):
+        ## params:
+        ## plaintext = the plaintext as string
+        ## blocksize = the blocksize of the algorithm
+        ## IV = the initiation vector, size 128 bit
         decryptedtext = ""
         decryptedblock = 0x0
         decryptedblocks = ['' for i in range(len(cipherblocks))]
@@ -661,7 +665,7 @@ def main(argv=sys.argv[1:]):
     aes_decrypter = AES(inputkey, keylength)
 
     ## decrypt
-    decryptedtext = aes_decrypter.decrypt_cbc(ciphertext, IV)
+    decryptedtext = aes_decrypter.decrypt_cbc(ciphertext, blocksize, IV)
 
     ## print result
     print "decrypted:"
