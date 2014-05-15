@@ -22,8 +22,6 @@ Ciphertext: 69c4e0d86a7b0430d8cdb78070b4c55a
 
 CTR (counter) mode
 
-TODO correct image        
-
         +--------+  +--------+  +--------+        +--------+
         | IV + 1 |  | IV + 2 |  | IV + 3 | ...    | IV + i |
         +--------+  +--------+  +--------+        +--------+
@@ -43,6 +41,7 @@ TODO correct image
    the input to the block cipher is a counter which assumes a different value
    every time the block cipher computes a new key stream block
  - encryption and decryption in CTR can be parallelized
+ - encryption and decryption are essentially the same function due to XOR
  - the IV will be less than block size, e.g. with a blocksize of 128bit, an IV
    of 96bit, the counter will take the remaining 32bit
  - CTR mode actually only uses the encrypt function, and encrypts/decrypts by
@@ -500,31 +499,7 @@ class AES:
 
             ## encrypt
             cipherblocks.append(hexblock ^ curr_block)
-#        die("TODO implement encryption")   
         return cipherblocks
-
-#        ## asking for blocksize is bogus here, though, it is left on purpose
-#        ## to stress the point that AES has always 128bit block size!
-#        if 128 != blocksize: die("AES is defined for only 128bit blocksize")
-#        ## blocking
-#        size = len(plaintext) * 8
-#        nblocks = size / blocksize
-#        blockbytes = blocksize / 8
-#        cipherblocks = []
-#        curr_block = 0x0
-#        for b in range(nblocks+1):
-#            ## convert textblock into hex
-#            textblock = plaintext[(b*blockbytes):(b*blockbytes+blockbytes)]
-#            if 0 == len(textblock): break
-#            hexblock = int(textblock.encode('hex'),16) & 0xffffffffffffffffffffffffffffffff
-#            ## get last block or IV for the first
-#            if 0 == b: last_block = IV
-#            else: last_block = cipherblocks[b-1]
-#            ## XOR next plaintext block against last ciphered text block
-#            curr_block = self.encrypt(last_block, ishex=True)
-#            ## encrypt
-#            cipherblocks.append(hexblock ^ curr_block)
-#        return cipherblocks
 
 
     def encrypt(self, plaintext, ishex=False, npaddingbits=0):
@@ -584,24 +559,21 @@ class AES:
         ## plaintext = the plaintext as string
         ## blocksize = the blocksize of the algorithm
         ## IV = the initiation vector, size 128 bit
-        die("TODO implement decryption")
-
-#        decryptedtext = ""
-#        last_block = 0x0
-#        curr_block = 0x0
-#        ## AES-OFB turns the block cipher AES into a stream cipher
-#        ## it also actually only needs the encrypt function
-#        for b in range(len(cipherblocks)):
-#            if b == 0: last_block = IV
-#            else: last_block = cipherblocks[b-1]
-#            ## decrypt last block
-#            curr_block = self.encrypt(last_block, ishex=True)
-#            ## XOR decrypted text block against forelast encrypted block
-#            decryptedblock = cipherblocks[b] ^ curr_block
-#            ## convert to string
-#            data = "%x"%decryptedblock
-#            decryptedtext += ''.join(chr(int(data[i:i+2], 16)) for i in range(0, len(data), 2))
-#        return decryptedtext
+        decryptedtext = ""
+        input_block = 0x0
+        curr_block = 0x0
+        ## AES-OFB turns the block cipher AES into a stream cipher
+        ## it also actually only needs the encrypt function
+        for counter in range(len(cipherblocks)):
+            input_block = IV + counter
+            ## decrypt last block
+            curr_block = self.encrypt(input_block, ishex=True)
+            ## XOR decrypted text block against forelast encrypted block
+            decryptedblock = cipherblocks[counter] ^ curr_block
+            ## convert to string
+            data = "%x"%decryptedblock
+            decryptedtext += ''.join(chr(int(data[i:i+2], 16)) for i in range(0, len(data), 2))
+        return decryptedtext
 
 
     def decrypt(self, ciphertext, ashex=False, ispadded=False, asnum=False):
