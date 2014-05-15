@@ -574,6 +574,7 @@ class AES:
 
 
     def decrypt_ofb(self, cipherblocks, blocksize, IV):
+        die("STOP - decrypt_ofb")     
 #
 #        decryptedtext = ""
 #        decryptedblock = 0x0
@@ -709,16 +710,13 @@ def main(argv=sys.argv[1:]):
 
     ## blocks
     IV = 0x0
-# TODO test a "valid" initiation vector
-    ciphertext = aes_encrypter.encrypt_ofb(plaintext, blocksize, IV)   
+    ciphertext = aes_encrypter.encrypt_ofb(plaintext, blocksize, IV)
 
     ## print result
     print "encrypted:"
     for item in ciphertext:
         print "%s"%tostring(item, 128)
     print "\n"
-
-    die("STOP")   
 
     ## init the algorithm
     aes_decrypter = AES(inputkey, keylength)
