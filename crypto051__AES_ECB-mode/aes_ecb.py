@@ -453,19 +453,19 @@ class AES:
         rest = size % blocksize
         nblocks = size / blocksize
         blockbytes = blocksize / 8
-        ciphertext = []
+        cipherblocks = []
         for b in range(nblocks):
-            ciphertext.append(self.encrypt(plaintext[(b*blockbytes):(b*blockbytes+blockbytes)]))
+            cipherblocks.append(self.encrypt(plaintext[(b*blockbytes):(b*blockbytes+blockbytes)]))
         padding = 1 <<(blocksize-1)
         if 0 == rest:
             ## plaintext size is a multiple of blocksize
             padding = 1 <<(blocksize-1)
-            ciphertext.append(self.encrypt(padding))
+            cipherblocks.append(self.encrypt(padding))
         else:
             ## last block is partly padded, since it's not a multiple of blocksize
             text = plaintext[((nblocks)*blockbytes):]
-            ciphertext.append(self.encrypt(text, npaddingbits = (blocksize-rest)))
-        return ciphertext
+            cipherblocks.append(self.encrypt(text, npaddingbits = (blocksize-rest)))
+        return cipherblocks
 
     def encrypt(self, plaintext, ishex=False, npaddingbits=0):
         ## params

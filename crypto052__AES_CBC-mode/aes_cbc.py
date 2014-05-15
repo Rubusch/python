@@ -447,7 +447,7 @@ class AES:
         size = len(plaintext) * 8
         nblocks = size / blocksize
         blockbytes = blocksize / 8
-        ciphertext = []
+        cipherblocks = []
         for b in range(nblocks+1):
             ## convert textblock into hex
             textblock = plaintext[(b*blockbytes):(b*blockbytes+blockbytes)]
@@ -455,12 +455,12 @@ class AES:
             hexblock = int(textblock.encode('hex'),16) & 0xffffffffffffffffffffffffffffffff
             ## get last block or IV for the first
             if 0 == b: last_block = IV
-            else: last_block = ciphertext[b-1]
+            else: last_block = cipherblocks[b-1]
             ## XOR next plaintext block against last ciphered text block
             inputblock = hexblock ^ last_block
             ## encrypt
-            ciphertext.append(self.encrypt(inputblock, ishex=True))
-        return ciphertext
+            cipherblocks.append(self.encrypt(inputblock, ishex=True))
+        return cipherblocks
 
 
     def encrypt(self, plaintext, ishex=False, npaddingbits=0):
