@@ -680,8 +680,7 @@ def main(argv=sys.argv[1:]):
     aes_decrypter = AES(inputkey, keylength)
 
     ## decrypt
-# TODO
-    decryptedtext = aes_decrypter.decrypt_ofb(ciphertext, blocksize, IV)   
+    decryptedtext = aes_decrypter.decrypt_ofb(ciphertext, blocksize, IV)
 
     ## print result
     print "decrypted:"
