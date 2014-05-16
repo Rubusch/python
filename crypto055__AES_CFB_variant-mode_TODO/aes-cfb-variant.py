@@ -483,55 +483,38 @@ class AES:
         aesblocksize = 128
         
         size = len(plaintext) * 8
-#        nblocks = size / aesblocksize  
-        nblocks = size / blocksize  
-
-#        blockbytes = aesblocksize / 8  
+        nblocks = size / blocksize
         blockbytes = blocksize / 8
-
         cipherblocks = []
-        keyblock = 0x0
-        sub_keyblock = 0x0
+        encryptblock = 0x0
+        sub_encryptblock = 0x0
         hexblock = 0x0
         sub_hexblock = 0x0
-# TODO make input 8bit long
+        last_encryptblock = IV
         for b in range(nblocks+1):
             ## convert textblock into hex
-#            textblock = plaintext[(b*blockbytes):(b*blockbytes+blockbytes)]
             textblock = plaintext[(b*blockbytes):(b*blockbytes+blockbytes)]
-
-            print textblock
-            die("STOP") 
-
             if 0 == len(textblock): break
-#            hexblock = int(textblock.encode('hex'),16) & 0xffffffffffffffffffffffffffffffff   
             hexblock = self._cutlastbits(int(textblock.encode('hex'),16), blocksize)
-# TODO apply this function in other algorithms...
+# TODO apply this function in other algorithms...   
 
-            ## get last block or IV for the first
-            if 0 == b: last_block = IV
+            ## the encryptblock was consumed..
+            ## every full aesblocksizes, fetch a new encrypting block
+            if 0 == ((b*blocksize) % aesblocksize):
+                encryptblock = self.encrypt(last_encryptblock, ishex=True)
+                last_encryptblock = 0x0
 
-            ## XOR next plaintext block against last ciphered text block
-            keyblock = self.encrypt(last_block, ishex=True)
+            ## cycle around cutting out blocksize pieces of the encrypting block
+            sub_encryptblock = self._cutlastbits((encryptblock >>((b*blocksize) % (aesblocksize/blocksize) ) ), blocksize)
 
-            ## encrypt
-            ## reset last_block
-            last_block = 0x0
+            ## encrypt blocksize text blocks with pieces of the encrypt blocks,
+            ## also at size of blocksize
+            ciphered = hexblock ^ sub_encryptblock
+            cipherblocks.append( ciphered )
 
-            ## cycle over the subblocksize bits in the keyblock
-#            for sb in range(blocksize / subblocksize):    
-            for sb in range(aesblocksize/blocksize):
-#                sub_hexblock = hexblock >>(sb*subblocksize) & 0xff
-#                sub_keyblock = keyblock >>(sb*subblocksize) & 0xff
-                sub_hexblock = hexblock >>(sb*blocksize) & 0xff
-                sub_keyblock = keyblock >>(sb*blocksize) & 0xff
-
-                ## now an smaller size can be sent, and then decrypted directly (stream)
-                ciphered = sub_hexblock ^ sub_keyblock
-                cipherblocks.append( ciphered )
-
-                ## build last_block up the input for the next encryption
-                last_block = self._append(last_block, ciphered, nbytes=(blocksize/8))
+            ## build up last_encryptblock as input for the next encryption
+            ## when the encrypt block is consumed
+            last_encryptblock = self._append(last_encryptblock, ciphered, nbytes=(blocksize/8))
         return cipherblocks
 
 
