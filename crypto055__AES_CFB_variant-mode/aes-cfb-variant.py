@@ -488,9 +488,8 @@ class AES:
         cipherblocks = []
         encryptblock = 0x0
         sub_encryptblock = 0x0
-        hexblock = 0x0
-        sub_hexblock = 0x0
         last_encryptblock = IV
+        hexblock = 0x0
         for b in range(nblocks+1):
             ## convert textblock into hex
             textblock = plaintext[(b*blockbytes):(b*blockbytes+blockbytes)]
@@ -570,28 +569,35 @@ class AES:
         return state
 
 
-    def decrypt_cfb_variant(self, cipherblocks, blocksize, IV, subblocksize):
-        die("TODO implement decryption")                   
+    def decrypt_cfb_variant(self, cipherblocks, blocksize, IV):
         ## params:
         ## plaintext = the plaintext as string
         ## blocksize = the blocksize of the algorithm
         ## IV = the initiation vector, size 128 bit
-        ## subblocksize = the size of the command to be encrypted, e.g. 8 bit
+        aesblocksize = 128
         decryptedtext = ""
-        last_block = 0x0
-        curr_block = 0x0
+        encryptblock = 0x0
+        sub_encryptblock = 0x0
+        last_encryptblock = IV
         ## AES-OFB turns the block cipher AES into a stream cipher
         ## it also actually only needs the encrypt function
         for b in range(len(cipherblocks)):
-            if b == 0: last_block = IV
-            else: last_block = cipherblocks[b-1]
-            ## decrypt last block
-            curr_block = self.encrypt(last_block, ishex=True)
+            if 0 == ((b*blocksize) % (aesblocksize)):
+                encryptblock = self.encrypt(last_encryptblock, ishex=True)
+                last_encryptblock = 0x0
+
             ## XOR decrypted text block against forelast encrypted block
-            decryptedblock = cipherblocks[b] ^ curr_block
+            sub_encryptblock = self._cutlastbits((encryptblock >>((b*blocksize) % (aesblocksize/blocksize) ) ), blocksize)
+            decryptedblock = cipherblocks[b] ^ sub_encryptblock
+
+            ## build up last_encryptblock as input for the next encryption
+            ## when the encrypt block is consumed
+            last_encryptblock = self._append(last_encryptblock, cipherblocks[b], nbytes=(blocksize/8))
+
             ## convert to string
             data = "%x"%decryptedblock
             decryptedtext += ''.join(chr(int(data[i:i+2], 16)) for i in range(0, len(data), 2))
+
         return decryptedtext
 
 
@@ -667,11 +673,9 @@ def main(argv=sys.argv[1:]):
 #    print "ciphered: %s"%tostring( ciphertext, 128)
 #    die("STOP")
 
-    ## AES has fixed block size of 128 bit
-#TODO rm
-#    blocksize = 128   
-    blocksize = 8   
-# TODO change blocksize to 8bit
+    ## AES has fixed block size of 128 bit, though here we use 8bit stream
+    ## cipher size for AES-CFB (variant)
+    blocksize = 8
     inputkey = 0x0
     plaintext = ""
     keylength = 128
@@ -723,7 +727,7 @@ def main(argv=sys.argv[1:]):
     aes_decrypter = AES(inputkey, keylength)
 
     ## decrypt
-    decryptedtext = aes_decrypter.decrypt_cfb_variant(ciphertext, blocksize, IV, 8)
+    decryptedtext = aes_decrypter.decrypt_cfb_variant(ciphertext, blocksize, IV)
 
     ## print result
     print "decrypted:"
