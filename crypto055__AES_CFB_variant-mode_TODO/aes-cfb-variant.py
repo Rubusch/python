@@ -34,6 +34,11 @@ TODO adjust diagram
                |         A             A         |
                |         |             |         |
                V         |             |         V
+        +-----------+ +--------+  +--------+ +-----------+
+        | s[0...15] | | y[i]   |  | y[i]   | | s[0...15] |
+        +-----------+ |[0...15]|  |[0...15]| +-----------+
+               |      +--------+  +--------+     |
+               V         |             |         V
     x[i] ---> XOR -------+---> y[i] ---+------> XOR ---> x[i]
 
  - turns the block cipher AES into a stream cipher
@@ -92,7 +97,7 @@ def tostring(val, nbits):
 
 class AES:
     def __init__(self, inputkey, keylength):
-        ## blocksize
+        ## blocksize in AES is always 128
         self._blocksize = 128
 
         ## S-box
@@ -245,7 +250,13 @@ class AES:
         ## hexlst = a hex value, which serves as list of byte values
         ## val = a value e.g. as hex number to be appended
         ## nbytes = the number of bytes to be appended, the size of val
-        return ((hexlst << (8*nbytes))|val)
+        return ((hexlst <<(8*nbytes)) | val)
+
+    def _cutlastbits(self, hexlst, nbits):
+        mask = 0x0
+        for i in range(nbits):
+            mask = mask <<1 | 0x1
+        return hexlst & mask
 
     ## methods
     def _key_schedule(self, password, keylength):
@@ -462,38 +473,65 @@ class AES:
 
     ## public interface
 
-    def encrypt_cfb_variant(self, plaintext, blocksize, IV, subblocksize):
-        die("TODO implement encryption")                      
+    def encrypt_cfb_variant(self, plaintext, blocksize, IV):
         ## params:
         ## plaintext = the plaintext as string
-        ## blocksize = the blocksize of the algorithm
+        ## blocksize = the blocksize of the algorithm, here e.g. 8 bit
         ## IV = the initiation vector, size 128 bit
-        ## subblocksize = the size of the command to be encrypted, e.g. 8 bit
 
-# TODO generate one key, rotate around the key and stream around the byte index of the specific 
-
-
-        ## asking for blocksize is bogus here, though, it is left on purpose
-        ## to stress the point that AES has always 128bit block size!
-        if 128 != blocksize: die("AES is defined for only 128bit blocksize")
         ## blocking
+        aesblocksize = 128
+        
         size = len(plaintext) * 8
-        nblocks = size / blocksize
+#        nblocks = size / aesblocksize  
+        nblocks = size / blocksize  
+
+#        blockbytes = aesblocksize / 8  
         blockbytes = blocksize / 8
+
         cipherblocks = []
-        curr_block = 0x0
+        keyblock = 0x0
+        sub_keyblock = 0x0
+        hexblock = 0x0
+        sub_hexblock = 0x0
+# TODO make input 8bit long
         for b in range(nblocks+1):
             ## convert textblock into hex
+#            textblock = plaintext[(b*blockbytes):(b*blockbytes+blockbytes)]
             textblock = plaintext[(b*blockbytes):(b*blockbytes+blockbytes)]
+
+            print textblock
+            die("STOP") 
+
             if 0 == len(textblock): break
-            hexblock = int(textblock.encode('hex'),16) & 0xffffffffffffffffffffffffffffffff
+#            hexblock = int(textblock.encode('hex'),16) & 0xffffffffffffffffffffffffffffffff   
+            hexblock = self._cutlastbits(int(textblock.encode('hex'),16), blocksize)
+# TODO apply this function in other algorithms...
+
             ## get last block or IV for the first
             if 0 == b: last_block = IV
-            else: last_block = cipherblocks[b-1]
+
             ## XOR next plaintext block against last ciphered text block
-            curr_block = self.encrypt(last_block, ishex=True)
-            ## encrypt - it can be sent, and then decrypted directly (stream)
-            cipherblocks.append(hexblock ^ curr_block)
+            keyblock = self.encrypt(last_block, ishex=True)
+
+            ## encrypt
+            ## reset last_block
+            last_block = 0x0
+
+            ## cycle over the subblocksize bits in the keyblock
+#            for sb in range(blocksize / subblocksize):    
+            for sb in range(aesblocksize/blocksize):
+#                sub_hexblock = hexblock >>(sb*subblocksize) & 0xff
+#                sub_keyblock = keyblock >>(sb*subblocksize) & 0xff
+                sub_hexblock = hexblock >>(sb*blocksize) & 0xff
+                sub_keyblock = keyblock >>(sb*blocksize) & 0xff
+
+                ## now an smaller size can be sent, and then decrypted directly (stream)
+                ciphered = sub_hexblock ^ sub_keyblock
+                cipherblocks.append( ciphered )
+
+                ## build last_block up the input for the next encryption
+                last_block = self._append(last_block, ciphered, nbytes=(blocksize/8))
         return cipherblocks
 
 
@@ -647,7 +685,10 @@ def main(argv=sys.argv[1:]):
 #    die("STOP")
 
     ## AES has fixed block size of 128 bit
-    blocksize = 128
+#TODO rm
+#    blocksize = 128   
+    blocksize = 8   
+# TODO change blocksize to 8bit
     inputkey = 0x0
     plaintext = ""
     keylength = 128
@@ -687,12 +728,12 @@ def main(argv=sys.argv[1:]):
 
     ## blocks
     IV = 0x00112233445566778899aabbccddeeff
-    ciphertext = aes_encrypter.encrypt_cfb_variant(plaintext, blocksize, IV, 8)
+    ciphertext = aes_encrypter.encrypt_cfb_variant(plaintext, blocksize, IV)
 
     ## print result
     print "encrypted:"
     for item in ciphertext:
-        print "%s"%tostring(item, 128)
+        print "%s"%tostring(item, 8)
     print "\n"
 
     ## init the algorithm
