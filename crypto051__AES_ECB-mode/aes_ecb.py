@@ -24,6 +24,13 @@ Ciphertext: 69c4e0d86a7b0430d8cdb78070b4c55a
 ECB mode
 TODO: published in paper???
 
+                 k                    k
+                 |                    |
+                 V                    V
+              +-----+              +------+
+     x[i] --->| e() |---> y[i] --->| e^-1 |---> x[i]
+              +-----+              +------+
+
  * parallelizable
  * deterministic codebook translation
  * records should be smaller than blocksize (128bit), and independent of each
@@ -33,6 +40,12 @@ TODO: published in paper???
  * at looking on the cipherblocks it is possible to discover how often a
    specific plaintext block appeared
  * not recommended
+
+Theory
+let e() be a block cipher of block size b, and let x[i] and y[i] be bit strings of length b
+
+encryption: y[i] = e[k](x[i])   ; i>=1
+decryption: x[i] = e[k]^{-1} (y[i]) = e[k]^{-1}( e[k](x[i]) )   ; i>=1
 
 sources
 http://en.wikipedia.org/wiki/Block_cipher_modes_of_operation

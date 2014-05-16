@@ -64,7 +64,7 @@ sources
 http://en.wikipedia.org/wiki/Block_cipher_modes_of_operation
 http://csrc.nist.gov/groups/ST/toolkit/BCM/index.html
 """
-# TODO turn ctr into a stream cipher - loop around the actual blocks, and not passing the whole text!!!               
+
 import sys
 
 ### tools ###
@@ -490,14 +490,11 @@ class AES:
             textblock = plaintext[(counter*blockbytes):(counter*blockbytes+blockbytes)]
             if 0 == len(textblock): break
             hexblock = int(textblock.encode('hex'),16) & 0xffffffffffffffffffffffffffffffff
-
             ## get last block or IV for the first
             input_block = IV + counter
-
             ## XOR next plaintext block against last ciphered text block
             curr_block = self.encrypt(input_block, ishex=True)
-
-            ## encrypt
+            ## encrypt - it can be sent, and then decrypted directly (stream)
             cipherblocks.append(hexblock ^ curr_block)
         return cipherblocks
 

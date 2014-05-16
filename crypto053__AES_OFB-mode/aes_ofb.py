@@ -54,7 +54,7 @@ sources
 http://en.wikipedia.org/wiki/Block_cipher_modes_of_operation
 http://csrc.nist.gov/groups/ST/toolkit/BCM/index.html
 """
-# TODO turn ofb into a stream cipher - loop around the actual blocks, and not passing the whole text!!!               
+
 import sys
 
 ### tools ###
@@ -484,7 +484,7 @@ class AES:
             else: last_block = curr_block
             ## XOR next plaintext block against last ciphered text block
             curr_block = self.encrypt(last_block, ishex=True)
-            ## encrypt
+            ## encrypt - it can be sent, and then decrypted directly (stream)
             cipherblocks.append(hexblock ^ curr_block)
         return cipherblocks
 
