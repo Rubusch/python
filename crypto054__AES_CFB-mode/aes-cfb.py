@@ -38,17 +38,18 @@ CFB (cipher feedback) mode
  - the CFB mode is an example of an asynchronous stream cipher, since the stream
    cipher output is also a function of the ciphertext
 
-   theory
-   let e() be a block cipher of block size b; let x[i] and y[i] be bit strings of
-   length b; and IV be a nonce of length b
+theory
+let e() be a block cipher of block size b; let x[i] and y[i] be bit strings of
+length b; and IV be a nonce of length b
 
-   encryption (first block): y[1] = e[k](IV) XOR x[1]
-   encryption (general block): y[i] = e[k](IV) XOR x[i]   ; i >= 2
-   decryption (first block): x[1] = e[k](IV) XOR y[1]
-   decryption (general block): y[i] = e[k](IV) XOR y[i]   ; i >= 2
-   [p. 131; Understanding Cryptography; Paar / Pelzel; Springer 2010]
+encryption (first block): y[1] = e[k](IV) XOR x[1]
+encryption (general block): y[i] = e[k](IV) XOR x[i]   ; i >= 2
+decryption (first block): x[1] = e[k](IV) XOR y[1]
+decryption (general block): y[i] = e[k](IV) XOR y[i]   ; i >= 2
+[p. 131; Understanding Cryptography; Paar / Pelzel; Springer 2010]
 
 sources
+TODO: paper???
 http://en.wikipedia.org/wiki/Block_cipher_modes_of_operation
 http://csrc.nist.gov/groups/ST/toolkit/BCM/index.html
 """

@@ -48,15 +48,15 @@ TODO adjust diagram
    blocks are to be encrypted, e.g. encryption of a link to a remote keyboard,
    i.e. only 8 bit of the key stream are used
 
-   theory
-   let e() be a block cipher of block size b; let x[i] and y[i] be bit strings of
-   length b; and IV be a nonce of length b
+theory
+let e() be a block cipher of block size b; let x[i] and y[i] be bit strings of
+length b; and IV be a nonce of length b
 
-   encryption (first block): y[1] = e[k](IV) XOR x[1]
-   encryption (general block): y[i] = e[k](IV) XOR x[i]   ; i >= 2
-   decryption (first block): x[1] = e[k](IV) XOR y[1]
-   decryption (general block): y[i] = e[k](IV) XOR y[i]   ; i >= 2
-   [p. 132; Understanding Cryptography; Paar / Pelzel; Springer 2010]
+encryption (first block): y[1] = e[k](IV) XOR x[1]
+encryption (general block): y[i] = e[k](IV) XOR x[i]   ; i >= 2
+decryption (first block): x[1] = e[k](IV) XOR y[1]
+decryption (general block): y[i] = e[k](IV) XOR y[i]   ; i >= 2
+[p. 132; Understanding Cryptography; Paar / Pelzel; Springer 2010]
 
 sources
 http://en.wikipedia.org/wiki/Block_cipher_modes_of_operation

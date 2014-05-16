@@ -38,7 +38,7 @@ CBC mode
  * decryption parallelizable
  * turns AES into a stream cipher, thus does not need padding
 
-Theory
+theory
 let e() be a block cipher of block size b; let x[i] and y[i] be bit strings of
 length b; and IV be a nonce of length b
 
@@ -48,6 +48,7 @@ decryption (first block): x[1] = e[k]^{-1} (y[1]) XOR IV
 decryption (general block): x[i] = e[k]^{-1} (y[i]) XOR y[i-1]   ; i>=2
 
 sources
+TODO: paper???
 http://en.wikipedia.org/wiki/Block_cipher_modes_of_operation
 http://csrc.nist.gov/groups/ST/toolkit/BCM/index.html
 """

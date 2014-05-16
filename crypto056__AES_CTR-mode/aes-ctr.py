@@ -51,14 +51,14 @@ CTR (counter) mode
    consists of 8 bytes, a maximum of 8 * 2^32 = 2^35 bytes, or about 32
    Gigabytes can be encrypted before a new IV must be generated.
 
-   formally this means:
-   Let e() be a block cipher of block size b, and let x[i] and y[i] be bit
-   strings of length b. The concatenation of the initialization value IV and the
-   counter CTR[i] is denoted by (IV||CTR[i]) and is a bit string of length b.
+theory
+let e() be a block cipher of block size b, and let x[i] and y[i] be bit
+strings of length b. The concatenation of the initialization value IV and the
+counter CTR[i] is denoted by (IV||CTR[i]) and is a bit string of length b.
 
-   encryption: y[i] = e[k](IV||CTR[i]) XOR x[i]   ; i >= 1
-   decryption: x[i] = e[k](IV||CTR[i]) XOR y[i]   ; i >= 1
-   [p. 132; Understanding Cryptography; Paar / Pelzel; Springer 2010]
+encryption: y[i] = e[k](IV||CTR[i]) XOR x[i]   ; i >= 1
+decryption: x[i] = e[k](IV||CTR[i]) XOR y[i]   ; i >= 1
+[p. 132; Understanding Cryptography; Paar / Pelzel; Springer 2010]
 
 sources
 http://en.wikipedia.org/wiki/Block_cipher_modes_of_operation

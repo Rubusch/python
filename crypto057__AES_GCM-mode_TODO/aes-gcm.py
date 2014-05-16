@@ -20,25 +20,60 @@ Plaintext:  00112233445566778899aabbccddeeff
 Ciphertext: 69c4e0d86a7b0430d8cdb78070b4c55a
 
 
-GCM (cipher feedback) mode
+GCM (Basic Galois Counter) mode
 
-       IV--->O   O<------+             +------>O   O<---IV
-                /        |             |          /
-               |         |             |         |
-               V         |             |         V
-            +-----+  +--------+   +--------+  +-----+
-      k --->| e() |  | y[i-1] |   | y[i-1] |  | e() |
-            +-----+  +--------+   +--------+  +-----+
-               |         A             A         |
-               |         |             |         |
-               V         |             |         V
-    x[i] ---> XOR -------+---> y[i] ---+------> XOR ---> x[i]
+   +--------+              +----------+                    +----------+
+   | CTR[0] |---> incr --->| CTR[0]+1 |---> incr ---...--->| CTR[0]+n |
+   +--------+              +----------+                    +----------+
+       |                        |                               |
+       V                        V                               V
+    +------+                +------+                        +------+
+    | e[k] |                | e[k] |                        | e[k] |
+    +------+                +------+                        +------+
+       |                        |                               |
+       |                        V                               V
+       |              x[1] --->XOR                    x[n] --->XOR
+       |                        |                               |
+       |                        V                               V
+       |                    +------+                        +------+
+       |          AAD       | y[1] |                        | y[n] |
+       |           |        +------+                        +------+
+       |           |            |                               |
+       |           V            V                               |
+       |     H --->X --------->XOR                              |
+       |                        | g[1]                          |
+       |                        V                               V
+       |                  H --->X------------------...-------->XOR
+       |                                                        |
+       |                                                        V
+       |                                                  H --->X
+       |                                                        | g[n]
+       |                                                        V
+       +------------------------------------------------------>XOR
+                                                                |
+                                                                V
+                                                                T
 
-TODO theory / points              
-TODO check resource               
-   [p. 131; Understanding Cryptography; Paar / Pelzel; Springer 2010]  
+
+theory
+let e() be a block cipher of block size 128bit; let x be the plaintext consisting
+of the blocks x[1],...,x[n]; and let AAD be the additional authenticated data
+
+1. encryption
+a. derrive a counter value CTR[0] from the IV and compute CTR[1] = CTR[0]+1
+b. compute ciphertext: y[i]=e[k](CTR[i]) XOR x[i]   ; i>=1
+
+2. authentication
+a. genearate authentication subkey H = e[k](0)
+b. compute g[0] = AAD * H                 ; (Galois Field Multiplication)
+c. compute g[i] = (g[i-1] XOR y[i]) * H   ; 1 <= i <= n
+                                          ; (Galois Filed Multiplication)
+d. final authentication tag: T = (g[n] * H) XOR e[k](CTR[0])
+
+[p. 134; Understanding Cryptography; Paar / Pelzel; Springer 2010]
 
 sources
+TODO paper   
 http://en.wikipedia.org/wiki/Block_cipher_modes_of_operation
 http://csrc.nist.gov/groups/ST/toolkit/BCM/index.html
 """

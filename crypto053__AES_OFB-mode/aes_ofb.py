@@ -50,7 +50,17 @@ OFB (output feedback) mode
  * OFB is nondeterminant, hence, encryptig the same plaintext twice results in different ciphertexts
    [p. 130; Understanding Cryptography; Paar / Pelzel; Springer 2010]
 
+theory
+let e() be a block cipher of block size b; let x[i], y[i] and s[i] be bit strings
+of length b; and IV be a nonce of length b
+
+encryption (first block): s[1] = e[k](IV) and y[1] = s[1] XOR x[1]
+encryption (general block): s[i] = e[k](s[i-1]) and y[i] = s[i] XOR x[i]   ; i>=2
+decryption (first block): s[1] = e[k](IV) and x[1] = s[1] XOR y[1]
+decryption (general block): s[i] = e[k](s[i-1]) and x[i] = s[i] XOR y[i]   ; i>=2
+
 sources
+TODO: paper???
 http://en.wikipedia.org/wiki/Block_cipher_modes_of_operation
 http://csrc.nist.gov/groups/ST/toolkit/BCM/index.html
 """

@@ -40,7 +40,7 @@ ECB mode
    specific plaintext block appeared
  * not recommended
 
-Theory
+theory
 let e() be a block cipher of block size b, and let x[i] and y[i] be bit strings of length b
 
 encryption: y[i] = e[k](x[i])   ; i>=1
