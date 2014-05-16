@@ -254,6 +254,17 @@ class AES:
         ## nbytes = the number of bytes to be appended, the size of val
         return ((hexlst << (8*nbytes))|val)
 
+    def _cutlastbits(self, hexlst, nbits):
+        ## cuts and returns the last nbits out of a provided value hexlst
+        ##
+        ## params:
+        ## hexlist = the value
+        ## nbits = number of last bits to cut out and return
+        mask = 0x0
+        for i in range(nbits):
+            mask = mask <<1 | 0x1
+        return hexlst & mask
+
     ## methods
     def _key_schedule(self, password, keylength):
         ## key expansion for AES
@@ -489,7 +500,7 @@ class AES:
             ## convert textblock into hex
             textblock = plaintext[(counter*blockbytes):(counter*blockbytes+blockbytes)]
             if 0 == len(textblock): break
-            hexblock = int(textblock.encode('hex'),16) & 0xffffffffffffffffffffffffffffffff
+            hexblock = self._cutlastbits(int(textblock.encode('hex'),16), blocksize)
             ## get last block or IV for the first
             input_block = IV + counter
             ## XOR next plaintext block against last ciphered text block

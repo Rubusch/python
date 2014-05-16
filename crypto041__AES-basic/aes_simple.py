@@ -213,6 +213,17 @@ class AES:
         ## nbytes = the number of bytes to be appended, the size of val
         return ((hexlst << (8*nbytes))|val)
 
+    def _cutlastbits(self, hexlst, nbits):
+        ## cuts and returns the last nbits out of a provided value hexlst
+        ##
+        ## params:
+        ## hexlist = the value
+        ## nbits = number of last bits to cut out and return
+        mask = 0x0
+        for i in range(nbits):
+            mask = mask <<1 | 0x1
+        return hexlst & mask
+
     ## methods
     def _key_schedule(self, password, keylength):
         ## key expansion for AES
@@ -456,7 +467,7 @@ class AES:
 
         ## init
         if ishex: state = plaintext
-        else: state = int(plaintext.encode('hex'),16) & 0xffffffffffffffffffffffffffffffff
+        else: state = self._cutlastbits(int(plaintext.encode('hex'),16), self._blocksize)
         DBG( "\nENCRYPTION\n\nplaintext: \t%s"%tostring(state, 128))
 
         ## round 0
