@@ -6,9 +6,9 @@
 @author: Lothar Rubusch
 @email: L.Rubusch@gmx.ch
 @license: GPLv3
-@2014-May-04
+@2014-May-19
 
-Extended Euclidean Algorithm
+Extended Euclidean Algorithm (EEA)
 
 an extension to the Euclidean Algorithm, that computes besides the greatest
 common divisor of integers a and b, the coefficients of Bézout's identity
@@ -16,9 +16,13 @@ common divisor of integers a and b, the coefficients of Bézout's identity
     ax + by = gcd(a,b)
 
 
-input: TODO             
-output: TODO            
-initialization: TODO    
+input: positive integers r0 and r1, with r0 > r1
+output: gcd(r0, r1), as well as s and t (the Bézout coefficients), such that
+    gcd(r0, r1) = s*r0 + t*r1
+
+initialization:
+    old_s = 1;   old_t = 0;   old_r = r0
+    s     = 0;   t     = 1;   r     = r1
 
  - a and b are taken as coprime, since x is the modular multiplicative inverse of
    a modulo b, and y is the modular multiplicative inverse of b modulo a
@@ -29,11 +33,11 @@ initialization: TODO
 
 
 algorithm:
-TODO    
-
-
-example:
-TODO    
+    while r != 0:
+        quot = old_r / r
+        (old_r, r) = (r, old_r - quot * r)
+        (old_s, s) = (s, old_s - quot * s)
+        (old_t, t) = (t, old_t - quot * t)
 
 
 source
