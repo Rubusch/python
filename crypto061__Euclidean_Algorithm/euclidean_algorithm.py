@@ -15,7 +15,8 @@ output: gcd(r[0], r[1])   ; greatest common divisor
 initialization: i = 1
 
 
-algorithm:
+algorithm
+
     while r1 != 0:
         print "gcd(%d, %d) = "%(r0,r1)
         tmp = r1
@@ -23,8 +24,15 @@ algorithm:
         r0 = tmp
     return r0
 
-example:
+
+example
+
     gcd(27, 21) = gcd(21, 6) = gcd(6, 3) = gcd(3, 0) = 3
+
+
+source
+
+http://en.wikipedia.org/wiki/Euclidean_algorithm
 """
 
 import sys
