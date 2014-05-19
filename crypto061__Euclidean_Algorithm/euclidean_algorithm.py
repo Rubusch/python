@@ -16,12 +16,12 @@ initialization: i = 1
 
 
 algorithm:
-gcd(r[0], r[1]):
-    do
-        i = i+1
-        r[i] = r[i-1] mod r[i-1]
-    while r[i] != 0
-    return gcd(r[0], r[1]) = r[i-1]
+    gcd(r[0], r[1]):
+        do
+            i = i+1
+            r[i] = r[i-1] mod r[i-1]
+        while r[i] != 0
+        return gcd(r[0], r[1]) = r[i-1]
 
 
 example:
@@ -38,13 +38,14 @@ def die(msg):
 
 
 def gcd(r0, r1):
-    print "gcd(%d, %d)" %(r0,r1)
-    
-    
-    
-    die("STOP")   
-    gcd(r0, r1)
-    
+    ## return the greatest common divisor
+    ## identified by the Euclidean Algorithm
+    while r1 != 0:
+        print "gcd(%d, %d) = "%(r0,r1)
+        tmp = r1
+        r1 = r0 % r1
+        r0 = tmp
+    return r0
 
 ### main ###
 def main(argv=sys.argv[1:]):
@@ -60,8 +61,8 @@ def main(argv=sys.argv[1:]):
 
     if r0 <= r1: die("r0 must be greater than r1")
 
-    # greatest common divisor
-    gcd(r0, r1)
+    ## get the greatest common divisor
+    print "%d"%gcd(r0, r1)
 
 
 ### start ###
