@@ -39,7 +39,11 @@ def die(msg):
 
 def gcd(r0, r1):
     print "gcd(%d, %d)" %(r0,r1)
-# TODO
+    
+    
+    
+    die("STOP")   
+    gcd(r0, r1)
     
 
 ### main ###
