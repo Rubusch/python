@@ -16,16 +16,15 @@ initialization: i = 1
 
 
 algorithm:
-    gcd(r[0], r[1]):
-        do
-            i = i+1
-            r[i] = r[i-1] mod r[i-1]
-        while r[i] != 0
-        return gcd(r[0], r[1]) = r[i-1]
-
+    while r1 != 0:
+        print "gcd(%d, %d) = "%(r0,r1)
+        tmp = r1
+        r1 = r0 % r1
+        r0 = tmp
+    return r0
 
 example:
-gcd(27, 21) = gcd(21, 6) = gcd(6, 3) = gcd(3, 0) = 3
+    gcd(27, 21) = gcd(21, 6) = gcd(6, 3) = gcd(3, 0) = 3
 """
 
 import sys
