@@ -482,18 +482,12 @@ class AES:
             textblock = plaintext[(b*blockbytes):(b*blockbytes+blockbytes)]
             if 0 == len(textblock): break
             hexblock = self._cutlastbits(int(textblock.encode('hex'),16), blocksize)
-
-            
             ## XOR next plaintext block against last ciphered text block
             inputblock = hexblock ^ last_encryptblock
-
             ## encrypt
             cipherblocks.append(self.encrypt(inputblock, ishex=True))
-
             ## second XOR against plaintext
             last_encryptblock = cipherblocks[b] ^ hexblock
-            
-
         return cipherblocks
 
 
