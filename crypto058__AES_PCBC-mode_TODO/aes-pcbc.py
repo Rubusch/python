@@ -562,29 +562,18 @@ class AES:
         ## after having received the last block but then actually it is possible
         ## to run this also in parallel, since all XOR-patterns, the ciphered
         ## blocks, are available
-        for b in reversed(range(len(cipherblocks))):
+        for b in range(len(cipherblocks)):
             ## decrypt last block
             decryptedblock = self.decrypt(cipherblocks[b], asnum=True)
 
-            ## XOR decrypted text block against forelast encrypted block
-#            if b>0: last_encryptblock = cipherblocks[b-1]
-#            else: last_encryptblock = IV # which will be the last block decrypted
-            
-            if b == 0: last_encryptblock = IV # which will be the last block decrypted   
-#            else: last_encryptblock = cipherblocks[b] ^ decryptedblock   
-            
-
-# FIXME     
+            if b == 0: last_encryptblock = IV # which will be the last block decrypted
+            ## XOR out the initial first XOR
             decryptedblock = decryptedblock ^ last_encryptblock
-
-            
-            last_encryptblock = cipherblocks[b] ^ decryptedblock   
-            
-
+            ## propagating cipher-block mode, second XOR
+            last_encryptblock = cipherblocks[b] ^ decryptedblock
             ## convert to string
             data = "%x"%decryptedblock
             decryptedblocks[b] = ''.join(chr(int(data[i:i+2], 16)) for i in range(0, len(data), 2))
-#        die("TODO implement decrypt")     
         return "".join(decryptedblocks)
 
 
