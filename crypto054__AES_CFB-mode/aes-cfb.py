@@ -563,7 +563,7 @@ class AES:
         decryptedtext = ""
         last_block = 0x0
         curr_block = 0x0
-        ## AES-OFB turns the block cipher AES into a stream cipher
+        ## AES-CFB turns the block cipher AES into a stream cipher
         ## it also actually only needs the encrypt function
         for b in range(len(cipherblocks)):
             if b == 0: last_block = IV

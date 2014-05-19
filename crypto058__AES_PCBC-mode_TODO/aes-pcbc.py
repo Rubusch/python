@@ -13,33 +13,30 @@ AES (american encryption standard)
 key lengths of 128 bit, 192 bit or 256 bit
 
 
-AES example
+PCBC - Propagating Cipher-Block Chaining Mode
+
+                  +--------+         +--------+         +--------+
+    IV ---O   O---| y[i-1] |<--XOR<--| x[i-1] |-->XOR-->| x[i-1] |---O   O--- IV
+             /    +--------+    A    +--------+    |    +--------+    \
+            |                   |                  |                   |
+            |                   |                  |                   |
+            V      +-----+      |                  |    +--------+     V
+   x[i] -->XOR---->| e() |------+-----> y[i] ------+--->| e()^-1 |--->XOR--> x[i]
+                   +-----+                              +--------+
+                      A                                     A
+                      |                                     |
+                      k                                     k
+
+ - encryption: parallelizable
+ - decryption: parallelizable
+
+
+AES-PCBC example
 
 Key:        000102030405060708090a0b0c0d0e0f
 Plaintext:  00112233445566778899aabbccddeeff
-Ciphertext:                                 
-# TODO          
+Ciphertext: TODO                            
 
-
-PCBC - Propagating Cipher-Block Chaining Mode
-
-
-
-                   +--------+                        +--------+
-     IV ---O   O---| y[i-1] |<--+               +--->| x[i-1] |---O   O--- IV
-              /    +--------+   |               |    +--------+    \
-             |                  |               |                   |
-             |                  |               |                   |
-             V       +-----+    |               |     +------+      V
-   x[i] --> XOR ---->| e() |----+---> y[i] -----+---->| e^-1 |---->XOR--> x[i]
-                     +-----+                          +------+
-                        A                                A
-                        |                                |
-                        k                                k
-
-TODO theory / points              
-TODO check resource               
-   [p. 131; Understanding Cryptography; Paar / Pelzel; Springer 2010]  
 
 sources
 http://en.wikipedia.org/wiki/Block_cipher_modes_of_operation
@@ -461,8 +458,8 @@ class AES:
 
     ## public interface
 
-    def encrypt_cfb_variant(self, plaintext, blocksize, IV):
-        die("TODO implement encryption")                      
+    def encrypt_pcbc(self, plaintext, blocksize, IV):
+        die("TODO implement encrypt")  
         ## params:
         ## plaintext = the plaintext as string
         ## blocksize = the blocksize of the algorithm
@@ -471,12 +468,14 @@ class AES:
         ## asking for blocksize is bogus here, though, it is left on purpose
         ## to stress the point that AES has always 128bit block size!
         if 128 != blocksize: die("AES is defined for only 128bit blocksize")
-        ## blocking
+
+        print "IV: %s"%tostring(IV, blocksize)
+
+        ## PCBC mode
         size = len(plaintext) * 8
         nblocks = size / blocksize
         blockbytes = blocksize / 8
         cipherblocks = []
-        curr_block = 0x0
         for b in range(nblocks+1):
             ## convert textblock into hex
             textblock = plaintext[(b*blockbytes):(b*blockbytes+blockbytes)]
@@ -486,9 +485,9 @@ class AES:
             if 0 == b: last_block = IV
             else: last_block = cipherblocks[b-1]
             ## XOR next plaintext block against last ciphered text block
-            curr_block = self.encrypt(last_block, ishex=True)
+            inputblock = hexblock ^ last_block
             ## encrypt
-            cipherblocks.append(hexblock ^ curr_block)
+            cipherblocks.append(self.encrypt(inputblock, ishex=True))
         return cipherblocks
 
 
@@ -544,28 +543,29 @@ class AES:
         return state
 
 
-    def decrypt_cfb_variant(self, cipherblocks, blocksize, IV):
-        die("TODO implement decryption")                   
+    def decrypt_pcbc(self, cipherblocks, blocksize, IV):
         ## params:
         ## plaintext = the plaintext as string
         ## blocksize = the blocksize of the algorithm
         ## IV = the initiation vector, size 128 bit
         decryptedtext = ""
-        last_block = 0x0
-        curr_block = 0x0
-        ## AES-OFB turns the block cipher AES into a stream cipher
-        ## it also actually only needs the encrypt function
-        for b in range(len(cipherblocks)):
-            if b == 0: last_block = IV
-            else: last_block = cipherblocks[b-1]
+        decryptedblock = 0x0
+        decryptedblocks = ['' for i in range(len(cipherblocks))]
+        ## deciphered will be from last to first block - so is only possible
+        ## after having received the last block but then actually it is possible
+        ## to run this also in parallel, since all XOR-patterns, the ciphered
+        ## blocks, are available
+        for b in reversed(range(len(cipherblocks))):
             ## decrypt last block
-            curr_block = self.encrypt(last_block, ishex=True)
+            decryptedblock = self.decrypt(cipherblocks[b], asnum=True)
+
             ## XOR decrypted text block against forelast encrypted block
-            decryptedblock = cipherblocks[b] ^ curr_block
+            if b > 0: decryptedblock = decryptedblock ^ cipherblocks[b-1]
+            else: decryptedblock = decryptedblock ^ IV
             ## convert to string
             data = "%x"%decryptedblock
-            decryptedtext += ''.join(chr(int(data[i:i+2], 16)) for i in range(0, len(data), 2))
-        return decryptedtext
+            decryptedblocks[b] = ''.join(chr(int(data[i:i+2], 16)) for i in range(0, len(data), 2))
+        return "".join(decryptedblocks)
 
 
     def decrypt(self, ciphertext, ashex=False, ispadded=False, asnum=False):
@@ -681,7 +681,7 @@ def main(argv=sys.argv[1:]):
 
     ## blocks
     IV = 0x00112233445566778899aabbccddeeff
-    ciphertext = aes_encrypter.encrypt_cfb_variant(plaintext, blocksize, IV)
+    ciphertext = aes_encrypter.encrypt_pcbc(plaintext, blocksize, IV)
 
     ## print result
     print "encrypted:"
@@ -693,7 +693,7 @@ def main(argv=sys.argv[1:]):
     aes_decrypter = AES(inputkey, keylength)
 
     ## decrypt
-    decryptedtext = aes_decrypter.decrypt_cfb_variant(ciphertext, blocksize, IV)
+    decryptedtext = aes_decrypter.decrypt_pcbc(ciphertext, blocksize, IV)
 
     ## print result
     print "decrypted:"
