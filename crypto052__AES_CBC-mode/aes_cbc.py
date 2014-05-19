@@ -561,6 +561,7 @@ class AES:
         decryptedtext = ""
         decryptedblock = 0x0
         decryptedblocks = ['' for i in range(len(cipherblocks))]
+        last_encryptblock = 0x0
         ## deciphered will be from last to first block - so is only possible
         ## after having received the last block but then actually it is possible
         ## to run this also in parallel, since all XOR-patterns, the ciphered
@@ -570,8 +571,10 @@ class AES:
             decryptedblock = self.decrypt(cipherblocks[b], asnum=True)
 
             ## XOR decrypted text block against forelast encrypted block
-            if b > 0: decryptedblock = decryptedblock ^ cipherblocks[b-1]
-            else: decryptedblock = decryptedblock ^ IV
+            if b>0: last_encryptblock = cipherblocks[b-1]
+            else: last_encryptblock = IV # which will be the last block decrypted
+            decryptedblock = decryptedblock ^ last_encryptblock
+
             ## convert to string
             data = "%x"%decryptedblock
             decryptedblocks[b] = ''.join(chr(int(data[i:i+2], 16)) for i in range(0, len(data), 2))
