@@ -27,8 +27,8 @@ PCBC - Propagating Cipher-Block Chaining Mode
                       |                                     |
                       k                                     k
 
- - encryption: parallelizable
- - decryption: parallelizable
+ - encryption: not parallelizable
+ - decryption: not parallelizable
 
 
 AES-PCBC example
@@ -482,12 +482,18 @@ class AES:
             textblock = plaintext[(b*blockbytes):(b*blockbytes+blockbytes)]
             if 0 == len(textblock): break
             hexblock = self._cutlastbits(int(textblock.encode('hex'),16), blocksize)
+
+            
             ## XOR next plaintext block against last ciphered text block
             inputblock = hexblock ^ last_encryptblock
+
             ## encrypt
             cipherblocks.append(self.encrypt(inputblock, ishex=True))
+
             ## second XOR against plaintext
             last_encryptblock = cipherblocks[b] ^ hexblock
+            
+
         return cipherblocks
 
 
@@ -565,14 +571,14 @@ class AES:
 #            else: last_encryptblock = IV # which will be the last block decrypted
             
             if b == 0: last_encryptblock = IV # which will be the last block decrypted   
-            else: last_encryptblock = cipherblocks[b] ^ decryptedblock   
+#            else: last_encryptblock = cipherblocks[b] ^ decryptedblock   
             
 
 # FIXME     
             decryptedblock = decryptedblock ^ last_encryptblock
 
             
-#            last_encryptblock = cipherblocks[b] ^ decryptedblock   
+            last_encryptblock = cipherblocks[b] ^ decryptedblock   
             
 
             ## convert to string
