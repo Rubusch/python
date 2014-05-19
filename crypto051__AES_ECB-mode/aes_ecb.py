@@ -11,17 +11,9 @@
 AES (american encryption standard)
 128-bit block size
 key lengths of 128 bit, 192 bit or 256 bit
-ECB mode
 
 
-AES example
-
-Key:        000102030405060708090a0b0c0d0e0f
-Plaintext:  00112233445566778899aabbccddeeff
-Ciphertext: 69c4e0d86a7b0430d8cdb78070b4c55a
-
-
-ECB mode
+ECB - Electronic Codebook Mode
 
                  k                    k
                  |                    |
@@ -45,6 +37,14 @@ let e() be a block cipher of block size b, and let x[i] and y[i] be bit strings 
 
 encryption: y[i] = e[k](x[i])   ; i>=1
 decryption: x[i] = e[k]^{-1} (y[i]) = e[k]^{-1}( e[k](x[i]) )   ; i>=1
+
+
+AES-ECB example
+
+Key:        000102030405060708090a0b0c0d0e0f
+Plaintext:  00112233445566778899aabbccddeeff
+Ciphertext: 69c4e0d86a7b0430d8cdb78070b4c55a
+
 
 sources
 TODO: paper???

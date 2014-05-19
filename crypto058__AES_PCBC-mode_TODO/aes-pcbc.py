@@ -17,22 +17,25 @@ AES example
 
 Key:        000102030405060708090a0b0c0d0e0f
 Plaintext:  00112233445566778899aabbccddeeff
-Ciphertext: 69c4e0d86a7b0430d8cdb78070b4c55a
+Ciphertext:                                 
+# TODO          
 
 
-CFB (cipher feedback) mode
+PCBC - Propagating Cipher-Block Chaining Mode
 
-       IV--->O   O<------+             +------>O   O<---IV
-                /        |             |          /
-               |         |             |         |
-               V         |             |         V
-            +-----+  +--------+   +--------+  +-----+
-      k --->| e() |  | y[i-1] |   | y[i-1] |  | e() |
-            +-----+  +--------+   +--------+  +-----+
-               |         A             A         |
-               |         |             |         |
-               V         |             |         V
-    x[i] ---> XOR -------+---> y[i] ---+------> XOR ---> x[i]
+
+
+                   +--------+                        +--------+
+     IV ---O   O---| y[i-1] |<--+               +--->| x[i-1] |---O   O--- IV
+              /    +--------+   |               |    +--------+    \
+             |                  |               |                   |
+             |                  |               |                   |
+             V       +-----+    |               |     +------+      V
+   x[i] --> XOR ---->| e() |----+---> y[i] -----+---->| e^-1 |---->XOR--> x[i]
+                     +-----+                          +------+
+                        A                                A
+                        |                                |
+                        k                                k
 
 TODO theory / points              
 TODO check resource               

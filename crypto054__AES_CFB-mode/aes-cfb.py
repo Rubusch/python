@@ -13,14 +13,7 @@ AES (american encryption standard)
 key lengths of 128 bit, 192 bit or 256 bit
 
 
-AES example
-
-Key:        000102030405060708090a0b0c0d0e0f
-Plaintext:  00112233445566778899aabbccddeeff
-Ciphertext: 69c4e0d86a7b0430d8cdb78070b4c55a
-
-
-CFB (cipher feedback) mode
+CFB Cipher Feedback Mode
 
        IV--->O   O<------+             +------>O   O<---IV
                 /        |             |          /
@@ -38,7 +31,9 @@ CFB (cipher feedback) mode
  - the CFB mode is an example of an asynchronous stream cipher, since the stream
    cipher output is also a function of the ciphertext
 
+
 theory
+
 let e() be a block cipher of block size b; let x[i] and y[i] be bit strings of
 length b; and IV be a nonce of length b
 
@@ -48,7 +43,16 @@ decryption (first block): x[1] = e[k](IV) XOR y[1]
 decryption (general block): y[i] = e[k](IV) XOR y[i]   ; i >= 2
 [p. 131; Understanding Cryptography; Paar / Pelzel; Springer 2010]
 
+
+AES-CFB example
+
+Key:        000102030405060708090a0b0c0d0e0f
+Plaintext:  00112233445566778899aabbccddeeff
+Ciphertext: TODO                            
+
+
 sources
+
 TODO: paper???
 http://en.wikipedia.org/wiki/Block_cipher_modes_of_operation
 http://csrc.nist.gov/groups/ST/toolkit/BCM/index.html

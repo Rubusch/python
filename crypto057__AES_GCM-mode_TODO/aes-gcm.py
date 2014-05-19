@@ -13,14 +13,7 @@ AES (american encryption standard)
 key lengths of 128 bit, 192 bit or 256 bit
 
 
-AES example
-
-Key:        000102030405060708090a0b0c0d0e0f
-Plaintext:  00112233445566778899aabbccddeeff
-Ciphertext: 69c4e0d86a7b0430d8cdb78070b4c55a
-
-
-GCM (Basic Galois Counter) mode
+GCM - Basic Galois Counter Mode
 
    +--------+              +----------+                    +----------+
    | CTR[0] |---> incr --->| CTR[0]+1 |---> incr ---...--->| CTR[0]+n |
@@ -56,6 +49,7 @@ GCM (Basic Galois Counter) mode
 
 
 theory
+
 let e() be a block cipher of block size 128bit; let x be the plaintext consisting
 of the blocks x[1],...,x[n]; and let AAD be the additional authenticated data
 
@@ -69,10 +63,18 @@ b. compute g[0] = AAD * H                 ; (Galois Field Multiplication)
 c. compute g[i] = (g[i-1] XOR y[i]) * H   ; 1 <= i <= n
                                           ; (Galois Filed Multiplication)
 d. final authentication tag: T = (g[n] * H) XOR e[k](CTR[0])
-
 [p. 134; Understanding Cryptography; Paar / Pelzel; Springer 2010]
 
+
+AES-GCM example
+
+Key:        000102030405060708090a0b0c0d0e0f
+Plaintext:  00112233445566778899aabbccddeeff
+Ciphertext: TODO                            
+
+
 sources
+
 TODO paper   
 http://en.wikipedia.org/wiki/Block_cipher_modes_of_operation
 http://csrc.nist.gov/groups/ST/toolkit/BCM/index.html

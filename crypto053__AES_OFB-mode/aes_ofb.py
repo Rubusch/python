@@ -13,14 +13,7 @@ AES (american encryption standard)
 key lengths of 128 bit, 192 bit or 256 bit
 
 
-AES example
-
-Key:        000102030405060708090a0b0c0d0e0f
-Plaintext:  00112233445566778899aabbccddeeff
-Ciphertext: 69c4e0d86a7b0430d8cdb78070b4c55a
-
-
-OFB (output feedback) mode
+OFB - Output Feedback Mode
 
        IV--->O   O<------+             +------>O   O<---IV
                 /        |             |          /
@@ -50,7 +43,9 @@ OFB (output feedback) mode
  * OFB is nondeterminant, hence, encryptig the same plaintext twice results in different ciphertexts
    [p. 130; Understanding Cryptography; Paar / Pelzel; Springer 2010]
 
+
 theory
+
 let e() be a block cipher of block size b; let x[i], y[i] and s[i] be bit strings
 of length b; and IV be a nonce of length b
 
@@ -58,6 +53,14 @@ encryption (first block): s[1] = e[k](IV) and y[1] = s[1] XOR x[1]
 encryption (general block): s[i] = e[k](s[i-1]) and y[i] = s[i] XOR x[i]   ; i>=2
 decryption (first block): s[1] = e[k](IV) and x[1] = s[1] XOR y[1]
 decryption (general block): s[i] = e[k](s[i-1]) and x[i] = s[i] XOR y[i]   ; i>=2
+
+
+AES-OFB example
+
+Key:        000102030405060708090a0b0c0d0e0f
+Plaintext:  00112233445566778899aabbccddeeff
+Ciphertext: TODO                            
+
 
 sources
 TODO: paper???

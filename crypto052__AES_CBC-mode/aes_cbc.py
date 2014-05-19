@@ -13,14 +13,7 @@ AES (american encryption standard)
 key lengths of 128 bit, 192 bit or 256 bit
 
 
-AES example
-
-Key:        000102030405060708090a0b0c0d0e0f
-Plaintext:  00112233445566778899aabbccddeeff
-Ciphertext: 69c4e0d86a7b0430d8cdb78070b4c55a
-
-
-CBC mode
+CBC - Cipher-Block Chaining Mode
 
                    +--------+                        +--------+
      IV ---O   O---| y[i-1] |<--+               +--->| x[i-1] |---O   O--- IV
@@ -46,6 +39,14 @@ encryption (first block): y[1] = e[k](x[1] XOR IV)
 encryption (general block): y[i] = e[k](x[i] XOR y[i-1])   ; i>=2
 decryption (first block): x[1] = e[k]^{-1} (y[1]) XOR IV
 decryption (general block): x[i] = e[k]^{-1} (y[i]) XOR y[i-1]   ; i>=2
+
+
+AES-CBC example
+
+Key:        000102030405060708090a0b0c0d0e0f
+Plaintext:  00112233445566778899aabbccddeeff
+Ciphertext: TODO                            
+
 
 sources
 TODO: paper???
