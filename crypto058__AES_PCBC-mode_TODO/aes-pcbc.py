@@ -34,6 +34,7 @@ PCBC - Propagating Cipher-Block Chaining Mode
 AES-PCBC example
 
 Key:        000102030405060708090a0b0c0d0e0f
+IV:         0123456789abcdef0123456789abcdef
 Plaintext:  00112233445566778899aabbccddeeff
 Ciphertext: TODO                            
 
@@ -459,7 +460,6 @@ class AES:
     ## public interface
 
     def encrypt_pcbc(self, plaintext, blocksize, IV):
-        die("TODO implement encrypt")  
         ## params:
         ## plaintext = the plaintext as string
         ## blocksize = the blocksize of the algorithm
@@ -475,19 +475,19 @@ class AES:
         size = len(plaintext) * 8
         nblocks = size / blocksize
         blockbytes = blocksize / 8
+        last_encryptblock = IV
         cipherblocks = []
         for b in range(nblocks+1):
             ## convert textblock into hex
             textblock = plaintext[(b*blockbytes):(b*blockbytes+blockbytes)]
             if 0 == len(textblock): break
             hexblock = self._cutlastbits(int(textblock.encode('hex'),16), blocksize)
-            ## get last block or IV for the first
-            if 0 == b: last_block = IV
-            else: last_block = cipherblocks[b-1]
             ## XOR next plaintext block against last ciphered text block
-            inputblock = hexblock ^ last_block
+            inputblock = hexblock ^ last_encryptblock
             ## encrypt
             cipherblocks.append(self.encrypt(inputblock, ishex=True))
+            ## second XOR against plaintext
+            last_encryptblock = cipherblocks[b] ^ hexblock
         return cipherblocks
 
 
@@ -565,6 +565,7 @@ class AES:
             ## convert to string
             data = "%x"%decryptedblock
             decryptedblocks[b] = ''.join(chr(int(data[i:i+2], 16)) for i in range(0, len(data), 2))
+        die("TODO implement decrypt")     
         return "".join(decryptedblocks)
 
 
@@ -680,7 +681,7 @@ def main(argv=sys.argv[1:]):
     aes_encrypter = AES(inputkey, keylength)
 
     ## blocks
-    IV = 0x00112233445566778899aabbccddeeff
+    IV = 0x0123456789abcdef0123456789abcdef
     ciphertext = aes_encrypter.encrypt_pcbc(plaintext, blocksize, IV)
 
     ## print result

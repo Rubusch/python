@@ -44,6 +44,7 @@ decryption (general block): x[i] = e[k]^{-1} (y[i]) XOR y[i-1]   ; i>=2
 AES-CBC example
 
 Key:        000102030405060708090a0b0c0d0e0f
+IV:         0123456789abcdef0123456789abcdef
 Plaintext:  00112233445566778899aabbccddeeff
 Ciphertext: TODO                            
 
@@ -478,26 +479,25 @@ class AES:
         ## asking for blocksize is bogus here, though, it is left on purpose
         ## to stress the point that AES has always 128bit block size!
         if 128 != blocksize: die("AES is defined for only 128bit blocksize")
-
         print "IV: %s"%tostring(IV, blocksize)
 
         ## CBC mode
         size = len(plaintext) * 8
         nblocks = size / blocksize
         blockbytes = blocksize / 8
+        last_encryptblock = IV
         cipherblocks = []
         for b in range(nblocks+1):
             ## convert textblock into hex
             textblock = plaintext[(b*blockbytes):(b*blockbytes+blockbytes)]
             if 0 == len(textblock): break
             hexblock = self._cutlastbits(int(textblock.encode('hex'),16), blocksize)
-            ## get last block or IV for the first
-            if 0 == b: last_block = IV
-            else: last_block = cipherblocks[b-1]
             ## XOR next plaintext block against last ciphered text block
-            inputblock = hexblock ^ last_block
+            inputblock = hexblock ^ last_encryptblock
             ## encrypt
             cipherblocks.append(self.encrypt(inputblock, ishex=True))
+            ## init for next encryption
+            last_encryptblock = cipherblocks[b]
         return cipherblocks
 
 
@@ -685,7 +685,7 @@ def main(argv=sys.argv[1:]):
     aes_encrypter = AES(inputkey, keylength)
 
     ## blocks
-    IV = 0x0
+    IV = 0x0123456789abcdef0123456789abcdef
     ciphertext = aes_encrypter.encrypt_cbc(plaintext, blocksize, IV)
 
     ## print result

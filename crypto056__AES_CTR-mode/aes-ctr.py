@@ -59,6 +59,7 @@ decryption: x[i] = e[k](IV||CTR[i]) XOR y[i]   ; i >= 1
 AES-CTR example
 
 Key:        000102030405060708090a0b0c0d0e0f
+IV:         0123456789abcdef0123456789abcdef
 Plaintext:  00112233445566778899aabbccddeeff
 Ciphertext: TODO                            
 
@@ -700,7 +701,7 @@ def main(argv=sys.argv[1:]):
     aes_encrypter = AES(inputkey, keylength)
 
     ## blocks
-    IV = 0x00112233445566778899aabbccddeeff
+    IV = 0x0123456789abcdef0123456789abcdef
     ciphertext = aes_encrypter.encrypt_ctr(plaintext, blocksize, IV)
 
     ## print result
