@@ -48,20 +48,9 @@ def main(argv=sys.argv[1:]):
             except:
                 die("usage: %s <arg>\nOR call without arguments"%sys.argv[0])
 
-    ## find prim factors
-    print "factorize(m)"
-    (factors, exponents) = factorize(arg)
-
-    print "\tfactors:\t[%s]"%', '.join(map(str,factors))
-    print "\texponents:\t[%s]"%', '.join(map(str,exponents))
-
-    ## Phi(m)
-    print "\nphi(m) = ",
-    ephi = phi(arg, factors, exponents)
-    print ephi
 
     ## result
-    print "\nZ[%d] contains %d integers, relatively prime to m=%d"%(arg, ephi, arg)
+#    print "\nZ[%d] contains %d integers, relatively prime to m=%d"%(arg, ephi, arg)
 
 
 ### start ###
