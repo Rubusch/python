@@ -15,6 +15,20 @@ common divisor of integers a and b, the coefficients of Bézout's identity
 
     ax + by = gcd(a,b)
 
+the algorihtm helps, when finding the inverse numbers, e.g. when
+    ax + by mod x
+TODO     
+is given; a is a dummy and ax becomes 0 when applying mod(x)
+finally, when a and b are coprime, the gcd(a,b) = 1; which together forms
+    1 mod a = gcd(a, b)
+
+if this is the case, a, and be are coprime; now with
+    ax + by mod x =
+    by mod x = gcd(a, b)
+
+we have a way to compute the inverse to b, which must be y
+
+
 
 input: positive integers r0 and r1, with r0 > r1
 output: gcd(r0, r1), as well as s and t (the Bézout coefficients), such that
