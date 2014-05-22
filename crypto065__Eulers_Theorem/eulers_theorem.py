@@ -84,14 +84,19 @@ def eulers_theorem(arg,ephi,base):
 
 ### main ###
 def main(argv=sys.argv[1:]):
+    die("TODO")
+# TODO check base MUST not be a prime? e.g. what is with arg=5 and base=13, this does not result in 1 mod 13?!    
     arg=5
     base=12
-    if 1 == len(argv):
-        if 0 < len(argv[0]):
+    if 2 == len(argv):
+        if 0 < len(argv[0]) and 0 < len(argv[1]):
             try:
                 arg=int(argv[0])
+                base=int(argv[1])
             except:
                 die("usage: %s <arg> <base>\nOR call without arguments"%sys.argv[0])
+
+    print "arg: %d\nbase: %d\n"%(arg,base)
 
     ## find prim factors
     print "factorize(base)"
