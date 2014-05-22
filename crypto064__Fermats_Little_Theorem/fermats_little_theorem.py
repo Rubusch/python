@@ -21,6 +21,8 @@ One application is the computation of the inverse in a finite field; arithmetic
 in finit fields (i.e. Galois fields) GF(p) is done by modulo p, and hence the
 theorem holds for all integers a which are elements of a finite field GF(p)
 
+On the other side it can prove a number being a prime.
+
 the inverse property is defined by resulting in 1 mod p when multiplying
     a * a^-1 = 1 mod p
 
