@@ -21,6 +21,12 @@ Let m have the following canonical factorization
 where the p[i] are distinct prime numbers and e[i] are positive integers, then
     Phi(m) = Product[i=1; n]( p[i]^{ei} - pi^{ei-1} )
 
+Euler's Phi function gives a fast and easy way of calculating the number of
+coprimes, if the factorization of m is given, i.e. without Euler's Phi functin
+running through all elements and computing the gcd is extremely slow if the
+numbers are large, on the other side without having the factorization, Euler's
+Phi can't be computed
+
 
 example
 
