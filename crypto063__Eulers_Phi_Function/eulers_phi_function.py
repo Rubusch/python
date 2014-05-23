@@ -59,12 +59,14 @@ def die(msg):
 
 
 def factorize(m):
-    ## get factors of m
+    ## for phi(m) generally omit factor '1', since (1^1 - 1^0) == 0
+    print "generally we avoid factor '1'"
     factors = []
     exponents = []
 
+    ## get factors of m (inclusively of m if it is a prime)
     val = m
-    for num in range(2, m):
+    for num in range(2, m+1):
         if 0 == (val % num):
             factors.append(num)
             cnt = 0
@@ -80,7 +82,9 @@ def phi(m, factors, exponents):
     ## compute Phi(m), the number of all integers in Z[m], relatively prime to m
     res = 1
     for idx in range(len(factors)):
+        print "(%d^%d - %d^%d)"%(factors[idx], exponents[idx], factors[idx], (exponents[idx]-1)),
         res *= (factors[idx]**exponents[idx] - factors[idx]**(exponents[idx]-1) )
+    print "="
     return res
 
 
@@ -94,24 +98,26 @@ def main(argv=sys.argv[1:]):
             except:
                 die("usage: %s <arg>\nOR call without arguments"%sys.argv[0])
 
+    ## input values
+    print "arg = %d\n"%(arg)
+
     ## find prim factors
-    print "factorize(m)"
+    print "factorize(arg)"
     (factors, exponents) = factorize(arg)
 
     print "\tfactors:\t[%s]"%', '.join(map(str,factors))
     print "\texponents:\t[%s]"%', '.join(map(str,exponents))
 
     ## Phi(m)
-    print "\nphi(m) = ",
+    print "\nphi(%d) = "%(arg),
     ephi = phi(arg, factors, exponents)
     print ephi
 
     ## result
-    print "\nZ[%d] contains %d integers, relatively prime to m=%d"%(arg, ephi, arg)
+    print "\nZ[%d] contains %d integers that are relatively prime to m=%d"%(arg, ephi, arg)
 
 
 ### start ###
 if __name__ == '__main__':
     main()
 print "READY.\n"
-

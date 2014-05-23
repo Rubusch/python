@@ -66,12 +66,14 @@ def gcd(r0, r1):
 
 
 def factorize(m):
-    ## get factors of m
+    ## for phi(m) generally omit factor '1', since (1^1 - 1^0) == 0
+    print "generally we avoid factor '1'"
     factors = []
     exponents = []
 
+    ## get factors of m (inclusively of m if it is a prime)
     val = m
-    for num in range(2, m):
+    for num in range(2, m+1):
         if 0 == (val % num):
             factors.append(num)
             cnt = 0
@@ -84,8 +86,6 @@ def factorize(m):
 
 
 def phi(m, factors, exponents):
-    die("FIXME: phi()")     
-    
     ## compute Phi(m), the number of all integers in Z[m], relatively prime to m
     res = 1
     for idx in range(len(factors)):
@@ -100,8 +100,6 @@ def eulers_theorem(arg,ephi,base):
 
 ### main ###
 def main(argv=sys.argv[1:]):
-#    die("TODO")
-# TODO check base MUST not be a prime? e.g. what is with arg=5 and base=13, this does not result in 1 mod 13?!    
     arg=5
     base=12
     if 2 == len(argv):
@@ -111,6 +109,8 @@ def main(argv=sys.argv[1:]):
                 base=int(argv[1])
             except:
                 die("usage: %s <arg> <base>\nOR call without arguments"%sys.argv[0])
+
+    if 0 >= base: die("FATAL: base has to be greater than 0")
 
     print "arg: %d\nbase: %d\n"%(arg,base)
 
@@ -127,7 +127,7 @@ def main(argv=sys.argv[1:]):
     print "\texponents:\t[%s]"%', '.join(map(str,exponents))
 
     ## Phi(m)
-    print "\nphi(m) = ",
+    print "\nphi(%d) = "%(base),
     ephi = phi(base, factors, exponents)
     print ephi
 
@@ -138,7 +138,6 @@ def main(argv=sys.argv[1:]):
     ## result
     print "%d mod %d\n"%(eulers, base)
 
-    
     print "RESULT: arg = %d and base = %d are"%(arg, base),
     if 1 != eulers: print "not",
     print "coprime!"
