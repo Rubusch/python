@@ -80,10 +80,13 @@ def main(argv=sys.argv[1:]):
                 die("usage: for finding the inverse of arg, do\n%s <arg> <prime>\nOR call without arguments"%sys.argv[0])
         print "remember that prime must be a prime!!!"
 
+    print "arg = %d, prime = %d\n"%(arg, prime)
+
+    ## get inverse
     invarg = inverse(arg, prime)
 
     ## result
-    print "\nthe inverse of %d in Z[%d] is: %d"%(arg, prime, invarg)
+    print "the inverse of %d in Z[%d] is: %d"%(arg, prime, invarg)
 
     ## prove
     print "\nprove:\n%d * %d = %d mod %d"%(arg, invarg, prove(arg,invarg,prime),prime)

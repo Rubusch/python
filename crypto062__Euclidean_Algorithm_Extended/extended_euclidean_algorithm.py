@@ -69,10 +69,13 @@ def die(msg):
     sys.exit(1)
 
 def extended_gcd(r0, r1):
+    if r0 >= r1: (a,b) = (r0,r1)
+    else: (a,b) = (r1,r0)
+
     print "\tinit"
     s = 0; old_s = 1
     t = 1; old_t = 0
-    r = r1; old_r = r0
+    r = b; old_r = a
 
     print "\told_r = %d,\tr = %d"%(old_r, r)
     print "\told_s = %d,\ts = %d"%(old_s, s)
@@ -109,7 +112,7 @@ def main(argv=sys.argv[1:]):
             except:
                 die("usage: %s <r0> <r1>\nOR call without arguments"%sys.argv[0])
 
-    if r0 <= r1: die("r0 must be greater than r1")
+    print "r0 = %d; r1 = %d\n"%(r0,r1)
 
     ## get the greatest common divisor
     extended_gcd(r0, r1)
