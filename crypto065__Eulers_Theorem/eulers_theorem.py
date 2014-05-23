@@ -52,6 +52,19 @@ def die(msg):
     sys.exit(1)
 
 
+def gcd(r0, r1):
+    ## return the greatest common divisor
+    ## identified by the Euclidean Algorithm
+    if r0 > r1: (a,b) = (r0, r1)
+    else: (a,b) = (r1, r0)
+    while b != 0:
+        print "gcd(%d, %d) = "%(a,b)
+        tmp = b
+        b = a % b
+        a = tmp
+    return a
+
+
 def factorize(m):
     ## get factors of m
     factors = []
@@ -71,6 +84,8 @@ def factorize(m):
 
 
 def phi(m, factors, exponents):
+    die("FIXME: phi()")     
+    
     ## compute Phi(m), the number of all integers in Z[m], relatively prime to m
     res = 1
     for idx in range(len(factors)):
@@ -79,12 +94,13 @@ def phi(m, factors, exponents):
 
 
 def eulers_theorem(arg,ephi,base):
+    print "%d^%d mod %d ="%(arg, ephi, base),
     return (arg**ephi) % base
 
 
 ### main ###
 def main(argv=sys.argv[1:]):
-    die("TODO")
+#    die("TODO")
 # TODO check base MUST not be a prime? e.g. what is with arg=5 and base=13, this does not result in 1 mod 13?!    
     arg=5
     base=12
@@ -97,6 +113,11 @@ def main(argv=sys.argv[1:]):
                 die("usage: %s <arg> <base>\nOR call without arguments"%sys.argv[0])
 
     print "arg: %d\nbase: %d\n"%(arg,base)
+
+    ## check gcd(arg, base) = 1 mode base
+    print "prerequesites: "
+    print "gcd(%d, %d) = %d mod %d"%(arg, base, gcd(arg, base), base)
+    print ""
 
     ## find prim factors
     print "factorize(base)"
@@ -111,12 +132,16 @@ def main(argv=sys.argv[1:]):
     print ephi
 
     print "\nEuler's theorem:",
+    print "%d^%d ="%(arg, ephi),
     eulers = eulers_theorem(arg, ephi, base)
 
     ## result
-    print "%d^%d = %d mod %d"%(arg, ephi, eulers, base)
-    print ""
+    print "%d mod %d\n"%(eulers, base)
 
+    
+    print "RESULT: arg = %d and base = %d are"%(arg, base),
+    if 1 != eulers: print "not",
+    print "coprime!"
 
 ### start ###
 if __name__ == '__main__':
