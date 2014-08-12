@@ -78,7 +78,7 @@ def main(argv=sys.argv[1:]):
                 if 3 == len(argv):
                     if 0 < len(argv[2]): modulo=int(argv[2])
             except:
-                die("usage: %s <r0> <r1>\nOR call without arguments"%sys.argv[0])
+                die("usage: %s <base> <exp>\nOR %s <base> <exp> <modulo>\nOR call without arguments"%sys.argv[0])
 
     ## get the greatest common divisor
     print "%d^%d mod(%d) = %d"%(base, exp, modulo, square_and_multiply(base, exp, modulo))
