@@ -8,6 +8,9 @@
 @license: GPLv3
 @2014-May-20
 
+Fermat's Little Theorem is one way to compute the inverse to a value in a finite field.
+   a^{-1} = a^{p-2} mod p
+
 
 Fermat's Little Theorem
 

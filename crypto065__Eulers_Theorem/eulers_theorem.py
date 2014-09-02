@@ -8,6 +8,10 @@
 @license: GPLv3
 @2014-May-20
 
+Euler's Theorem is one way to compute the inverse of a value in a finite field.
+   a^{-1} = a^{Phi(p)-1} mod p
+
+
 
 Euler's Theorem
 

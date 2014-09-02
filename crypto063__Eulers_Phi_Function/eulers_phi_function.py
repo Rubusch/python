@@ -10,7 +10,7 @@
 
 Euler's Phi Function
 
-The number of integers in Z[m] relatively prime to m is denoted by Phi(m)
+Phi(m) returns the number of integers in Z[m] relatively prime to modulus m.
 
 The theorem answers the question of how many numbers in a set are relatively
 prime to m.
