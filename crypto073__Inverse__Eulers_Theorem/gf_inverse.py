@@ -35,6 +35,7 @@ def die(msg):
     if 0 < len(msg): print msg
     sys.exit(1)
 
+
 def gcd(r0, r1):
     ## return the greatest common divisor
     ## identified by the Euclidean Algorithm
@@ -48,9 +49,37 @@ def gcd(r0, r1):
     return a
 
 
+def factorize(m):
+    ## for phi(m) generally omit factor '1', since (1^1 - 1^0) == 0
+    print "factorize(%d) - generally we avoid factor '1'"%m
+    factors = []
+    exponents = []
+
+    ## get factors of m (inclusively of m if it is a prime)
+    val = m
+    for num in range(2, m+1):
+        if 0 == (val % num):
+            factors.append(num)
+            cnt = 0
+            while 0 == val % num:
+                cnt+=1
+                val = val / num
+            exponents.append(cnt)
+            if num > val: break
+    return (factors, exponents)
+
+
+def phi(m, factors, exponents):
+    ## compute Phi(m), the number of all integers in Z[m], relatively prime to m
+    res = 1
+    for idx in range(len(factors)):
+        res *= (factors[idx]**exponents[idx] - factors[idx]**(exponents[idx]-1) )
+    return res
+
+
 ### main ###
 def main(argv=sys.argv[1:]):
-    print "inverse by Fermat's Little Theorem"
+    print "inverse by Euler's Theorem"
 
     arg=4
     modulus=13
@@ -74,8 +103,18 @@ def main(argv=sys.argv[1:]):
     if gcd(arg, modulus) != 1:
         die("FATAL: inverse only exists if arg and modulus are coprime, %d divides into %d"%(arg, modulus))
 
-    ## compute inverse by Fermat's Little Theorem
-    inv = arg**(modulus-2) % modulus
+    ## find prim factors
+    (factors, exponents) = factorize(modulus)
+    print "factors:\t[%s]"%', '.join(map(str,factors))
+    print "exponents:\t[%s]"%', '.join(map(str,exponents))
+
+    ## Phi(m)
+    print "\nphi(%d) = "%(modulus),
+    ephi = phi(modulus, factors, exponents)
+    print ephi
+
+    ## compute inverse by Euler's Theorem
+    inv = arg**(ephi-1) % modulus
     print "inverse: %d"%inv
 
 
