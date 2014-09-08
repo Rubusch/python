@@ -68,6 +68,7 @@ def main(argv=sys.argv[1:]):
                 die("usage: %s <r0> <r1>\nOR call without arguments"%sys.argv[0])
 
     ## get the greatest common divisor
+    print "What is the gcd( %d, %d )?"%(r0, r1)
     print "%d"%gcd(r0, r1)
 
 

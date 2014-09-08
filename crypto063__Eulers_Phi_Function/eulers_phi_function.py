@@ -99,7 +99,8 @@ def main(argv=sys.argv[1:]):
                 die("usage: %s <arg>\nOR call without arguments"%sys.argv[0])
 
     ## input values
-    print "arg = %d\n"%(arg)
+    print "arg = %d"%(arg)
+    print "How many (co)primes exist in the galois field %d?\n" % arg
 
     ## find prim factors
     print "factorize(arg)"

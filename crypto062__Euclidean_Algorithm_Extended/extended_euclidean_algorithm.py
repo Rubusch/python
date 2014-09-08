@@ -112,7 +112,9 @@ def main(argv=sys.argv[1:]):
             except:
                 die("usage: %s <r0> <r1>\nOR call without arguments"%sys.argv[0])
 
-    print "r0 = %d; r1 = %d\n"%(r0,r1)
+    print "Given: r0 = %d; r1 = %d\n"%(r0,r1)
+    print "What is x and y in\n\t%d*x + %d*y = gcd(%d, %d)"%(r0, r1, r0, r1)
+
 
     ## get the greatest common divisor
     extended_gcd(r0, r1)
