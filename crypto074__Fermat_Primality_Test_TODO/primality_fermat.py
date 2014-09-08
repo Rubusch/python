@@ -44,6 +44,8 @@ def die(msg):
     sys.exit(1)
 
 def square_and_multiply(base, exp, modulus=0):
+    
+# FIXME: all binary results are 1000100000    
     strexp = bin(exp)[2:]
     res = 1
     for char in strexp:
@@ -77,12 +79,16 @@ def main(argv=sys.argv[1:]):
                 die("usage: %s <arg>\nOR call without arguments"%sys.argv[0] )
     if 4 >= arg: die("FATAL: arg must be greater than 4")
 
-    base=random.randrange(2, arg-2) # pick a random number as base
+#    base=random.randrange(2, arg-2) # pick a random number as base
+    
+    arg=545  
+    base=328  
+    
     print "arg = %d, base = %d"%(arg, base)
     print "Is %d a prime number, by Fermat's Primality Test?\n"%arg
 
 # TODO
-    print "FIXME: 545 becomes prime and 561 is identified as no prime..."    
+#    print "FIXME: 545 becomes prime and 561 is identified as no prime..."    
 
     ## compute inverse by Euler's Theorem
     if 1 != square_and_multiply(base, arg-1, arg):

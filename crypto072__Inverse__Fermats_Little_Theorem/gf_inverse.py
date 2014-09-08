@@ -49,6 +49,8 @@ def gcd(r0, r1):
 
 
 def square_and_multiply(base, exp, modulus=0):
+    
+# FIXME: all binary results are 1000100000    
     strexp = bin(exp)[2:]
     res = 1
     for char in strexp:
