@@ -13,9 +13,12 @@ Fermat's Primality Test
     a^{C-1} = 1 mod C
 
 
-Fermat's little theorem holds for all primes:
+Fermat's little theorem holds for all primes. Hence if a number does not fulfill
+Fermat's Little Theorem, it is certainly not a prime.
     a^{prime} = a mod prime
     a^{prime-1} = 1 mod prime   ; as result of multiplying by its inverse
+
+NOTE: The test fails for the rare Carmichael Numbers, e.g. 561
 
 Input
     prime candidate p~ and security parameter s
@@ -29,11 +32,10 @@ Algorithm
         if a^{p~ - 1} != 1 mod p~:
             return "p~ is a composite"
     return "p~ is likely prime"
-
-NOTE: The test fails for the rare Carmichael Numbers, e.g. 561
 """
 
 import sys
+import random
 
 ### tools ###
 
@@ -41,47 +43,52 @@ def die(msg):
     if 0 < len(msg): print msg
     sys.exit(1)
 
+def square_and_multiply(base, exp, modulus=0):
+    strexp = bin(exp)[2:]
+    res = 1
+    for char in strexp:
+        ## debug message
+        print "binary: %s..."%char
+        res = res*res
+        if 0 != modulus: res = res % modulus
+        if char == '1':
+            res = res*base
+            if 0 != modulus: res = res % modulus
+            ## debugging
+            print "\tidentified as '1', res = (res^2)*base = %d"%res
+        else:
+            print "\tidentified as '0': res = (res^2) = %d"%res
+    print ""
+    return res
+
+
 
 ### main ###
 def main(argv=sys.argv[1:]):
     print "Fermat's Primality Test"
 
-    arg=4
-    modulus=13
+    arg=5
     ## get arguments, or set default values
-    if 2 == len(argv):
-        if 0 < len(argv[0]) and 0 < len(argv[1]):
+    if 1 == len(argv):
+        if 0 < len(argv[0]):
             try:
                 arg=int(argv[0])
-                modulus=int(argv[1])
             except:
-                die("usage: %s <arg> <modulus>\nOR call without arguments"%sys.argv[0] )
-    if 1 >= modulus: die("FATAL: modulus must be greater than 0")
+                die("usage: %s <arg>\nOR call without arguments"%sys.argv[0] )
+    if 4 >= arg: die("FATAL: arg must be greater than 4")
 
-    ## apply finite field, sonce argument was outside
-    if modulus <= arg: arg = arg%modulus
+    base=random.randrange(2, arg-2) # pick a random number as base
+    print "arg = %d, base = %d"%(arg, base)
+    print "Is %d a prime number, by Fermat's Primality Test?\n"%arg
 
-    print "arg = %d"%(arg)
-    print "modulus = %d\n"%(modulus)
-
-    ## check divisibility
-    if gcd(arg, modulus) != 1:
-        die("FATAL: inverse only exists if arg and modulus are coprime, %d divides into %d"%(arg, modulus))
-
-    ## find prim factors
-    (factors, exponents) = factorize(modulus)
-    print "factors:\t[%s]"%', '.join(map(str,factors))
-    print "exponents:\t[%s]"%', '.join(map(str,exponents))
-
-    ## Phi(m)
-    print "\nphi(%d) = "%(modulus),
-    ephi = phi(modulus, factors, exponents)
-    print ephi
+# TODO
+    print "FIXME: 545 becomes prime and 561 is identified as no prime..."    
 
     ## compute inverse by Euler's Theorem
-    inv = arg**(ephi-1) % modulus
-    print "inverse: %d"%inv
-
+    if 1 != square_and_multiply(base, arg-1, arg):
+        print "%d is not a prime!"%arg
+    else:
+        print "%d can be a prime!"%arg
 
 
 ### start ###

@@ -15,9 +15,11 @@ common divisor of integers a and b, the coefficients of Bézout's identity
 
     ax + by = gcd(a,b)
 
-the algorihtm helps, when finding the inverse numbers, e.g. when
+the algorihtm helps, when finding solutions for the diophantine equation
+
+when
     ax + by mod x
-TODO     
+
 is given; a is a dummy and ax becomes 0 when applying mod(x)
 finally, when a and b are coprime, the gcd(a,b) = 1; which together forms
     1 mod a = gcd(a, b)

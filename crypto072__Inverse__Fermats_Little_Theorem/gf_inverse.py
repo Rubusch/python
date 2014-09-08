@@ -48,6 +48,25 @@ def gcd(r0, r1):
     return a
 
 
+def square_and_multiply(base, exp, modulus=0):
+    strexp = bin(exp)[2:]
+    res = 1
+    for char in strexp:
+        ## debug message
+        print "binary: %s..."%char
+        res = res*res
+        if 0 != modulus: res = res % modulus
+        if char == '1':
+            res = res*base
+            if 0 != modulus: res = res % modulus
+            ## debugging
+            print "\tidentified as '1', res = (res^2)*base = %d"%res
+        else:
+            print "\tidentified as '0': res = (res^2) = %d"%res
+    print ""
+    return res
+
+
 ### main ###
 def main(argv=sys.argv[1:]):
     print "inverse by Fermat's Little Theorem"
@@ -75,7 +94,8 @@ def main(argv=sys.argv[1:]):
         die("FATAL: inverse only exists if arg and modulus are coprime, %d divides into %d"%(arg, modulus))
 
     ## compute inverse by Fermat's Little Theorem
-    inv = arg**(modulus-2) % modulus
+    #inv = arg**(modulus-2) % modulus # won't work with bigger intermediate results
+    inv = square_and_multiply(arg, modulus-2, modulus)
     print "inverse: %d"%inv
 
 

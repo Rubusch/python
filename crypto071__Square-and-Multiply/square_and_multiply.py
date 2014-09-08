@@ -46,22 +46,22 @@ def die(msg):
     if 0 < len(msg): print msg
     sys.exit(1)
 
-def square_and_multiply(base, exp, modulo=0):
+def square_and_multiply(base, exp, modulus=0):
     strexp = bin(exp)[2:]
     res = 1
     for char in strexp:
         ## debug message
         print "binary: %s..."%char
         res = res*res
-        if 0 != modulo: res = res % modulo
+        if 0 != modulus: res = res % modulus
         if char == '1':
             res = res*base
-            if 0 != modulo: res = res % modulo
+            if 0 != modulus: res = res % modulus
             ## debugging
             print "\tidentified as '1', res = (res^2)*base = %d"%res
         else:
             print "\tidentified as '0': res = (res^2) = %d"%res
-
+    print ""
     return res
 
 
@@ -69,19 +69,20 @@ def square_and_multiply(base, exp, modulo=0):
 def main(argv=sys.argv[1:]):
     base=4
     exp=13
-    modulo=0
+    modulus=0 # equal to the result outside of a finite field
     if 2 <= len(argv):
         if 0 < len(argv[0]) and 0 < len(argv[1]):
             try:
                 base=int(argv[0])
                 exp=int(argv[1])
                 if 3 == len(argv):
-                    if 0 < len(argv[2]): modulo=int(argv[2])
+                    if 0 < len(argv[2]): modulus=int(argv[2])
             except:
-                die("usage: %s <base> <exp>\nOR %s <base> <exp> <modulo>\nOR call without arguments"%sys.argv[0])
+                die("usage: %s <base> <exp>\nOR %s <base> <exp> <modulus>\nOR call without arguments"%sys.argv[0])
 
     ## get the greatest common divisor
-    print "%d^%d mod(%d) = %d"%(base, exp, modulo, square_and_multiply(base, exp, modulo))
+    print "What is the result of %d^%d mod %d?\n"%(base, exp, modulus)
+    print "%d^%d mod(%d) = %d"%(base, exp, modulus, square_and_multiply(base, exp, modulus))
 
 
 ### start ###

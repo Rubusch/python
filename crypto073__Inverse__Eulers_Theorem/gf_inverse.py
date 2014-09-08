@@ -77,6 +77,25 @@ def phi(m, factors, exponents):
     return res
 
 
+def square_and_multiply(base, exp, modulus=0):
+    strexp = bin(exp)[2:]
+    res = 1
+    for char in strexp:
+        ## debug message
+        print "binary: %s..."%char
+        res = res*res
+        if 0 != modulus: res = res % modulus
+        if char == '1':
+            res = res*base
+            if 0 != modulus: res = res % modulus
+            ## debugging
+            print "\tidentified as '1', res = (res^2)*base = %d"%res
+        else:
+            print "\tidentified as '0': res = (res^2) = %d"%res
+    print ""
+    return res
+
+
 ### main ###
 def main(argv=sys.argv[1:]):
     print "inverse by Euler's Theorem"
@@ -93,7 +112,7 @@ def main(argv=sys.argv[1:]):
                 die("usage: %s <arg> <modulus>\nOR call without arguments"%sys.argv[0] )
     if 1 >= modulus: die("FATAL: modulus must be greater than 0")
 
-    ## apply finite field, sonce argument was outside
+    ## apply finite field
     if modulus <= arg: arg = arg%modulus
 
     print "arg = %d"%(arg)
@@ -114,7 +133,8 @@ def main(argv=sys.argv[1:]):
     print ephi
 
     ## compute inverse by Euler's Theorem
-    inv = arg**(ephi-1) % modulus
+    # inv = arg**(ephi-1) % modulus # won't work with bigger intermediate results
+    inv = square_and_multiply(arg, ephi-1, modulus)
     print "inverse: %d"%inv
 
 
