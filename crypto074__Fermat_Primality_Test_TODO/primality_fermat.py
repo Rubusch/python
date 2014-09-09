@@ -45,8 +45,13 @@ def die(msg):
 
 def square_and_multiply(base, exp, modulus=0):
     
-# FIXME: all binary results are 1000100000    
+# FIXME 328^544 mod 545 = 1
+    print "AAA\n%s base\n%s exp\n%s modulus"%(str(base), str(exp), str(modulus))    
+    print "AAA\n%s base\n%s exp\n%s modulus"%(str(bin(base)), str(bin(exp)), str(bin(modulus)))    
+
     strexp = bin(exp)[2:]
+    print "BBB '%s'"%strexp    
+
     res = 1
     for char in strexp:
         ## debug message
@@ -82,7 +87,8 @@ def main(argv=sys.argv[1:]):
 #    base=random.randrange(2, arg-2) # pick a random number as base
     
     arg=545  
-    base=328  
+#    base=328  
+    base=4  
     
     print "arg = %d, base = %d"%(arg, base)
     print "Is %d a prime number, by Fermat's Primality Test?\n"%arg

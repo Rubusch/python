@@ -47,22 +47,22 @@ def die(msg):
     sys.exit(1)
 
 def square_and_multiply(base, exp, modulus=0):
-    
-# FIXME: all binary results are 1000100000    
     strexp = bin(exp)[2:]
     res = 1
     for char in strexp:
         ## debug message
         print "binary: %s..."%char
         res = res*res
-        if 0 != modulus: res = res % modulus
+        if 0 != modulus:
+            res = res % modulus
+            # modulo operation "by foot" due to space limitations
         if char == '1':
             res = res*base
             if 0 != modulus: res = res % modulus
             ## debugging
-            print "\tidentified as '1', res = (res^2)*base = %d"%res
+            print "\tidentified as '1', res = [(res * res) * base ]modulus = %d"%res
         else:
-            print "\tidentified as '0': res = (res^2) = %d"%res
+            print "\tidentified as '0': res = [(res * res) ]modulus = %d"%res
     print ""
     return res
 
