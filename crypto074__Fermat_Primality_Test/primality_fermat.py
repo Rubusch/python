@@ -20,6 +20,18 @@ Fermat's Little Theorem, it is certainly not a prime.
 
 NOTE: The test fails for the rare Carmichael Numbers, e.g. 561
 
+Composite numbers known as Fermat pseudoprimes (or sometimes simply
+"pseudoprimes") have zero residue for some as and so are not identified as
+composite. Worse still, there exist numbers known as Carmichael numbers (the
+smallest of which is 561) which give zero residue for any choice of the base a
+relatively prime to p. However, Fermat's little theorem converse provides a
+criterion for certifying the primality of a number. A table of the smallest
+pseudoprimes P for the first 100 bases a follows (OEIS A007535; Beiler 1966,
+p. 42 with typos corrected).
+[http://mathworld.wolfram.com/FermatsLittleTheorem.html]
+
+
+
 Input
     prime candidate p~ and security parameter s
 
@@ -44,14 +56,7 @@ def die(msg):
     sys.exit(1)
 
 def square_and_multiply(base, exp, modulus=0):
-    
-# FIXME 328^544 mod 545 = 1
-    print "AAA\n%s base\n%s exp\n%s modulus"%(str(base), str(exp), str(modulus))    
-    print "AAA\n%s base\n%s exp\n%s modulus"%(str(bin(base)), str(bin(exp)), str(bin(modulus)))    
-
     strexp = bin(exp)[2:]
-    print "BBB '%s'"%strexp    
-
     res = 1
     for char in strexp:
         ## debug message
@@ -69,12 +74,15 @@ def square_and_multiply(base, exp, modulus=0):
     return res
 
 
+## (Alford et al. 1994), which proves that there are infinitely many Carmichael numbers.
+carmichael_numbers = {561,1105,1729,2465,2821,6601,8911,10585,15841,29341,41041,46657,52633,62745,63973,75361} #...
+
 
 ### main ###
 def main(argv=sys.argv[1:]):
     print "Fermat's Primality Test"
+    arg=545 ## seems to be a Fermat Pseudoprime to 328
 
-    arg=5
     ## get arguments, or set default values
     if 1 == len(argv):
         if 0 < len(argv[0]):
@@ -84,19 +92,17 @@ def main(argv=sys.argv[1:]):
                 die("usage: %s <arg>\nOR call without arguments"%sys.argv[0] )
     if 4 >= arg: die("FATAL: arg must be greater than 4")
 
+    ## take fixed base of 2, since other bases may have different issues
+    base = 2
+    if arg == 341: die("%d is a Fermat Pseudoprime number to the base %d -> the test would fail!!"%(arg, base))
+    if arg in carmichael_numbers: die("%d is a Carmichael Number, which behaves Fermat Pseudoprime in this test"%arg)
+    ## to play around with it, use a random base
 #    base=random.randrange(2, arg-2) # pick a random number as base
-    
-    arg=545  
-#    base=328  
-    base=4  
-    
+
     print "arg = %d, base = %d"%(arg, base)
     print "Is %d a prime number, by Fermat's Primality Test?\n"%arg
 
-# TODO
-#    print "FIXME: 545 becomes prime and 561 is identified as no prime..."    
-
-    ## compute inverse by Euler's Theorem
+    ## the actual test
     if 1 != square_and_multiply(base, arg-1, arg):
         print "%d is not a prime!"%arg
     else:
