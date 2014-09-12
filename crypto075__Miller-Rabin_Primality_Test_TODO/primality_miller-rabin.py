@@ -32,15 +32,34 @@ Output
 Algorithm
     for i = 1 to s:
         choose random a element of {2, 3, ..., p~ - 2}
-        z = a^r mod p~
+TODO r??        
+        z = a^r mod p~ 
         if z != 1 and z != p~ - 1:
             for j = 1 to p~:
+TODO j is not used?     
                 z = z^2 mod p~
                 if z = 1:
                     return "p~ is composite"
             if z != p~-1:
                 return "p~ is composite"
     return "p~ is likely prime"
+
+    
+    Input: n > 3, an odd integer to be tested for primality;
+    Input: k, a parameter that determines the accuracy of the test
+    Output: composite if n is composite, otherwise probably prime
+    write n − 1 as 2s·d with d odd by factoring powers of 2 from n − 1
+    WitnessLoop: repeat k times:
+       pick a random integer a in the range [2, n − 2]
+       x ← ad mod n
+       if x = 1 or x = n − 1 then do next WitnessLoop
+       repeat s − 1 times:
+          x ← x2 mod n
+          if x = 1 then return composite
+          if x = n − 1 then do next WitnessLoop
+       return composite
+    return probably prime
+
 """
 
 import sys
@@ -51,7 +70,25 @@ import random
 def die(msg):
     if 0 < len(msg): print msg
     sys.exit(1)
-    
+
+
+def square_and_multiply(base, exp, modulus=0):
+    strexp = bin(exp)[2:]
+    res = 1
+    for char in strexp:
+        ## debug message
+        print "binary: %s..."%char
+        res = res*res
+        if 0 != modulus: res = res % modulus
+        if char == '1':
+            res = res*base
+            if 0 != modulus: res = res % modulus
+            ## debugging
+            print "\tidentified as '1', res = (res^2)*base = %d"%res
+        else:
+            print "\tidentified as '0': res = (res^2) = %d"%res
+    print ""
+    return res
 
 
 ### main ###
@@ -67,7 +104,13 @@ def main(argv=sys.argv[1:]):
             except:
                 die("usage: %s <arg>\nOR call without arguments"%sys.argv[0] )
     if 4 >= arg: die("FATAL: arg must be greater than 4")
+    
+    base=random.randrange(2, arg-2)
 
+    z = square_and_multiply(base, r, arg)
+    if z != 1 and z != r-1:
+        for idx in range(arg-1):
+            
     print "XXX arg %d"%arg    
     
 
