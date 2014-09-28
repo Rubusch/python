@@ -105,13 +105,53 @@ def main(argv=sys.argv[1:]):
                 die("usage: %s <arg>\nOR call without arguments"%sys.argv[0] )
     if 4 >= arg: die("FATAL: arg must be greater than 4")
     
-    base=random.randrange(2, arg-2)
+    k = 3 # 3 iterations, precision
+    print "arg = %d" % arg # number to test
+    print "k = %d" % k # number of iterations for precision
 
-    z = square_and_multiply(base, r, arg)
-    if z != 1 and z != r-1:
-        for idx in range(arg-1):
+#    base=random.randrange(2, arg-2)   
+    
+
+
+    ## get s, the logarithm to base 2 which still divides arg-1
+    s = 1
+    while 0 == (arg-1) % (2**s):
+        s+=1
+        print "2**s = %d\t| %d"%(2**s, arg-1)   
+    s-=1
+    ## for 545 it will be 5
+
+
+    ## get the factor d
+    d = (arg-1)/(2**s)
+    ## for 545 it will be 17
+
+
+    ## select a witness by random
+#    w = random.randrange(2, arg-2)
+    w = 492  
+
+    for rnd in range(k):
+        print "%d ** %d mod %d = %d\t== 0 ?"%(w, d, arg, w**d%arg)   
+        if 0 == w**d % arg:
             
-    print "XXX arg %d"%arg    
+            print "passed! TODO"
+            break
+        d*=2
+# http://www.johannes-bauer.com/compsci/millerrabin/index.php?zahl=545&iterationen=3&calculate=1
+
+    die("XXX d = %d"%d)    
+
+        
+    
+
+#    z = square_and_multiply(base, r, arg)
+#    if z != 1 and z != r-1:
+#        for idx in range(arg-1):
+#
+
+    
+    die( "XXX arg %d"%arg )     
     
 
 
