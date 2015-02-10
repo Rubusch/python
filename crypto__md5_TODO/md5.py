@@ -139,7 +139,7 @@ print ""
 kbox = [int(math.floor(abs(math.sin(k+1)) * (2**32))) for k in range(64)]
 print "kbox:"
 for k in range(len(kbox)/4):
-    print '%s'%' '.join(map(hex, kbox[k*4:k*4+4]))   
+    print '%s'%'\t'.join(map(lambda x: "%#x"%x, kbox[k*4:k*4+4]))
 print ""
 
 
@@ -210,12 +210,17 @@ def bit_and(a, b):
     return (a & b)
 
 
-def bit_not(a):
+def bit_not(a, asize):
     ## bitwise NOT
     ##
     ## params: number a
 #    return (~+-a)    
-    return ~a # TODO check    
+#    return ~a # TODO check    
+    
+#    print "vvv:\t'%s'"%bin(a)    
+#    print "vvv:\t'%s'"%bin((~+-(0b1 <<asize)) ^ a)    
+    
+    return ((~+-(0b1 <<asize)) ^ a)
 
 
 def leftrotate(arg, argsize, shiftsize):
@@ -261,7 +266,9 @@ def padding(arg, arglen):
 
 #    print "XXX:arg\t'%#s'"%bin(bit_append( arg, arglen, len(hex2string(arglen))*8 ))   
 #    die("XXX")
-    return bit_append( arg, arglen, len(hex2string(arglen))*8 )   
+#    return bit_append( arg, arglen, len(hex2string(arglen))*8 )   
+    return bit_append( arg, arglen, 64 )   
+
 
 def run_md5(szplaintext):
     ## runs the algorithm
@@ -281,9 +288,13 @@ def run_md5(szplaintext):
 
     ## fixed variables
     a0 = 0x67452301
+    print "XXX: a0\t'%#s' - init"%bin(a0)    
     b0 = 0xefcdab89
+    print "XXX: b0\t'%#s' - init"%bin(b0)    
     c0 = 0x98badcfe
+    print "XXX: c0\t'%#s' - init"%bin(c0)    
     d0 = 0x10325476
+    print "XXX: d0\t'%#s' - init"%bin(d0)    
 
     ## split into chunks of size 512 bits
     plaintext_chunks = bit_list(plaintext, plaintext_len, 512)
@@ -309,7 +320,7 @@ def run_md5(szplaintext):
 def md5_operation(plaintext_chunk, a0, b0, c0, d0):
     ## break 512 bit chunk into sixteen 32-bit words M[j], 0 ≤ j ≤ 15
     matrix = bit_list(plaintext_chunk, 512, 32)
-    print "YYY: matrix\t'%#s'"%' '.join(map(bin, matrix))    
+#    print "YYY: matrix\t'%#s'"%' '.join(map(bin, matrix))    
 
     ## initialize hash value for this chunk
     A = a0
@@ -317,22 +328,48 @@ def md5_operation(plaintext_chunk, a0, b0, c0, d0):
     C = c0
     D = d0
 
+    
+    print "***: A\t'%s' - 32bit (raw)"%bin(A)    
+    _tmp = A|0b100000000000000000000000000000000
+    print "***: A\t'0b%s' - 32bit (leading '1' at pos 33.)"%bin(_tmp&0b111111111111111111111111111111111)[3:]    
+    _tmp = 0x0
+    
+
     g = 0
-    for idx in range(64):
-        if 0 <= idx and idx <= 15:
-            F = bit_or(bit_and(B, C), bit_and(bit_not(B), D))
+    for idx in range(64): # 64 rounds
+        print "idx:%d"%idx   
+        if idx <= 15:
+            print "\t\tidx<=15"    
+#            F = bit_or(bit_and(B, C), bit_and(bit_not(B), D))
+            
+            F = bit_or(bit_and(B, C), bit_and(bit_not(B, 32), D))
+            
+#            b_and_c = bit_and(B, C)
+#            print "...:\t'%s' - b_and_c"%bin(b_and_c)    
+#
+#            not_b = bit_not(B, 32)
+#            print "...:\t'%s' - not_b"%bin(not_b)    
+#            not_b_and_d = bit_and(not_b, D)
+#            print "...:\t'%s' - not_b_and_d"%bin(not_b_and_d)    
+#
+#            F = bit_or(b_and_c, not_b_and_d)
+#            print "...:\t'%s' - F"%bin(F)    
+            
             g = idx
 
         elif 16 <= idx and idx <= 31:
-            F = bit_or(bit_and(D, B), bit_and(bit_not(D), C))
+            print "\t\tidx<=31"    
+            F = bit_or(bit_and(D, B), bit_and(bit_not(D, 32), C))
             g = (5 * idx + 1) % 16
 
         elif 32 <= idx and idx <= 47:
+            print "\t\tidx<=47"    
             F = bit_xor(B, bit_xor(C, D))
             g = (3 * idx + 5) % 16
 
         elif 48 <= idx and idx <= 63:
-            F = bit_xor(C, bit_or(B, bit_not(D)))
+            print "\t\tidx<=63"    
+            F = bit_xor(C, bit_or(B, bit_not(D, 32)))
             g = (7 * idx) % 16
 
         ## trocadilha
@@ -340,9 +377,54 @@ def md5_operation(plaintext_chunk, a0, b0, c0, d0):
         D = C
         C = B
 # TODO: check A is 32 bit of size    
-        B = B + leftrotate(A + F + kbox[idx] + matrix[g], 32, sbox[idx])
+
+        
+#        B = B + leftrotate(A + F + kbox[idx] + matrix[g], 32, sbox[idx])
+        
+#        print "...:\t'%s' - B, before"%bin(B)    
+        _tmp = B|0b100000000000000000000000000000000
+        print "...: B\t'0b%s' - 32bit before (leading '1' at pos 33.)"%bin(_tmp&0b111111111111111111111111111111111)[3:]    
+        _tmp = 0x0
+
+
+        _in = A + F + kbox[idx] + matrix[g]
+#        print "...:\t'%s' - _in, before"%bin(_in)    
+
+        _lr = leftrotate(_in, 32, sbox[idx])
+        print "...:\t'%s' - _lr, before"%bin(_lr)    
+
+        # TODO check cut 32 bit??
+        B = (B + _lr) & 0b11111111111111111111111111111111   
+
+#        print "...:\t'%s' - B, after"%bin(B)            
+        _tmp = B|0b100000000000000000000000000000000
+        print "...: B\t'0b%s' - 32bit after (leading '1' at pos 33.)"%bin(_tmp&0b111111111111111111111111111111111)[3:]    
+        _tmp = 0x0
+
+#        die("XXX")    
+        
+
+
+
         A = tmp
+        
+        print "***: A\t'%s' - 32bit (raw)"%bin(A)    
+        _tmp = A|0b100000000000000000000000000000000
+        print "***: A\t'0b%s' - 32bit (leading '1' at pos 33.)"%bin(_tmp&0b111111111111111111111111111111111)[3:]    
+        _tmp = 0x0   
+        print ""    
+#        die("XXX")    
+        
+
+    
+    print "***: A\t'%s' - 32bit (raw)"%bin(A)    
+    _tmp = A|0b100000000000000000000000000000000
+    print "***: A\t'0b%s' - 32bit (leading '1' at pos 33.)"%bin(_tmp&0b111111111111111111111111111111111)[3:]    
+    _tmp = 0x0   
+    
     ## end for 32-bit matrizes
+
+#    die("XXX")    
 
     ## add this chunk's hash to result so far
     a0 += A
@@ -375,7 +457,7 @@ def main(argv=sys.argv[1:]):
     a = "ö"
 
 #    print "A:a\t'%#s'"%bin(a) # hex notation
-    print "A:b\t'%#s', len: %d"%(bin(string2hex(a)), len(a)*8 ) # hex notation
+    print "A: %s\t'%#s', len: %d"%(a, bin(string2hex(a)), len(a)*8 ) # hex notation
 #    die("XXX")    
 
     
@@ -398,8 +480,8 @@ def main(argv=sys.argv[1:]):
 
 # TODO remove trailing 'L'    
 # TODO check result!!!    
-    print "digest: %#s"%hex(digest)    
-
+    print "digest:  \t'%#x'"%digest    
+    print "expected:\t'%#x' - ö"%0xa172480f4e21d0a124bac19c89569c59    
 
 
 

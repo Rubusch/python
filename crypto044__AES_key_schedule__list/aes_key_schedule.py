@@ -144,8 +144,8 @@ def key_preparation(key, keylength):
                                                                                 
 if __name__ == "__main__":
     ## input key
-    key = 0x000102030405060708090a0b0c0d0e0f
-    keylength=128
+#    key = 0x000102030405060708090a0b0c0d0e0f
+#    keylength=128
     
     key = 0x000102030405060708090a0b0c0d0e0f000102030405060708090a0b0c0d0e0f
     keylength=256
