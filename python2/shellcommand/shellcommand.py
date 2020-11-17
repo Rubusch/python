@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: iso-8859-1 -*-
+##
+## NOTE: prefer pexpect to subprocess!!!
 
 import os
 import subprocess
