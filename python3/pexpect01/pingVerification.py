@@ -41,7 +41,7 @@ def vagrant_prepare():
 
 
 def vagrant_teardown(child):
-    child.close();
+    child.close()
     subprocess.run(['vagrant', 'halt'])
 
 
