@@ -18,6 +18,10 @@ print('3 / 2 =', 3 / 2, '[1.5]')
 
 ## \\ - Floor division: division that results into whole number adjusted to the
 ##      left in the number line
-print('3 // 2 =', 3 // 2, '[1.0]')
+print('3 // 2 =', 3 // 2, '[1]')
+
+## best practice: use always '.0'
+print('3.0 / 2.0 =', 3 / 2, '[1.5]')
+print('3.0 // 2.0 =', 3 // 2, '[1]')
 
 print('READY.')
