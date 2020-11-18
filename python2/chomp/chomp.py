@@ -1,4 +1,4 @@
-#!/usr/bin/env python                                                                                                         # -*- coding: iso-8859-1 -*-
+#!/usr/bin/python2
 #
 # @author: Lothar Rubusch
 # @email: L.Rubusch@gmx.ch
@@ -18,4 +18,4 @@ print 'read w/o linefeeds'
 f = open('foo.txt','r')
 foo = [line.rstrip('\n') for line in f.readlines()]
 
-print 'foo'
+print foo
