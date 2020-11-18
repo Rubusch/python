@@ -3,6 +3,8 @@
 ## changes from python2 to python3
 ##
 ##
+## NO MORE xrange() IN PYTHON3!
+##
 ## The usage of xrange() is very popular in Python 2.x for creating an iterable
 ## object, e.g., in a for-loop or list/set-dictionary-comprehension.
 ## The behavior was quite similar to a generator (i.e., “lazy evaluation”), but
