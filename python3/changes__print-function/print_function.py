@@ -3,9 +3,9 @@
 ## changes from python2 to python3
 
 import sys
+print('python version: ', sys.version)
 
 ## print arguments
-print('python version: ', sys.version)
 print('python version info: ', sys.version_info)
 
 ## no  LF / CR
