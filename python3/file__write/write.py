@@ -19,5 +19,10 @@ FILE = open('test.txt', 'w')
 FILE.write(text)
 FILE.close()
 
-print("READY.\n")
 
+## append to file
+with open('test.txt', 'a') as ANOTHER:
+    ANOTHER.write('blablabla...\n')
+
+
+print("READY.\n")
