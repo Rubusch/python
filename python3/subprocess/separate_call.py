@@ -5,10 +5,13 @@
 #import os.system
 import subprocess
 
-## before python3.5
-#subprocess.call(["ls", "-l"])
+try:
+    ## before python3.5
+    #subprocess.call(["ls", "-l"])
 
-## after python3.5
-subprocess.run(["ls", "-la"])
+    ## after python3.5
+    subprocess.run(["ls", "-la"])
+except subprocess.CalledProcessError as e:
+    print(e.output)
 
 print("READY.")
