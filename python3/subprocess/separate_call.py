@@ -10,7 +10,9 @@ try:
     #subprocess.call(["ls", "-l"])
 
     ## after python3.5
-    subprocess.run(["ls", "-la"])
+    res = subprocess.run(["ls", "-la"])
+	res.check_returncode() # in case raises exception
+	print('if we reach this, no exception was thrown...')
 except subprocess.CalledProcessError as e:
     print(e.output)
 
