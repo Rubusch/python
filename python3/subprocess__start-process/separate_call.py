@@ -2,7 +2,6 @@
 ##
 ## NB: don't call this file 'subprocess.py' then subprocess.run() will stop working!!!
 
-#import os.system
 import subprocess
 
 try:
