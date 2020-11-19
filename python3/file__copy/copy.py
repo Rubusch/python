@@ -16,9 +16,9 @@ shutil.copy('test.txt.template', 'test__copy.txt')
 
 shutil.copy2('test.txt.template', 'test__copy2.txt')
 
-shutil.copyfile()  # 
+shutil.copyfile('test.txt.template', 'test__copyfile.txt')
 
-shutil.copyfileobj()  # copy file objects
+#shutil.copyfileobj('test.txt.template', 'test__copyfileobj.txt')  # copy file objects
 
 
 print('READY.')
