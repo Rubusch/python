@@ -1,4 +1,7 @@
 #!/usr/bin/python3
+##
+## prepare system
+## $ sudo apt install python3-matplotlib
 
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
