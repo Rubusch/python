@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: iso-8859-1 -*-
+#!/usr/bin/python3
 
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
