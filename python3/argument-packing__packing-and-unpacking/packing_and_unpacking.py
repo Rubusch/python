@@ -9,9 +9,11 @@ def fun2(*args):
     ## convert tuple into a list so that we can modify it
     args = list(args)
 
+    ## modify args
     args[0] = 'I'
     args[1] = 'have'
 
+    ## unpack args, and calling fun1()
     fun1(*args)
 
 fun2("There's", "no", "fun", "with", "Claudia", "and", "Anja.")
