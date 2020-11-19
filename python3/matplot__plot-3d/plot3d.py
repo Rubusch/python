@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 ##
+## NB: python2 is faster than python3
+##
 ## prepare system
 ## $ sudo apt install python3-matplotlib
 
