@@ -6,6 +6,8 @@
 import sys
 import fileinput
 
+import re
+
 from shutil import copy
 
 pattern = 'jack '
@@ -28,7 +30,7 @@ filename = 'test__regexp.txt'
 copy('test.txt.template', filename)
 
 for line in fileinput.input([filename], inplace=True):
-    line = re.sub(r"^\s*"+pattern, newtext, line)
+    line = re.sub(r"^\s*"+pattern+".*", newtext, line)
     sys.stdout.write(line)
 fileinput.close()
 
