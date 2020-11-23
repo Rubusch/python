@@ -4,6 +4,7 @@
 
 import sys
 print('python version: ', sys.version)
+print('')
 
 ## print arguments
 print('python version info: ', sys.version_info)
