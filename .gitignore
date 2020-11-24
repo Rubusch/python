@@ -11,3 +11,5 @@
 *.png
 *.jpg
 
+## pycache
+__pycache__
