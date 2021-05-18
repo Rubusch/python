@@ -16,4 +16,9 @@ print(' some more text')
 ## print several objects
 print('a', 'b')
 
+
+## starting python 3.6
+foo={1, 2, 3}
+print(f"python 3.6 allows for this printing, foo: {foo}")
+
 print('READY.')
