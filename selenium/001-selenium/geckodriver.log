@@ -1,0 +1,20 @@
+1679583636075	geckodriver	INFO	Listening on 127.0.0.1:43831
+1679583636096	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "--remote-debugging-port" "51785" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "/tmp/rust_mozprofile8SXjRJ"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+ATTENTION: default value of option mesa_glthread overridden by environment.
+1679583638479	Marionette	INFO	Marionette enabled
+1679583638490	Marionette	INFO	Listening on port 42085
+Read port: 42085
+WebDriver BiDi listening on ws://127.0.0.1:51785
+1679583638778	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+console.error: ({})
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofile8SXjRJ/search.json.mozlz4", (void 0)))
+DevTools listening on ws://127.0.0.1:51785/devtools/browser/cf2cf61d-d666-4d99-afb5-5d2fabd75cb1
+JavaScript error: https://media.ethicalads.io/media/client/v1.4.0/ethicalads.min.js, line 1: Error: No ad placements found.
+JavaScript error: resource:///actors/FormValidationChild.sys.mjs, line 178: TypeError: this._element is null
+console.warn: LoginRecipes: "Falling back to a synchronous message for: https://www.python.org."
+1679583644397	Marionette	INFO	Stopped listening on port 42085
