@@ -27,3 +27,17 @@ $ sudo apt install -y firefox-geckodriver chromium-chromiumdriver
 ```
 
 NB: chromium is better installed by snap (future)  
+
+## Issues
+
+issue: error when running the demo with name seleniumply  
+```
+$ python3 ./selenium.py
+    Traceback (most recent call last):
+      File "./selenium.py", line 1, in <module>
+          from selenium import webdriver
+    ...
+    cannot import name 'webdriver' from partially initialized module 'selenium' (most likely due to a circular import)
+    ...
+```
+fix: never call a file "selenium.py" when importing a "selenium" package :)  
